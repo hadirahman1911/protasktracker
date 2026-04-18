@@ -5356,7 +5356,7 @@
         };
 
         // ==========================================
-        // 🤖 ENJIN AI PRO (NUCLEAR OPTION - PAKSA JADI BARU)
+        // 🤖 ENJIN AI PRO (NUCLEAR + ROTATE DARI FIREBASE)
         // ==========================================
         window.prosesChatKeFirebase = async function(inputId, statusId, isAdminView = false) {
             const fileInput = document.getElementById(inputId);
@@ -5411,6 +5411,9 @@
 
             let berjaya = 0; let gagal = 0; let lastError = "";
 
+            // 🌟 Sediakan kaunter peluru kat luar loop supaya tak hilang
+            if (typeof window.kunciAktifSekarang === 'undefined') window.kunciAktifSekarang = 0;
+
             for (let i = 0; i < allChatTexts.length; i++) {
                 let chatObj = allChatTexts[i];
                 let refFileName = chatObj.parentName || chatObj.name;
@@ -5428,8 +5431,20 @@
                 Chat Content: ${safeChatContent}`;
 
                 try {
-                    // API Call
-                    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${SENARAI_API_KEY[kunciAktifSekarang]}`;
+                    // 🌟 1. MAGIK ROTATE DARI FIREBASE
+                    const secSnap = await getDoc(doc(db, "system_settings", "security"));
+                    let stringKunci = secSnap.exists() ? secSnap.data().senarai_gemini : "";
+
+                    if (!stringKunci) throw new Error("API Key rahsia tak jumpa dalam Firebase boss!");
+
+                    // Pecahkan string koma jadi senarai peluru (Array)
+                    let senaraiKeys = stringKunci.split(',').map(k => k.trim());
+                    
+                    // Ambil kunci ikut giliran semasa
+                    let apiKeyGemini = senaraiKeys[window.kunciAktifSekarang % senaraiKeys.length];
+
+                    // 🌟 2. API Call Guna Kunci Rahsia
+                    const apiURL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${apiKeyGemini}`;
                     const response = await fetch(apiURL, { 
                         method: 'POST', 
                         headers: {'Content-Type': 'application/json'}, 
@@ -5441,9 +5456,11 @@
                     
                     let dataAPI = await response.json();
                     
+                    // 🌟 3. Kalau kena limit (429), pusing ke peluru seterusnya
                     if(response.status === 429 || (dataAPI.error && dataAPI.error.code === 429)) { 
-                        kunciAktifSekarang = (kunciAktifSekarang + 1) % SENARAI_API_KEY.length; 
-                        i--; continue; 
+                        window.kunciAktifSekarang++; 
+                        i--; // Undur 1 langkah untuk cuba balik fail yang sama
+                        continue; 
                     } 
 
                     if (dataAPI.error) throw new Error(dataAPI.error.message);
