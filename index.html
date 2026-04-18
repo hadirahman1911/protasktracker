@@ -926,20 +926,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // 🌟 KOTAK SENJATA API KEY (Letak seberapa banyak akaun Gmail boss ada)
-        const SENARAI_API_KEY = [
-            "AIzaSyBBiBxoizh4MtnvvuXhBNBS_R0Cj5vpZn4", // Kunci 1 (Akaun Utama)
-            "AIzaSyAR2f4x2A6qpdRPguo9CggOOHuRDLRrEis",
-            "AIzaSyAJTF6ERMaK1ATXiwhX9gtfZLkEv6a0JM8",
-            "AIzaSyB00eff5L63IOhOhHvd4sqZraT7bexN3LI",
-            "AIzaSyAol3BpYr7hN7ChGHf9JsF05chsHvpgf-0",
-            "AIzaSyBWNIwhKcW3Y_uZBOBNu9wLhGXcpJO4Kpg",
-            "AIzaSyAEqX2TXtGmp1HiuIhbUfvfSMMr6GhkbGY",
-            "AIzaSyAKCy3amPYp_q-9McVLc0uDyibSmije0PM",
-            "AIzaSyBGac6tmInQmZpZLWIUDF9IdLhPrHrxqH8",
-            "AIzaSyCanijD5A79Yo6z69PSYqEemRquCP78A-E"
-            
-        ];
         let kunciAktifSekarang = 0; // Sistem akan mula dengan Kunci 1
         // GLOBAL VARIABLES
         const timeSlots = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM","9:00 PM","10:00 PM","11:00 PM"];
