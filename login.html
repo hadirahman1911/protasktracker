@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Login | Kunkwan - Powered by Xantec</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+    <link href="https://fonts.googleapis.com/css?family=Noto+Sans+SC:100,400,700&display=swap&subset=chinese-simplified" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Lemonada:wght@300;400;500&display=swap');
+        body { background: #f4f7f6; font-family: 'Noto Sans SC', sans-serif; margin: 0; }
+        .login-container { display: flex; align-items: center; justify-content: center; height: 100vh; padding: 20px; }
+        .login-box { background: white; padding: 40px; border-radius: 10px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); width: 100%; max-width: 450px; text-align: center; }
+        h2 { font-family: 'Lemonada', cursive; font-size: 2.3em; letter-spacing: 3px; font-weight: bold; color: #333; margin-bottom: 10px; }
+        .subtitle { color: gray; font-size: 0.9rem; margin-bottom: 30px; }
+        .input-group { text-align: left; margin-bottom: 20px; }
+        .input-group label { display: block; font-weight: bold; margin-bottom: 5px; color: #666; font-size: 0.9rem; }
+        .input-group input, .input-group select { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 5px; outline: none; font-size: 1rem; box-sizing: border-box; background: #fff; }
+        .input-group input:focus, .input-group select:focus { border-color: #ef4036; }
+        button { background: #ef4036; color: white; border: none; width: 100%; padding: 15px; border-radius: 5px; font-weight: bold; font-size: 1.1rem; cursor: pointer; transition: 0.3s; margin-top: 10px; }
+        button:hover { background: #d3342b; }
+        button:disabled { background: #ccc; cursor: not-allowed; }
+        .msg-error { color: #ef4036; font-weight: bold; margin-top: 15px; display: none; }
+        .toggle-link { margin-top: 20px; font-size: 0.9rem; color: #555; cursor: pointer; display: inline-block; transition: 0.3s; font-weight: bold; }
+        .toggle-link:hover { color: #ef4036; }
+        .logo { margin-bottom: 10px; display: block; }
+        .logo img { max-width: 150px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <div class="logo">
+                <h1 style="color:#ef4036; margin:0; font-size:1.8rem; font-weight:900;">KUNKWAN</h1>
+            </div>
+            <h2>Pro Task Tracker</h2>
+            <p class="subtitle">Sistem DMO</p>
+            
+            <div id="ruangan-staf">
+                <div class="input-group">
+                    <label>Nama Staf</label>
+                    <select id="username">
+                        <option value="" disabled selected>⏳ Memuat turun senarai nama...</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>PIN Keselamatan</label>
+                    <input type="password" id="password-staff" placeholder="Sila masukkan PIN" style="letter-spacing: 3px; text-align:center;">
+                </div>
+                <button id="btn-login-staff">MASUK DASHBOARD 🚀</button>
+                <p id="msg-error-staff" class="msg-error">❌ PIN Salah!</p>
+                <span class="toggle-link" onclick="toggleMode(true)">⚙️ Masuk sebagai Admin</span>
+            </div>
+
+            <div id="ruangan-admin" style="display:none;">
+                <div class="input-group">
+                    <label>PIN Admin</label>
+                    <input type="password" id="password-admin" placeholder="Masukkan PIN Admin" style="letter-spacing: 5px; text-align:center; font-size:1.5rem;">
+                </div>
+                <button id="btn-login-admin" style="background:#00a859;">MASUK ADMIN 🔒</button>
+                <p id="msg-error-admin" class="msg-error">❌ PIN Admin Salah!</p>
+                <span class="toggle-link" onclick="toggleMode(false)">🔙 Kembali ke Login Staf</span>
+            </div>
+            <div style="margin-top: 35px; font-size: 0.8rem; color: #aaa;">Copyright © 2020-26 Kunkwan.</div>
+        </div>
+    </div>
+
+    <script type="module">
+        // 1. MAGIK AUTO-SKIP LOGIN (Kalau pasport masih sah, terus terbang ke Dashboard)
+        if (localStorage.getItem("kunci_phantom_fighters") === "LULUS" && localStorage.getItem("kunkwan_role")) {
+            window.location.href = "index.html"; 
+        }
+
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, getDocs } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+          apiKey: "AIzaSyBJFRQMXVuZESchN_IhK0Q_srSyt_9p6sk",
+          authDomain: "kunkwan.firebaseapp.com",
+          projectId: "kunkwan"
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.toggleMode = (isAdmin) => {
+            document.getElementById('ruangan-staf').style.display = isAdmin ? 'none' : 'block';
+            document.getElementById('ruangan-admin').style.display = isAdmin ? 'block' : 'none';
+            if(isAdmin) document.getElementById('password-admin').focus();
+            else document.getElementById('password-staff').focus();
+        };
+
+        async function muatTurunStaf() {
+            const dropdown = document.getElementById('username');
+            try {
+                const snap = await getDocs(collection(db, "staff_list"));
+                let list = []; snap.forEach(d => list.push(d.data().name));
+                list.sort((a, b) => a.localeCompare(b));
+                
+                // 2. MAGIK AUTO-ISI NAMA (Tarik dari memori)
+                let savedUser = localStorage.getItem("remembered_user");
+                
+                let htmlOpt = `<option value="" disabled ${!savedUser ? 'selected' : ''}>- Pilih Nama Anda -</option>`;
+                list.forEach(n => {
+                    let isSelected = (n === savedUser) ? "selected" : "";
+                    htmlOpt += `<option value="${n}" ${isSelected}>${n}</option>`;
+                });
+                dropdown.innerHTML = htmlOpt;
+            } catch (e) { dropdown.innerHTML = `<option value="" disabled>Ralat memuat turun</option>`; }
+        }
+        muatTurunStaf();
+
+        async function processLogin(inputId, passId, msgId, role) {
+            const userVal = document.getElementById(inputId)?.value;
+            const passVal = document.getElementById(passId).value.trim();
+            const btn = document.activeElement;
+            const msg = document.getElementById(msgId);
+
+            if(role === 'staff' && !userVal) { msg.innerText = "Sila pilih nama!"; msg.style.display="block"; return; }
+            if(!passVal) { msg.innerText = "Masukkan PIN!"; msg.style.display="block"; return; }
+
+            btn.innerText = "⏳ Menyemak..."; btn.disabled = true; msg.style.display = "none";
+
+            try {
+                const secSnap = await getDoc(doc(db, "system_settings", "security"));
+                if (!secSnap.exists()) throw new Error("Peti besi keselamatan tiada!");
+                
+                const dataRahsia = secSnap.data();
+                const pinSebenar = role === 'admin' ? dataRahsia.admin_pin : dataRahsia.pin_sistem;
+
+                if (passVal === pinSebenar && pinSebenar !== undefined) {
+                    // Cop pasport
+                    localStorage.setItem("kunci_phantom_fighters", "LULUS");
+                    localStorage.setItem("kunkwan_role", role);
+                    
+                    if(userVal) {
+                        localStorage.setItem("kunkwan_user", userVal);
+                        // 3. MAGIK SIMPAN NAMA UNTUK MASA DEPAN (Walaupun lepas logout)
+                        localStorage.setItem("remembered_user", userVal); 
+                    }
+                    window.location.href = "index.html";
+                } else {
+                    msg.innerText = "❌ PIN Salah!"; msg.style.display = "block";
+                    btn.innerText = role === 'admin' ? "MASUK ADMIN 🔒" : "MASUK DASHBOARD 🚀"; btn.disabled = false;
+                }
+            } catch(e) { msg.innerText = "Ralat Firebase!"; msg.style.display = "block"; btn.disabled = false; }
+        }
+
+        document.getElementById('btn-login-staff').onclick = () => processLogin('username', 'password-staff', 'msg-error-staff', 'staff');
+        document.getElementById('btn-login-admin').onclick = () => processLogin('', 'password-admin', 'msg-error-admin', 'admin');
+
+        // Allow tekan "Enter" untuk submit
+        document.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                if(document.getElementById('ruangan-staf').style.display !== 'none') {
+                    document.getElementById('btn-login-staff').click();
+                } else {
+                    document.getElementById('btn-login-admin').click();
+                }
+            }
+        });
+    </script>
+</body>
+</html>
