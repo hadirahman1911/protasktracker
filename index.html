@@ -117,32 +117,11 @@
     </style>
 </head>
 <body>
-    <div id="tirai-besi" style="position:fixed; top:0; left:0; width:100%; height:100%; background-color:#121212; z-index:99999; display:flex; flex-direction:column; justify-content:center; align-items:center; color:white; font-family:sans-serif;">
-        <h2 style="color:#00e676; margin-bottom:10px;">🔒 KUNKWAN MASTER</h2>
-        <p style="margin-bottom:20px; color:#aaa;">Sistem Eksklusif Phantom Fighters</p>
-        <input type="password" id="input-pin-rahsia" placeholder="Masukkan PIN" style="padding:12px; text-align:center; font-size:1.2rem; border-radius:8px; border:none; margin-bottom:15px; width:200px; outline:none;letter-spacing: 3px; background-color: #222; color: #00e676; font-weight: bold;">
-        <button id="btn-sahkan-pin" style="padding:10px 30px; background-color:#00e676; color:black; font-weight:bold; border:none; border-radius:8px; cursor:pointer; font-size:1.1rem;">Masuk</button>
-        <p id="msg-pin-salah" style="color:#ff5252; margin-top:15px; display:none; font-weight:bold;">❌ PIN Salah! Cuba lagi.</p>
-    </div>
-
-    <div id="login-panel">
-        <div class="login-box">
-            <h1 style="color:#00c6ff; margin-top:0;">Pro Task Tracker</h1>
-            <p style="color:gray; font-size:0.9rem; margin-bottom: 20px;">Sistem Log DMO & Gamification</p>
-            
-            <div id="ruangan-staf">
-                <select id="user-picker" class="input-dark"><option value="" disabled selected>⏳ Memuatkan...</option></select>
-                <button id="btnGoStaf" class="w-full bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-3 rounded-lg mt-2">MASUK DASHBOARD 🚀</button>
-                <p class="mt-5 text-sm text-gray-500 cursor-pointer hover:text-white transition" onclick="window.toggleLoginMode(true)">⚙️ Masuk sebagai Admin</p>
-            </div>
-
-            <div id="ruangan-admin" style="display:none;">
-                <input type="password" id="admin-pin-input" class="input-dark" placeholder="PIN Admin" style="text-align:center; letter-spacing: 5px; font-size:1.5rem;">
-                <button id="btnGoAdmin" class="w-full bg-emerald-500 hover:bg-emerald-600 text-black font-bold py-3 rounded-lg mt-2">MASUK ADMIN 🔒</button>
-                <p class="mt-5 text-sm text-gray-500 cursor-pointer hover:text-white transition" onclick="window.toggleLoginMode(false)">🔙 Kembali ke Log Staf</p>
-            </div>
-        </div>
-    </div>
+    <script>
+            if (localStorage.getItem("kunci_phantom_fighters") !== "LULUS") {
+                window.location.href = "login.html";
+            }
+    </script>
 
     <div id="staff-panel">
         <div class="container">
@@ -150,7 +129,7 @@
                 <h2 id="welcome-text" class="m-0 text-[#00c6ff] font-bold text-xl">Dashboard: Nama</h2>
                 <div class="flex gap-2">
                     <input type="date" id="pilihTarikh" class="bg-[#333] text-white border border-[#555] p-2 rounded-lg outline-none">
-                    <button onclick="for(let k in localStorage){if(k!=='kunci_phantom_fighters')localStorage.removeItem(k);} location.reload();" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold">Keluar</button>
+                    <button onclick="localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html';" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow">Keluar</button>
                 </div>
             </div>
 
@@ -363,7 +342,7 @@
                 <button onclick="window.terjahDataAdmin()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold px-4 py-1.5 rounded ml-2 shadow-lg transition">GO 🚀</button>
             </div>
 
-            <button onclick="for(let k in localStorage){if(k!=='kunci_phantom_fighters')localStorage.removeItem(k);} location.reload();" class="bg-red-500 hover:bg-red-600 text-white px-6 py-2 rounded-lg font-bold shadow">Keluar</button>
+            <button onclick="localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html';" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow">Keluar</button>
         </div>
 
         <div class="bg-[#1e1e1e] border-b border-[#333] px-6 py-3 flex gap-2 overflow-x-auto">
@@ -933,44 +912,6 @@
         const app = initializeApp(firebaseConfig);
         const db = getFirestore(app);
 
-        // ==========================================
-        // 🛡️ SISTEM PENGESAHAN PIN DARI FIREBASE
-        // ==========================================
-        const tiraiBesi = document.getElementById("tirai-besi");
-        const inputPin = document.getElementById("input-pin-rahsia");
-        const btnSahkan = document.getElementById("btn-sahkan-pin");
-        const msgSalah = document.getElementById("msg-pin-salah");
-
-        // Cek dalam memori phone: Dah pernah letak PIN ke belum?
-        if (localStorage.getItem("kunci_phantom_fighters") === "LULUS") {
-            tiraiBesi.style.display = "none"; // Buka tirai kalau dah lulus
-        } else {
-            // Kalau belum, tunggu user tekan butang "Masuk"
-            btnSahkan.addEventListener("click", async () => {
-                let pinDitaip = inputPin.value.trim();
-                btnSahkan.innerText = "⏳ Menyemak...";
-
-                try {
-                    // Tarik PIN sebenar dari peti besi Firebase
-                    const secSnap = await getDoc(doc(db, "system_settings", "security"));
-                    let pinSebenar = secSnap.exists() ? secSnap.data().pin_sistem : null;
-
-                    if (pinDitaip === pinSebenar) {
-                        localStorage.setItem("kunci_phantom_fighters", "LULUS"); // Simpan cop kelulusan
-                        tiraiBesi.style.display = "none"; // Buka tirai!
-                    } else {
-                        msgSalah.style.display = "block"; // Tunjuk warning merah
-                        btnSahkan.innerText = "Masuk";
-                        inputPin.value = ""; // Kosongkan kotak
-                    }
-                } catch (e) {
-                    console.error("Gagal semak PIN:", e);
-                    btnSahkan.innerText = "Masuk";
-                    alert("Sistem Firebase tergendala. Sila refresh.");
-                }
-            });
-        }
-        
         let kunciAktifSekarang = 0; // Sistem akan mula dengan Kunci 1
         // GLOBAL VARIABLES
         const timeSlots = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM","1:00 PM","2:00 PM","3:00 PM","4:00 PM","5:00 PM","6:00 PM","7:00 PM","8:00 PM","9:00 PM","10:00 PM","11:00 PM"];
@@ -1022,21 +963,6 @@
             }
         };
 
-        // Butang Log Masuk Admin
-        document.getElementById('btnGoAdmin').addEventListener('click', async () => {
-            const pin = document.getElementById('admin-pin-input').value;
-            const snap = await getDoc(doc(db, "system_settings", "security"));
-            if (snap.exists() && snap.data().admin_pin === pin) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'flex';
-                
-                let todayDateStr = new Date().toISOString().split('T')[0];
-                document.getElementById('admin-start').value = todayDateStr;
-                document.getElementById('admin-end').value = todayDateStr;
-                
-                window.loadAdminData(); 
-            } else { alert("❌ PIN Salah!"); }
-        });
 
         // Butang Set PIN di System Setup
         document.getElementById('btnSetPin').addEventListener('click', async () => {
@@ -1323,26 +1249,6 @@
             if(tab === 'crm') window.loadCRMData();
             if(tab === 'ps') window.loadPSData();
         };
-
-        document.getElementById('btnGoStaf').addEventListener('click', () => {
-            currentUser = document.getElementById('user-picker').value;
-            if(!currentUser) return;
-            document.getElementById('login-panel').style.display = 'none';
-            document.getElementById('staff-panel').style.display = 'flex';
-            document.getElementById('welcome-text').innerText = `Dashboard: ${currentUser}`;
-            document.getElementById('pilihTarikh').value = new Date().toISOString().split('T')[0];
-            
-            const tpKpi = document.getElementById('time-picker-kpi');
-            tpKpi.innerHTML = "";
-            timeSlots.forEach(t => tpKpi.innerHTML += `<option value="${t}">${t}</option>`);
-            
-            let now = new Date(); let h = now.getHours(); let ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12; h = h ? h : 12;
-            let timeStr = h + ":00 " + ampm; 
-            if(timeSlots.includes(timeStr)) tpKpi.value = timeStr;
-            else tpKpi.value = "9:00 AM"; 
-
-            tarikDataDanBinaSistem();
-        });
 
         document.getElementById('pilihTarikh').addEventListener('change', tarikDataDanBinaSistem);
         
@@ -1849,24 +1755,7 @@
         // ==========================================
         // 6. ADMIN PANEL LOGIC (Diubah dari GAS ke Firebase)
         // ==========================================
-        let adminState = { users: [], tasks: [], targets: {}, logs: {}, pointsData: { earned: {}, target: {} } };
-
-        // Ubah suai butang Login Admin supaya dia auto-load data
-        document.getElementById('btnGoAdmin').addEventListener('click', async () => {
-            const pin = document.getElementById('admin-pin-input').value;
-            const snap = await getDoc(doc(db, "system_settings", "security"));
-            if (snap.exists() && snap.data().admin_pin === pin) {
-                document.getElementById('login-panel').style.display = 'none';
-                document.getElementById('admin-panel').style.display = 'flex';
-                
-                // Set default date ke hari ini
-                let todayDateStr = new Date().toISOString().split('T')[0];
-                document.getElementById('admin-start').value = todayDateStr;
-                document.getElementById('admin-end').value = todayDateStr;
-                
-                window.loadAdminData(); // Tarik data!
-            } else { alert("❌ PIN Salah!"); }
-        });
+        let adminState = { users: [], tasks: [], targets: {}, logs: {}, pointsData: { earned: {}, target: {} } }
 
         // 🌟 FUNGSI CCTV: Lukis Sejarah Upload
         window.renderPSUploadLogs = async function() {
@@ -4461,38 +4350,6 @@
                 alert("Gagal memadam rekod: " + e.message);
             }
         };
-
-        // ==========================================
-        // SISTEM AUTO-LOGIN (REMEMBER ME)
-        // ==========================================
-        document.getElementById('btnGoStaf').addEventListener('click', () => {
-            let u = document.getElementById('user-picker').value;
-            if(u) { localStorage.setItem('kunkwan_user', u); localStorage.setItem('kunkwan_role', 'staff'); }
-        });
-        document.getElementById('btnGoAdmin').addEventListener('click', () => {
-            let pin = document.getElementById('admin-pin-input').value;
-            // Kalau boss ada tukar PIN kat sistem, tukar nombor "1911" ni ikut PIN boss
-            if(pin === "1911") localStorage.setItem('kunkwan_role', 'admin'); 
-        });
-
-        // Enjin semak bila website mula-mula dibuka
-        setTimeout(() => {
-            let role = localStorage.getItem('kunkwan_role');
-            let user = localStorage.getItem('kunkwan_user');
-            if(role === 'admin') {
-                document.getElementById('admin-pin-input').value = "1911";
-                document.getElementById('btnGoAdmin').click();
-            } else if (role === 'staff' && user) {
-                let intv = setInterval(() => {
-                    let picker = document.getElementById('user-picker');
-                    if(picker.options.length > 2) { // Tunggu nama staf habis download
-                        picker.value = user;
-                        document.getElementById('btnGoStaf').click();
-                        clearInterval(intv);
-                    }
-                }, 200);
-            }
-        }, 500);
         
         // ==========================================
         // FUNGSI COPY COLLECTION WHATSAPP (PS MASTER)
@@ -5452,7 +5309,12 @@
 
                 let safeChatContent = chatObj.text.substring(0, 15000);
 
-                let promptArahan = `Extract WhatsApp data into JSON ONLY. Do not use formatting blocks.
+                let promptArahan = `Extract WhatsApp data into valid JSON ONLY.
+                CRITICAL RULES:
+                1. DO NOT use markdown formatting blocks.
+                2. STRICTLY ESCAPE all double quotes (\\") and newlines (\\n) inside string values.
+                
+                Format:
                 {
                   "inboundDate": "DD/MM/YYYY", "inboundTime": "HH:mm", "contact": "number from filename ${refFileName}",
                   "name": "Name", "source": "-", "email": "-", "state": "-", "age": "-", "occupation": "-", "firstTimeLearning": "-",
@@ -5470,8 +5332,6 @@
 
                     // Pecahkan string koma jadi senarai peluru (Array)
                     let senaraiKeys = stringKunci.split(',').map(k => k.trim());
-                    
-                    // Ambil kunci ikut giliran semasa
                     let apiKeyGemini = senaraiKeys[window.kunciAktifSekarang % senaraiKeys.length];
 
                     // 🌟 2. API Call Guna Kunci Rahsia
@@ -5497,8 +5357,19 @@
                     if (dataAPI.error) throw new Error(dataAPI.error.message);
                     if (!dataAPI.candidates || !dataAPI.candidates[0].content) throw new Error("AI Safety Block / Tiada Jawapan");
 
-                    // Paksa baca JSON terus
-                    let rawData = JSON.parse(dataAPI.candidates[0].content.parts[0].text);
+                    // 🌟 4. MESIN BASUH JSON (Cuci sisa kotoran & Enter tersembunyi dari AI)
+                    let rawText = dataAPI.candidates[0].content.parts[0].text;
+                    
+                    // Buang markdown kalau AI degil letak ```json
+                    rawText = rawText.replace(/^```json/mi, "").replace(/^```/mi, "").trim();
+                    if (rawText.endsWith("```")) rawText = rawText.substring(0, rawText.length - 3).trim();
+                    
+                    // TUKAR SEMUA "ENTER" SEBENAR (Raw Newline) MENJADI SPACE 
+                    // (Inilah punca utama error Unterminated String tu!)
+                    rawText = rawText.replace(/[\u0000-\u0019]+/g, " ");
+
+                    // Paksa baca JSON yang dah siap dicuci
+                    let rawData = JSON.parse(rawText);
 
                     // Mesin Basuh Nombor
                     const formatP = (p) => { let n = String(p||"").replace(/\D/g,''); return n.startsWith('0') ? '60'+n.substring(1) : (n.startsWith('60')?n:'60'+n); };
@@ -5551,8 +5422,46 @@
             if(isAdminView) window.loadAdminCRMData(true); else window.loadCRMData(true);
         };
 
-        // Initialize Web Mula-mula Buka
-        muatTurunStaf();
+        // ==========================================
+        // 🚀 ENJIN BOOTING (DARI LOGIN.HTML)
+        // ==========================================
+        window.onload = function() {
+            let role = localStorage.getItem("kunkwan_role");
+            if (role === "admin") {
+                document.getElementById('staff-panel').style.display = 'none';
+                document.getElementById('admin-panel').style.display = 'flex';
+                
+                // Set default date admin
+                let todayDateStr = new Date().toISOString().split('T')[0];
+                document.getElementById('admin-start').value = todayDateStr;
+                document.getElementById('admin-end').value = todayDateStr;
+                
+                window.loadAdminData(); 
+            } else if (role === "staff") {
+                currentUser = localStorage.getItem("kunkwan_user");
+                if(!currentUser) { window.location.href = "login.html"; return; }
+                
+                document.getElementById('admin-panel').style.display = 'none';
+                document.getElementById('staff-panel').style.display = 'flex';
+                document.getElementById('welcome-text').innerText = `Dashboard: ${currentUser}`;
+                document.getElementById('pilihTarikh').value = new Date().toISOString().split('T')[0];
+                
+                const tpKpi = document.getElementById('time-picker-kpi');
+                if(tpKpi) {
+                    tpKpi.innerHTML = "";
+                    timeSlots.forEach(t => tpKpi.innerHTML += `<option value="${t}">${t}</option>`);
+                    
+                    let now = new Date(); let h = now.getHours(); let ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12; h = h ? h : 12;
+                    let timeStr = h + ":00 " + ampm; 
+                    if(timeSlots.includes(timeStr)) tpKpi.value = timeStr;
+                    else tpKpi.value = "9:00 AM"; 
+                }
+
+                tarikDataDanBinaSistem(); 
+            } else {
+                window.location.href = "login.html";
+            }
+        };
     </script>
 </body>
 </html>
