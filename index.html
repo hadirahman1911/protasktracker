@@ -128,6 +128,7 @@
             <div class="bg-[#1e1e1e] p-4 rounded-xl border border-[#333] flex justify-between items-center mb-5">
                 <h2 id="welcome-text" class="m-0 text-[#00c6ff] font-bold text-xl">Dashboard: Nama</h2>
                 <div class="flex gap-2">
+                    <button onclick="window.forceUpdateApp()" class="bg-[#ff9800] hover:bg-[#e68a00] text-black px-3 py-2 rounded-lg font-bold shadow text-xs md:text-sm flex items-center gap-1">🔄 Update App</button>
                     <input type="date" id="pilihTarikh" class="bg-[#333] text-white border border-[#555] p-2 rounded-lg outline-none">
                     <button onclick="localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html';" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow">Keluar</button>
                 </div>
@@ -355,7 +356,10 @@
                 <button onclick="window.terjahDataAdmin()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold px-4 py-1.5 rounded ml-2 shadow-lg transition">GO 🚀</button>
             </div>
 
-            <button onclick="localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html';" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow">Keluar</button>
+            <div class="flex gap-2 mt-3 md:mt-0">
+                <button onclick="window.forceUpdateApp()" class="bg-[#ff9800] hover:bg-[#e68a00] text-black px-4 py-2 rounded-lg font-bold shadow flex items-center gap-1">🔄 Update App</button>
+                <button onclick="localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html';" class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg font-bold shadow">Keluar</button>
+            </div>
         </div>
 
         <div class="bg-[#1e1e1e] border-b border-[#333] px-6 py-3 flex gap-2 overflow-x-auto">
@@ -5744,6 +5748,18 @@
                 if(isAdmin) { huntAdminState = huntAdminState.filter(r => r.docId !== docId); window.renderAdminHuntTable(); } 
                 else { huntStaffState = huntStaffState.filter(r => r.docId !== docId); window.renderHuntStaffList(); }
             } catch(e) { alert("Ralat: " + e.message); }
+        };
+
+        // ==========================================
+        // FUNGSI KECEMASAN: FORCE UPDATE APP (iPhone Cache Buster)
+        // ==========================================
+        window.forceUpdateApp = function() {
+            if(confirm("Sistem akan dimuat semula untuk menarik versi terbaru dari server. Teruskan?")) {
+                // Magik: Kita letak cop masa/waktu (timestamp) kat hujung link URL.
+                // iPhone akan ingat ni adalah 'website' baru dan terpaksa buang memori lama.
+                let cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
+                window.location.href = cleanUrl + '?v=' + new Date().getTime();
+            }
         };
 
         // ==========================================
