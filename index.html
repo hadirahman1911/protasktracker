@@ -157,6 +157,7 @@
                 <button id="btn-tab-schedule" onclick="tukarTabStaf('schedule')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">📅 Tab Schedule</button>
                 <button id="btn-tab-report" onclick="tukarTabStaf('report')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">📝 Tab Report</button>
                 <button id="btn-tab-crm" onclick="tukarTabStaf('crm')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">👥 Tab CRM</button>
+                <button id="btn-tab-hunt" onclick="window.tukarTabStaf('hunt')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">🎯 Tab Hunt CS</button>
                 <button id="btn-tab-ps" onclick="window.tukarTabStaf('ps')" class="tab-btn bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
             </div>
 
@@ -255,7 +256,7 @@
                             <input type="text" id="crm-mobile-search-false" oninput="window.renderCRMMobileList(false)" placeholder="🔍 Search Name or Contact..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#25D366] text-sm mb-3">
                             
                             <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
-                                <button id="m-crm-sort-false" onclick="window.toggleCRMMobileSort('INBOUND', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Inbound <span id="m-crm-sort-icon-false">↕️</span></button>
+                                <button id="m-crm-sort-false" onclick="window.toggleCRMMobileSort('Lead ID', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Inbound <span id="m-crm-sort-icon-false">↕️</span></button>
                                 <button id="m-crm-sort-fu-false" onclick="window.toggleCRMMobileSort('FU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-crm-sort-fu-icon-false">↕️</span></button>
                                 <button id="m-filter-All-false" onclick="window.setCRMMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#25D366] text-black shadow-md transition">All</button>
                                 <button id="m-filter-TOFU-false" onclick="window.setCRMMobileFilter('TOFU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
@@ -325,7 +326,19 @@
                     <div id="ps-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                 </div>
 
-            </div>       
+            </div> 
+            
+            <div id="view-hunt" class="hidden">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333]">
+                    <h3 class="text-[#ffeb3b] font-bold mb-4 flex items-center gap-2 m-0">🎯 Hunt CS (Sila Approach Segera)
+                        <button onclick="window.loadHuntData(true)" class="bg-[#ff9800] hover:bg-[#e68a00] text-black py-1 px-3 rounded text-xs ml-auto shadow font-bold">🔄 Refresh</button>
+                    </h3>
+                    
+                    <div id="hunt-staff-list" class="flex flex-col gap-3 mt-4 max-h-[70vh] overflow-y-auto pr-1">
+                        </div>
+                </div>
+            </div>
+
         </div>   
     </div>
 
@@ -349,6 +362,7 @@
             <button id="btn-adm-perf" onclick="window.switchAdminTab('perf')" class="adm-tab bg-[#0072ff] text-white">📊 Performance</button>
             <button id="btn-adm-sch" onclick="window.switchAdminTab('sch')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📅 Schedule</button>
             <button id="btn-adm-crm" onclick="window.switchAdminTab('crm')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">👥 CRM Master</button>
+            <button id="btn-adm-hunt" onclick="window.switchAdminTab('hunt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Hunt CS</button>
             <button id="btn-adm-ps" onclick="window.switchAdminTab('ps')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
             <button id="btn-adm-logs" onclick="window.switchAdminTab('logs')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📋 Daily Logs</button>
             <button id="btn-adm-setup" onclick="window.switchAdminTab('setup')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🛠️ System Setup</button>
@@ -449,6 +463,18 @@
                         </select>
                         <button onclick="window.copyPSCollection(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-sm shadow">📋 Copy Text</button>
                         <button onclick="window.openPSBulkEdit(true)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded text-sm shadow ml-2">🛠️ Bulk Edit</button>
+                    </div>
+
+                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
+                        <span class="text-[#bb86fc] font-bold text-sm min-w-[150px]">📥 Import PS (Excel):</span>
+                        <input type="file" id="failPSSetup" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <button onclick="window.prosesImportPSExcel('failPSSetup', 'statusPSSetup', this, false)" class="bg-[#bb86fc] hover:bg-[#9965f4] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
+                        <span id="statusPSSetup" class="text-xs font-bold text-[#bb86fc] ml-2"></span>
+                    </div>
+
+                    <div class="mb-4 bg-[#111] p-3 rounded-lg border border-[#333]">
+                        <h4 class="text-gray-400 font-bold text-sm mb-2">🕒 Sejarah Upload Terakhir (Ikut Staf)</h4>
+                        <div id="ps-upload-logs-container" class="max-h-40 overflow-y-auto"></div>
                     </div>
 
                     <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
@@ -578,22 +604,6 @@
                     <p id="statusLogs" class="text-sm font-bold mt-2 text-purple-500"></p>
                 </div>
 
-                <div class="mb-4 bg-[#111] p-4 rounded-lg border border-[#333]">
-                    <h4 class="text-[#bb86fc] font-bold mb-2 m-0">2. Import Data PS Master</h4>
-                    <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
-                        <input type="file" id="failPSSetup" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1">
-                        
-                        <button onclick="window.prosesImportPSExcel('failPSSetup', 'statusPSSetup', this, false)" class="bg-[#bb86fc] hover:bg-[#9965f4] text-black font-bold py-1.5 px-4 rounded text-xs shadow">📥 Upload EXCEL PS</button>
-                        
-                        <span id="statusPSSetup" class="text-xs font-bold text-[#bb86fc] ml-2"></span>
-                    </div>
-
-                    <div class="mt-4 pt-4 border-t border-[#333]">
-                        <h4 class="text-gray-400 font-bold text-sm mb-2">🕒 Sejarah Upload Terakhir (Ikut Staf)</h4>
-                        <div id="ps-upload-logs-container" class="max-h-40 overflow-y-auto"></div>
-                    </div>
-                </div>
-
                 <div class="bg-red-900/20 p-6 rounded-xl border border-red-500">
                     <h3 class="text-red-500 font-bold mb-2 m-0">🚨 KECEMASAN: Padam Leads Rosak (E+)</h3>
                     <p class="text-xs text-gray-400 mb-3">Tekan butang ini untuk kesan dan padam SEMUA data leads yang nombor telefonnya rosak akibat Excel (ada huruf E+).</p>
@@ -629,6 +639,49 @@
 
 
             </div>
+
+            <div id="adm-view-hunt" class="hidden max-w-5xl mx-auto">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333]">
+                    <h3 class="text-[#ffeb3b] font-bold mb-4 flex items-center gap-2 m-0">🎯 Hunt CS Master</h3>
+                    
+                    <div class="bg-[#111] p-4 rounded-lg border border-[#333] mb-6 shadow-inner">
+                        <h4 class="text-[#00c6ff] font-bold text-sm mb-2">📥 Paste Data Hunt CS</h4>
+                        <p class="text-xs text-gray-400 mb-3">Format setiap baris: <span class="text-white font-bold bg-[#333] px-2 py-0.5 rounded border border-[#555]">Nama, Phone, Source</span></p>
+                        
+                        <textarea id="hunt-paste-data" rows="5" class="w-full bg-[#222] text-white p-3 rounded-lg border border-[#555] outline-none mb-3 text-sm font-mono focus:border-[#ffeb3b] transition" placeholder="Ahmad Ali, 011234567, TikTok&#10;Siti, 012999888, FB Group"></textarea>
+                        
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                            <select id="hunt-admin-staff" class="bg-[#333] text-white p-2.5 rounded border border-[#555] outline-none text-sm w-full md:w-64 font-bold">
+                                <option value="">- Pilih Staf Penerima -</option>
+                            </select>
+                            <button onclick="window.prosesPasteHunt(this)" class="bg-[#ffeb3b] hover:bg-[#fdd835] text-black font-bold py-2.5 px-6 rounded text-sm shadow-lg transition w-full md:w-auto">Tembak Data 🚀</button>
+                        </div>
+                    </div>
+
+                    <div class="flex justify-between items-center mb-3">
+                        <h4 class="text-white font-bold text-sm m-0">📋 Senarai Rekod (Semua Staf)</h4>
+                        <button onclick="window.loadAdminHuntData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1.5 px-4 rounded text-xs font-bold shadow">🔄 Refresh Jadual</button>
+                    </div>
+                    
+                    <div class="tbl-container max-h-[50vh]">
+                        <table class="admin-table">
+                            <thead style="background:#111;">
+                                <tr>
+                                    <th style="z-index:10;">No</th>
+                                    <th>Staff Name</th>
+                                    <th>Nama Prospek</th>
+                                    <th>Phone</th>
+                                    <th>Source</th>
+                                    <th>Status</th>
+                                    <th>Padam</th>
+                                </tr>
+                            </thead>
+                            <tbody id="hunt-admin-table-body"></tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -685,10 +738,10 @@
 
                     <div class="form-group-crm col-span-2 mt-2">
                         <label class="text-[#00c6ff]">Preview History (Auto-generated)</label>
-                        <div class="flex items-center gap-2 mb-1.5 mt-1">
-                            <input type="checkbox" id="crm-auto-append-history" checked class="accent-[#00c6ff] w-4 h-4 cursor-pointer">
-                            <span class="text-xs text-gray-300 font-bold">Auto-tambah Preview ini ke dalam History FU apabila tekan Save</span>
-                        </div>
+                        <label for="crm-auto-append-history" class="flex items-start gap-2.5 mb-2.5 mt-1.5 p-2.5 bg-[#111] border border-[#333] rounded-lg cursor-pointer hover:border-[#00c6ff] transition group w-full">
+                            <input type="checkbox" id="crm-auto-append-history" checked class="accent-[#00c6ff] w-4 h-4 mt-0.5 shrink-0 cursor-pointer">
+                            <span class="text-xs text-gray-300 font-bold leading-tight group-hover:text-white transition">Auto-tambah Preview ini ke dalam <span class="text-[#00c6ff]">History FU</span> apabila tekan Save</span>
+                        </label>
                         <div class="flex gap-2">
                           <input type="text" id="crm-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
                           <button onclick="window.copyPreview()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm">Copy</button>
@@ -807,10 +860,10 @@
                 
                 <div class="form-group-crm col-span-2 mt-2">
                         <label class="text-[#00c6ff]">Preview History (Auto-generated)</label>
-                        <div class="flex items-center gap-2 mb-1.5 mt-1">
-                            <input type="checkbox" id="crm-auto-append-history" checked class="accent-[#00c6ff] w-4 h-4 cursor-pointer">
-                            <span class="text-xs text-gray-300 font-bold">Auto-tambah Preview ini ke dalam History FU apabila tekan Save</span>
-                        </div>
+                        <label for="ps-auto-append-history" class="flex items-start gap-2.5 mb-2.5 mt-1.5 p-2.5 bg-[#111] border border-[#333] rounded-lg cursor-pointer hover:border-[#64b5f6] transition group w-full">
+                            <input type="checkbox" id="ps-auto-append-history" checked class="accent-[#64b5f6] w-4 h-4 mt-0.5 shrink-0 cursor-pointer">
+                            <span class="text-xs text-gray-300 font-bold leading-tight group-hover:text-white transition">Auto-tambah Preview ini ke dalam <span class="text-[#64b5f6]">History FU</span> apabila tekan Save</span>
+                        </label>
                         <div class="flex gap-2">
                           <input type="text" id="ps-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
                           <button onclick="window.copyPSPreview()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm">Copy</button>
@@ -1149,13 +1202,17 @@
         const asalRenderUrusStaf = window.renderUrusStaf;
         window.renderUrusStaf = async function() {
             await asalRenderUrusStaf(); // Panggil fungsi asal dulu
+            // 🌟 FIX BARU: Tarik senarai staf dari memori Admin (Sebab kotak login dah pindah)
             let selAdminTab = document.getElementById('csv-lead-staff-admintab');
-            let selAIAdmin = document.getElementById('ai-lead-staff-admin'); // 🌟 FIX: Tambah wayar AI
-            if(senaraiStafAdmin) {
+            let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
+            
+            if(selAdminTab || selAIAdmin) {
                 let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
-                senaraiStafAdmin.forEach(s => htmlOpt += `<option value="${s.name}">${s.name}</option>`);
+                if (typeof adminState !== 'undefined' && adminState.users) {
+                    adminState.users.forEach(u => { htmlOpt += `<option value="${u}">${u}</option>`; });
+                }
                 if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
-                if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt; // 🌟 FIX: Pancut nama ke dropdown AI
+                if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt; 
             }
         };
 
@@ -1225,7 +1282,7 @@
         // 1. UPDATE FUNGSI TUKAR TAB (Supaya dia panggil pelukis UI)
         // 🌟 FIX: Samakan ejaan array dengan ID HTML ('schedule' dan 'report')
         window.tukarTabStaf = function(tab) {
-            ['task', 'schedule', 'report', 'crm', 'ps'].forEach(t => {
+            ['task', 'schedule', 'report', 'crm', 'ps', 'hunt'].forEach(t => {
                 let btn = document.getElementById(`btn-tab-${t}`);
                 let view = document.getElementById(`view-${t}`);
                 
@@ -1248,6 +1305,7 @@
             }
             if(tab === 'crm') window.loadCRMData();
             if(tab === 'ps') window.loadPSData();
+            if(tab === 'hunt') window.loadHuntData();
         };
 
         document.getElementById('pilihTarikh').addEventListener('change', tarikDataDanBinaSistem);
@@ -1788,7 +1846,7 @@
 
         // Gantikan Suis Admin sedia ada supaya dia "On" kan CCTV ni bila buka tab Setup!
         window.switchAdminTab = function(tab) {
-            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup'].forEach(t => {
+            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt'].forEach(t => {
                 document.getElementById(`btn-adm-${t}`).classList.remove('bg-[#0072ff]', 'text-white');
                 document.getElementById(`btn-adm-${t}`).classList.add('bg-[#333]', 'text-gray-400');
                 document.getElementById(`adm-view-${t}`).classList.add('hidden');
@@ -1799,12 +1857,20 @@
             
             if(tab === 'crm') window.loadAdminCRMData();
             if(tab === 'logs') window.loadAdminLogsData();
-            if(tab === 'ps') window.loadAdminPSData();
             
-            // 🌟 MAGIK: Panggil CCTV bila masuk tab Setup!
+            // 🌟 MAGIK BARU: Panggil jadual PS dan CCTV Sejarah Upload serentak!
+            if(tab === 'ps') {
+                window.loadAdminPSData();
+                window.renderPSUploadLogs(); 
+            }
+            
+            // Setup sekarang cuma perlu load staf
             if(tab === 'setup') {
                 window.renderUrusStaf(); 
-                window.renderPSUploadLogs(); 
+            }
+            if(tab === 'hunt') {
+                window.loadAdminHuntData();
+                window.renderUrusStaf(); // 🌟 Pastikan ini dipanggil agar dropdown terisi
             }
         };
 
@@ -2297,6 +2363,7 @@
             let selKe = document.getElementById('clone-ke');
             let selLeadStaff = document.getElementById('csv-lead-staff');
             let selAdminTab = document.getElementById('csv-lead-staff-admintab'); 
+            let selHuntAdmin = document.getElementById('hunt-admin-staff'); // 🌟 TANGKAP DROPDOWN HUNT
             
             if(c) c.innerHTML = "<div class='text-gray-500 text-center text-sm py-2'>Loading...</div>";
             
@@ -2306,9 +2373,10 @@
                 snap.forEach(doc => senaraiStafAdmin.push({ id: doc.id, name: doc.data().name, fullName: doc.data().fullName || "" }));
                 senaraiStafAdmin.sort((a, b) => a.name.localeCompare(b.name));
 
-                let htmlList = ""; let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
+                let htmlList = ""; 
+                let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
+                
                 senaraiStafAdmin.forEach(s => {
-                    // Kita bagi ID unik pada setiap baris supaya senang nak 'tangkap' masa edit
                     htmlList += `
                     <div id="row-staff-${s.id}" class="flex justify-between items-center bg-[#222] p-2 rounded border border-[#333]">
                         <div class="flex flex-col ml-2">
@@ -2327,9 +2395,11 @@
                 if(selDari) selDari.innerHTML = htmlOpt;
                 if(selKe) selKe.innerHTML = htmlOpt;
                 if(selLeadStaff) selLeadStaff.innerHTML = htmlOpt;
-                let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
                 if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
-                if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt; // 🌟 PANCUT NAMA KE DROPDOWN AI (BACKUP)
+                if(selHuntAdmin) selHuntAdmin.innerHTML = htmlOpt; // 🌟 PANCUT NAMA KE HUNT CS
+                
+                let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
+                if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
                 
             } catch(e) { if(c) c.innerHTML = "<div class='text-red-500 text-sm'>Gagal muat senarai staf.</div>"; }
         };
@@ -2547,7 +2617,7 @@
         
         let crmState = { data: [], adminData: [] };
         let teamCrmPage = 1, adminCrmPage = 1, rowsPerPage = 30;
-        let teamFilters = {}, adminFilters = {}, teamSortCol = "", teamSortAsc = true, adminSortCol = "", adminSortAsc = true;
+        let teamFilters = {}, adminFilters = {}, teamSortCol = "Lead ID", teamSortAsc = false, adminSortCol = "Lead ID", adminSortAsc = false;
 
         // Kunci diubah supaya SAMA SEBIJI HURUF BESAR dengan database boss!
         const crmColumns = [
@@ -2790,17 +2860,22 @@
         window.loadAdminCRMData = async function(forceRefresh = false) {
             document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
             
-            // 🌟 FIX MAGIK: Curi senarai staf dari dropdown Login depan sekali!
+            // 🌟 FIX KEBAL: Tarik senarai staf langsung dari Firebase staff_list
             let selAdminTab = document.getElementById('csv-lead-staff-admintab');
-            let selAIAdmin = document.getElementById('ai-lead-staff-admin'); // 🌟 TANGKAP DROPDOWN AI
+            let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
             
             if(selAdminTab || selAIAdmin) {
-                let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
-                document.querySelectorAll('#user-picker option').forEach(o => {
-                    if(o.value) htmlOpt += `<option value="${o.value}">${o.text}</option>`;
-                });
-                if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
-                if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt; // 🌟 PANCUT NAMA KE DROPDOWN AI
+                try {
+                    const snapStaf = await getDocs(collection(db, "staff_list"));
+                    let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
+                    let arrStaf = [];
+                    snapStaf.forEach(d => arrStaf.push(d.data().name));
+                    arrStaf.sort((a, b) => a.localeCompare(b));
+                    arrStaf.forEach(n => htmlOpt += `<option value="${n}">${n}</option>`);
+                    
+                    if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
+                    if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
+                } catch(e) { console.error("Gagal muat staf CRM:", e); }
             }
 
             let isForce = (typeof forceRefresh === 'boolean') ? forceRefresh : false;
@@ -3928,6 +4003,7 @@
         };
 
         // --- MODAL SINGLE EDIT LOGIC ---
+        // --- MODAL SINGLE EDIT LOGIC (FIX SUSUNAN DETAIL) ---
         window.openPSModal = function(isAdmin, actualIdx) {
             let stateData = isAdmin ? psState.adminData : psState.data;
             let data = stateData[actualIdx];
@@ -3937,27 +4013,34 @@
             document.getElementById('ps-ref').value = data["Referral"] || data["Refferal"] || "";
             document.getElementById('ps-name').value = data["Student Name"] || data["Name"] || "";
             document.getElementById('ps-phone').value = data["Phone Number"] || data["Phone"] || data["Contact"] || "";
-            document.getElementById('ps-tofu').value = data["TO FU"] || ""; // 🌟 NEW: Tarik TO FU
+            document.getElementById('ps-tofu').value = data["TO FU"] || "";
             document.getElementById('ps-classprog').value = data["Class Progress"] || "";
-            document.getElementById('ps-rem2').value = data["Remark 2"] || ""; // History FU
+            document.getElementById('ps-rem2').value = data["Remark 2"] || ""; 
             
             document.getElementById('ps-fudate').value = window.toInputDate(data["FU Date"]);
             document.getElementById('ps-futime').value = data["FU Time"] || "";
 
-            // Auto-generate kotak "Show All Other Details"
+            // 🌟 FIX: Auto-generate "Show All Other Details" mengikuti susunan kolom desktop
             let otherDetailsDiv = document.getElementById('ps-other-details');
             otherDetailsDiv.innerHTML = "";
+            
+            // Field yang sudah ada di bagian atas modal (jangan diduplikasi di bawah)
             let excludeKeys = ["Referral", "Student Name", "Name", "Phone Number", "Phone", "Contact", "Class Progress", "Remark 2", "FU Date", "FU Time", "TO FU", "docId"];
             
-            for (let k in data) {
-                if(!excludeKeys.includes(k) && data[k]) {
-                    otherDetailsDiv.innerHTML += `
-                    <div class="form-group-crm">
-                        <label>${k}</label>
-                        <input type="text" value="${data[k]}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1">
-                    </div>`;
+            // Kita loop pakai psColumns agar urutannya persis seperti tabel desktop
+            psColumns.forEach(col => {
+                if(!excludeKeys.includes(col.key)) {
+                    let val = data[col.key];
+                    // Hanya tampilkan jika field memiliki isi (tidak kosong)
+                    if(val && val !== "-" && String(val).trim() !== "") {
+                        otherDetailsDiv.innerHTML += `
+                        <div class="form-group-crm">
+                            <label>${col.label}</label>
+                            <input type="text" value="${val}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1">
+                        </div>`;
+                    }
                 }
-            }
+            });
 
             window.updatePSPreview();
             document.getElementById('modal-ps').style.display = 'flex';
@@ -4516,7 +4599,7 @@
         // ==========================================
         // FUNGSI ADD LEAD MANUAL CRM (FIX DROPDOWN STAF)
         // ==========================================
-        window.openAddCRMModal = function(isAdmin) {
+        window.openAddCRMModal = async function(isAdmin) {
             document.getElementById('add-crm-is-admin').value = isAdmin ? "true" : "false";
             document.getElementById('add-crm-name').value = "";
             document.getElementById('add-crm-contact').value = "";
@@ -4526,18 +4609,20 @@
             let staffWrap = document.getElementById('add-crm-staff-wrapper');
             let staffSel = document.getElementById('add-crm-staff');
 
-            // 🌟 FIX: Cedok nama staf terus dari Dropdown Login di page utama (100% Kebal & Laju)
             if(isAdmin) {
                 staffWrap.style.display = 'block';
-                let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
+                staffSel.innerHTML = `<option value="" disabled selected>⏳ Memuat staf...</option>`;
                 
-                // Cari semua <option> yang ada kat dropdown skrin Login depan sekali tu
-                let opts = document.querySelectorAll('#user-picker option');
-                opts.forEach(o => {
-                    if(o.value) htmlOpt += `<option value="${o.value}">${o.text}</option>`;
-                });
-                
-                staffSel.innerHTML = htmlOpt;
+                try {
+                    // 🌟 TARIK DATA SEGAR DARI FIREBASE
+                    const snapStaf = await getDocs(collection(db, "staff_list"));
+                    let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
+                    let arrStaf = [];
+                    snapStaf.forEach(d => arrStaf.push(d.data().name));
+                    arrStaf.sort((a, b) => a.localeCompare(b));
+                    arrStaf.forEach(n => htmlOpt += `<option value="${n}">${n}</option>`);
+                    staffSel.innerHTML = htmlOpt;
+                } catch(e) { staffSel.innerHTML = `<option value="">Gagal muat nama</option>`; }
             } else {
                 staffWrap.style.display = 'none';
             }
@@ -4672,7 +4757,8 @@
                 'clone-dari', 
                 'clone-ke',
                 'add-staff-dropdown', // letak ID dropdown "new staff" boss kat sini
-                'filter-staff'
+                'filter-staff',
+                'hunt-admin-staff'
             ];
 
             senaraiID.forEach(id => {
@@ -4851,35 +4937,54 @@
             window.renderCRMMobileList(isAdmin);
         };
 
+        // 🌟 ENJIN MOBILE VIEW CRM (VERSI FIX SORTING)
+        // 🌟 ENJIN MOBILE VIEW CRM (FIX WHATSAPP & SORT BY LEAD ID)
         window.renderCRMMobileList = function(isAdmin) {
             let listContainer = document.getElementById(`crm-mobile-list-${isAdmin}`);
             if(!listContainer) return;
             let stateArr = isAdmin ? crmState.adminData : crmState.data;
             if(!stateArr || stateArr.length === 0) { listContainer.innerHTML = `<div class="text-center p-10 text-gray-500">Tiada rekod.</div>`; return; }
 
-            // 1. FIX: Update UI Button Icon (Inbound & FU Date)
+            // 1. Update UI Button & Icon
             let inbIcon = document.getElementById(`m-crm-sort-icon-${isAdmin}`);
             let inbBtn = document.getElementById(`m-crm-sort-${isAdmin}`);
             let fuIcon = document.getElementById(`m-crm-sort-fu-icon-${isAdmin}`);
             let fuBtn = document.getElementById(`m-crm-sort-fu-${isAdmin}`);
 
-            // Reset semua jadi kelabu (default)
-            if(inbBtn) { inbBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1"; inbIcon.innerText = "↕️"; }
-            if(fuBtn) { fuBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1"; fuIcon.innerText = "↕️"; }
+            if(inbBtn) inbBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] flex items-center gap-1";
+            if(fuBtn) fuBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] flex items-center gap-1";
+            if(inbIcon) inbIcon.innerText = "↕️";
+            if(fuIcon) fuIcon.innerText = "↕️";
 
-            // Hidupkan warna pada butang yang ditekan
             let activeBtn = window.crmMobileSortField === 'INBOUND' ? inbBtn : fuBtn;
             let activeIcon = window.crmMobileSortField === 'INBOUND' ? inbIcon : fuIcon;
 
             if(activeBtn && window.crmMobileSortMode !== 'DEFAULT') {
-                activeBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-md transition flex items-center gap-1";
+                activeBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-md flex items-center gap-1";
                 activeIcon.innerText = window.crmMobileSortMode === 'DESC' ? "🔽" : "🔼";
             }
 
             let searchText = (document.getElementById(`crm-mobile-search-${isAdmin}`)?.value || "").toLowerCase();
 
-            // 2. Filter & Pre-Calculate Dates (Tahan Lasak dengan nama bulan)
-            let mapped = stateArr.filter(row => {
+            // 2. Fungsi Date Parser (Untuk FU Date)
+            const getSortableVal = (dStr, tStr) => {
+                if(!dStr || dStr === "-" || String(dStr).trim() === "") return 0; 
+                try {
+                    let d = String(dStr).trim();
+                    let t = (tStr && tStr !== "-") ? String(tStr).trim().toLowerCase() : "00:00";
+                    let p = d.includes('/') ? d.split('/') : d.split('-');
+                    if(p.length < 3) return 0;
+                    let day = p[0].trim().padStart(2, '0');
+                    let month = p[1].trim().padStart(2, '0');
+                    let year = p[2].trim();
+                    if(day.length === 4) { year = p[0].trim(); day = p[2].trim().padStart(2, '0'); } 
+                    let finalNum = parseInt(`${year}${month}${day}`);
+                    return isNaN(finalNum) ? 0 : finalNum;
+                } catch(e) { return 0; }
+            };
+
+            // 3. Filter & Map Data (Tarik Lead ID sekali)
+            let filtered = stateArr.filter(row => {
                 let name = String(row["NAME"] || "").toLowerCase();
                 let contact = String(row["CONTACT"] || "").toLowerCase();
                 let status = String(row["STATUS"] || "").toLowerCase().trim();
@@ -4888,61 +4993,54 @@
                 if(window.crmMobileFilterState === 'Nurturing' && status !== "nurturing") return false;
                 return true;
             }).map(row => {
-                let parseDT = (d, t, def) => {
-                    if(!d || d === "-") return def;
-                    let tStr = (t && t !== "-") ? String(t).split(' - ')[0] : "00:00";
-                    let dObj = new Date(`${d} ${tStr}`);
-                    if (!isNaN(dObj.getTime())) return dObj.getTime();
-                    
-                    let p = d.includes('/') ? d.split('/') : d.split('-');
-                    if(p.length >= 3) {
-                        let dy = p[0].padStart(2, '0'), mn = p[1].padStart(2, '0'), yr = p[2];
-                        if(dy.length === 4) { yr = p[0]; dy = p[2]; }
-                        const mns = {"jan":"01","feb":"02","mar":"03","apr":"04","may":"05","jun":"06","jul":"07","aug":"08","sep":"09","oct":"10","nov":"11","dec":"12"};
-                        let mLower = mn.toLowerCase().substring(0,3);
-                        if(mns[mLower]) mn = mns[mLower];
-                        
-                        let isPM = tStr.toLowerCase().includes('pm'), isAM = tStr.toLowerCase().includes('am');
-                        let tp = tStr.replace(/[^\d:]/g, '').split(':');
-                        let hr = parseInt(tp[0]) || 0, mi = parseInt(tp[1]) || 0;
-                        if(isPM && hr < 12) hr += 12; if(isAM && hr === 12) hr = 0;
-                        return parseInt(`${yr}${mn}${dy}${String(hr).padStart(2,'0')}${String(mi).padStart(2,'0')}`);
-                    }
-                    return def;
+                return { 
+                    row, 
+                    leadId: row["Lead ID"] || "", // 🌟 Ambil Lead ID untuk sorting
+                    fuVal: getSortableVal(row["FOLLOW UP (DATE)"], row["FOLLOW UP (TIME)"]) || 99999999
                 };
-                // Pre-calculate nilai tarikh dan masa
-                return { row, fuVal: parseDT(row["FOLLOW UP (DATE)"], row["FOLLOW UP (TIME)"], 9999999999999), inbVal: parseDT(row["LEADS INBOUND"], row["LEADS INBOUND TIME"], 0) };
             });
 
-            // 3. Sorting Logic (Bergantung field apa yang ditekan)
-            mapped.sort((a,b) => {
-                let valA = window.crmMobileSortField === 'INBOUND' ? a.inbVal : a.fuVal;
-                let valB = window.crmMobileSortField === 'INBOUND' ? b.inbVal : b.fuVal;
-
-                if (window.crmMobileSortMode === 'DESC') return valB - valA;
-                if (window.crmMobileSortMode === 'ASC') return valA - valB;
-                // Kalau default, kita bagi default asal (Inbound DESC)
-                return b.inbVal - a.inbVal; 
+            // 4. Sorting Logic (TUKAR: INBOUND SORT SEKARANG GUNA LEAD ID)
+            filtered.sort((a, b) => {
+                if (window.crmMobileSortField === 'INBOUND') {
+                    // Susun ikut Lead ID (String Comparison)
+                    let vA = a.leadId;
+                    let vB = b.leadId;
+                    if (window.crmMobileSortMode === 'DESC') return vB.localeCompare(vA);
+                    if (window.crmMobileSortMode === 'ASC') return vA.localeCompare(vB);
+                    return vB.localeCompare(vA); // Default DESC
+                } else {
+                    // Susun ikut FU Date (Numeric)
+                    if (window.crmMobileSortMode === 'DESC') return b.fuVal - a.fuVal;
+                    if (window.crmMobileSortMode === 'ASC') return a.fuVal - b.fuVal;
+                    return b.fuVal - a.fuVal;
+                }
             });
 
-            // 4. Render 100 Data
-
-            // 4. Render 100 Data
+            // 5. Render HTML
+            // 5. Render HTML
             let html = "";
-            mapped.slice(0, 100).forEach(item => {
+            filtered.slice(0, 100).forEach(item => {
                 let row = item.row;
                 let actualIdx = stateArr.indexOf(row);
                 let name = (row["NAME"] || "Unknown").substring(0, 18);
-                let contact = row["CONTACT"] || "-";
                 let status = row["STATUS"] || "New";
                 let fuDate = window.formatDateToDDMMYYYY ? window.formatDateToDDMMYYYY(row["FOLLOW UP (DATE)"]) : row["FOLLOW UP (DATE)"] || "-";
                 let staffBadge = isAdmin ? `<div class="bg-[#bb86fc] text-black px-1 rounded text-[8px] font-bold mt-1.5 text-center truncate w-[50px] shadow-sm">${row["Staff Name"] || "Unknown"}</div>` : "";
-                let statCol = status.toLowerCase() === 'nurturing' ? 'text-pink-400' : 'text-blue-400';
+                
+                // Ambil Lead ID untuk dipaparkan
+                let leadIdDisp = row["Lead ID"] || "-";
 
-                // 🌟 UI INBOUND DATE BARU
-                let inbDate = row["LEADS INBOUND"] || "-";
-                let inbTime = row["LEADS INBOUND TIME"] || "";
-                let inbBox = inbDate !== "-" ? `<div class="mb-1.5"><span class="bg-[#333] text-[#ff9800] px-1.5 py-0.5 rounded text-[9px] font-bold shadow-sm border border-[#555]">📥 Inbound: ${inbDate} ${inbTime}</span></div>` : "";
+                let rawPhone = row["CONTACT"] || row["contact"] || "-";
+                let waBtnHtml = `📞 ${rawPhone}`; 
+                if(rawPhone !== "-") {
+                    let cp = String(rawPhone).replace(/[^0-9]/g, '');
+                    if(cp.startsWith('60')) cp = cp.substring(2);
+                    if(cp.startsWith('0')) cp = cp.substring(1);
+                    if(cp) {
+                        waBtnHtml = `<a href="https://wa.me/60${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow inline-flex" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                    }
+                }
 
                 html += `
                 <div class="flex items-start p-3 border-b border-[#222] hover:bg-[#1a1a1a] transition relative pr-8">
@@ -4955,8 +5053,13 @@
                             <h4 class="text-white font-bold text-base m-0 truncate">${name}</h4>
                             <span class="text-[#00e676] text-[10px] font-bold whitespace-nowrap ml-2">${fuDate}</span>
                         </div>
-                        <div class="text-gray-300 text-xs truncate mb-1.5"><span class="${statCol} font-bold mr-1">[${status}]</span>📞 ${contact}</div>
-                        ${inbBox}
+                        <div class="flex items-center gap-2 mb-1">
+                            <span class="bg-[#333] text-[#ffeb3b] px-1 rounded text-[10px] font-bold border border-[#444]">${leadIdDisp}</span>
+                            <span class="text-blue-400 text-xs font-bold">[${status}]</span>
+                        </div>
+                        <div class="text-gray-300 text-xs truncate mb-1.5 flex items-center gap-1">
+                             ${waBtnHtml}
+                        </div>
                         <div class="text-[#ff9800] text-xs font-bold truncate">🎯 ${row["TO FU"] || "-"}</div>
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-6">
@@ -5060,7 +5163,7 @@
             let stateArr = isAdmin ? psState.adminData : psState.data;
             if(!stateArr || stateArr.length === 0) { listContainer.innerHTML = `<div class="text-center p-10 text-gray-500">Tiada data.</div>`; return; }
 
-            // 1. FIX: Update UI Button (Class Date & FU Date)
+            // 1. Update UI Button (Class Date & FU Date)
             let clsIcon = document.getElementById(`m-ps-sort-icon-${isAdmin}`);
             let clsBtn = document.getElementById(`m-ps-sort-${isAdmin}`);
             let fuIcon = document.getElementById(`m-ps-sort-fu-icon-${isAdmin}`);
@@ -5081,51 +5184,66 @@
 
             let searchText = (document.getElementById(`ps-mobile-search-${isAdmin}`)?.value || "").toLowerCase();
 
-            // 2. Filter & Pre-Calculate Dates
+            // 2. Filter & Pre-Calculate Dates (GUNA MESIN TARIKH KEBAL)
+            const getSortableVal = (dStr, tStr, defVal) => {
+                if(!dStr || dStr === "-" || String(dStr).trim() === "") return defVal; 
+                try {
+                    let d = String(dStr).trim();
+                    let t = (tStr && tStr !== "-") ? String(tStr).trim().toLowerCase() : "00:00";
+                    
+                    let p = d.includes('/') ? d.split('/') : d.split('-');
+                    if(p.length < 3) return defVal;
+
+                    let day = p[0].trim().padStart(2, '0');
+                    let month = p[1].trim().padStart(2, '0');
+                    let year = p[2].trim();
+                    
+                    if(day.length === 4) { year = p[0].trim(); day = p[2].trim().padStart(2, '0'); } 
+                    
+                    const mns = {"jan":"01","feb":"02","mar":"03","apr":"04","may":"05","jun":"06","jul":"07","aug":"08","sep":"09","oct":"10","nov":"11","dec":"12"};
+                    let mLower = month.toLowerCase().substring(0,3);
+                    if(mns[mLower]) month = mns[mLower];
+
+                    let isPM = t.includes('pm'), isAM = t.includes('am');
+                    let timeParts = t.replace(/[^\d:]/g, '').split(':');
+                    let hr = parseInt(timeParts[0]) || 0, min = parseInt(timeParts[1]) || 0;
+                    if(isPM && hr < 12) hr += 12; 
+                    if(isAM && hr === 12) hr = 0;
+
+                    let finalNum = parseInt(`${year}${month}${day}${String(hr).padStart(2,'0')}${String(min).padStart(2,'0')}`);
+                    return isNaN(finalNum) ? defVal : finalNum;
+                } catch(e) { return defVal; }
+            };
+
             let mapped = stateArr.filter(row => {
                 let name = String(row["Student Name"] || row["Name"] || "").toLowerCase();
-                let contact = String(row["Phone Number"] || row["Phone"] || "").toLowerCase();
+                let contact = String(row["Phone Number"] || row["Phone"] || row["Contact"] || row["contact"] || "").toLowerCase();
                 let att = String(row["Attendance"] || "").toLowerCase().trim();
                 let enr = String(row["Enrollment Status"] || "").toLowerCase().trim();
+                
                 if(searchText && !name.includes(searchText) && !contact.includes(searchText)) return false;
                 if(window.psMobileFilterState === 'Absent' && att !== "absent") return false;
                 if(window.psMobileFilterState === 'Half' && att !== "half") return false;
                 if(window.psMobileFilterState === 'AttendTakEnroll' && !(att === "attended" && enr === "no")) return false;
                 return true;
             }).map(row => {
-                let parseDT = (d, t, def) => {
-                    if(!d || d === "-") return def;
-                    let tStr = (t && t !== "-") ? String(t).split(' - ')[0] : "00:00";
-                    let dObj = new Date(`${d} ${tStr}`);
-                    if (!isNaN(dObj.getTime())) return dObj.getTime();
-                    
-                    let p = d.includes('/') ? d.split('/') : d.split('-');
-                    if(p.length >= 3) {
-                        let dy = p[0].padStart(2, '0'), mn = p[1].padStart(2, '0'), yr = p[2];
-                        if(dy.length === 4) { yr = p[0]; dy = p[2]; }
-                        const mns = {"jan":"01","feb":"02","mar":"03","apr":"04","may":"05","jun":"06","jul":"07","aug":"08","sep":"09","oct":"10","nov":"11","dec":"12"};
-                        let mLower = mn.toLowerCase().substring(0,3);
-                        if(mns[mLower]) mn = mns[mLower];
-                        
-                        let isPM = tStr.toLowerCase().includes('pm'), isAM = tStr.toLowerCase().includes('am');
-                        let tp = tStr.replace(/[^\d:]/g, '').split(':');
-                        let hr = parseInt(tp[0]) || 0, mi = parseInt(tp[1]) || 0;
-                        if(isPM && hr < 12) hr += 12; if(isAM && hr === 12) hr = 0;
-                        return parseInt(`${yr}${mn}${dy}${String(hr).padStart(2,'0')}${String(mi).padStart(2,'0')}`);
-                    }
-                    return def;
+                return { 
+                    row, 
+                    // Letak 9999999999999 untuk FU Date supaya yang kosong sentiasa jatuh bawah
+                    fuVal: getSortableVal(row["FU Date"], row["FU Time"], 9999999999999), 
+                    classVal: getSortableVal(row["Date"], row["Time"], 0) 
                 };
-                return { row, fuVal: parseDT(row["FU Date"], row["FU Time"], 9999999999999), classVal: parseDT(row["Date"], row["Time"], 0) };
             });
 
-            // 3. Sorting Logic
+            // 🌟 3. ENJIN SORTING YANG GHAIB DAH KEMBALI! 🌟
             mapped.sort((a,b) => {
                 let valA = window.psMobileSortField === 'CLASS' ? a.classVal : a.fuVal;
                 let valB = window.psMobileSortField === 'CLASS' ? b.classVal : b.fuVal;
 
                 if (window.psMobileSortMode === 'DESC') return valB - valA;
                 if (window.psMobileSortMode === 'ASC') return valA - valB;
-                // Default ke Class Date descending
+                
+                // Default susunan (Bila tak tekan apa-apa): Terbaru di atas
                 return b.classVal - a.classVal; 
             });
 
@@ -5138,6 +5256,24 @@
                 let attBadge = `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold text-white ${row["Attendance"]?.toLowerCase() === 'absent' ? 'bg-[#800000]' : (row["Attendance"]?.toLowerCase() === 'half' ? 'bg-[#d4af37]' : 'bg-[#00a859]')}">${row["Attendance"] || "-"}</span>`;
                 let staffBadge = isAdmin ? `<div class="bg-[#bb86fc] text-black px-1 rounded text-[8px] font-bold mt-1.5 text-center truncate w-[50px] shadow-sm">${row["Staff Name"] || "Unknown"}</div>` : "";
 
+                // 🌟 FIX 2: TANGKAP NOMBOR DAN BINA BUTANG WHATSAPP
+                let rawPhone = row["Phone Number"] || row["Phone"] || row["Contact"] || row["contact"] || "-";
+                let waBtnHtml = `<span class="text-gray-300 text-xs">📞 ${rawPhone}</span>`; 
+                
+                if(rawPhone !== "-") {
+                    let cp = rawPhone.replace(/[^0-9]/g, '');
+                    if(cp.startsWith('60')) cp = cp.substring(2);
+                    if(cp.startsWith('0')) cp = cp.substring(1);
+                    if(cp) {
+                        waBtnHtml = `<a href="https://wa.me/60${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                    }
+                }
+
+                // 🌟 FIX: Penanganan Class Date & Time agar rapi
+                let classDate = row["Date"] || "-";
+                let classTime = row["Time"] || "";
+                let classFullDisp = (classDate === "-" && !classTime) ? "-" : `${classDate} ${classTime}`.trim();
+
                 html += `
                 <div class="flex items-start p-3 border-b border-[#222] hover:bg-[#1a1a1a] transition relative pr-8">
                     <input type="checkbox" class="ps-bulk-cb accent-purple-500 w-5 h-5 absolute top-3 right-2" value="${row.docId}">
@@ -5147,8 +5283,13 @@
                     </div>
                     <div class="flex-1 min-w-0 pr-1">
                         <div class="flex justify-between items-baseline mb-0.5"><h4 class="text-white font-bold text-base m-0 truncate">${name}</h4><span class="text-[#00e676] text-[10px] font-bold">${row["FU Date"] || "-"}</span></div>
-                        <div class="flex items-center gap-2 mb-1.5">${attBadge} <span class="text-gray-300 text-xs">📞 ${row["Phone Number"] || "-"}</span></div>
-                        <div class="flex items-center gap-1.5 mb-1.5 truncate"><span class="bg-[#00c6ff] text-black px-1.5 py-0.5 rounded text-[9px] font-bold">${kls}</span> <span class="bg-[#333] text-gray-200 px-1.5 py-0.5 rounded text-[9px] font-bold border border-[#555]">${row["Date"] || "-"} ${row["Time"] || ""}</span></div>
+                        
+                        <div class="flex items-center gap-2 mb-1.5">${attBadge} ${waBtnHtml}</div>
+                        
+                        <div class="flex items-center gap-1.5 mb-1.5 truncate">
+                            <span class="bg-[#00c6ff] text-black px-1.5 py-0.5 rounded text-[9px] font-bold">${kls}</span> 
+                            <span class="bg-[#333] text-gray-200 px-1.5 py-0.5 rounded text-[9px] font-bold border border-[#555]">${classFullDisp}</span>
+                        </div>
                         <div class="text-gray-400 text-xs italic truncate w-[90%]">💬 ${row["TO FU"] || "-"}</div>
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-6">
@@ -5420,6 +5561,189 @@
             fileInput.value = "";
             
             if(isAdminView) window.loadAdminCRMData(true); else window.loadCRMData(true);
+        };
+
+        // ==========================================
+        // 🎯 MODUL HUNT CS (ADMIN & STAFF)
+        // ==========================================
+        let huntAdminState = [];
+        let huntStaffState = [];
+        
+        // --- BAHAGIAN ADMIN ---
+        window.prosesPasteHunt = async function(btn) {
+            let staff = document.getElementById('hunt-admin-staff').value;
+            let pasteData = document.getElementById('hunt-paste-data').value.trim();
+            
+            if(!staff) { alert("Sila pilih staf dulu boss!"); return; }
+            if(!pasteData) { alert("Kotak paste masih kosong tu boss!"); return; }
+            
+            btn.innerText = "⏳ Menembak data..."; btn.disabled = true;
+            
+            let lines = pasteData.split('\n');
+            let batch = writeBatch(db); // Guna lori besar (batch) supaya laju
+            let count = 0;
+            
+            const formatP = (p) => { let n = String(p||"").replace(/\D/g,''); return n.startsWith('0') ? '60'+n.substring(1) : (n.startsWith('60')?n:'60'+n); };
+
+            try {
+                lines.forEach(line => {
+                    if(line.trim() === "") return;
+                    let parts = line.split(',');
+                    let name = parts[0] ? parts[0].trim() : "Unknown";
+                    let phone = parts[1] ? formatP(parts[1].trim()) : "";
+                    let source = parts[2] ? parts[2].trim() : "-";
+                    
+                    let docRef = doc(collection(db, "hunt_cs"));
+                    batch.set(docRef, {
+                        "Staff Name": staff,
+                        "Name": name,
+                        "Phone": phone,
+                        "Source": source,
+                        "Status": "IN PROGRESS", // Status default
+                        "Timestamp": new Date().toISOString()
+                    });
+                    count++;
+                });
+                
+                if(count > 0) {
+                    await batch.commit();
+                    alert(`✅ Fuh padu! Berjaya tembak ${count} leads kepada ${staff}.`);
+                    document.getElementById('hunt-paste-data').value = ""; // Cuci kotak paste
+                    window.loadAdminHuntData(true);
+                } else { alert("Tiada format data yang sah dikesan."); }
+            } catch(e) { alert("Ralat: " + e.message); }
+            btn.innerText = "Tembak Data 🚀"; btn.disabled = false;
+        };
+
+        window.loadAdminHuntData = async function(forceRefresh = false) {
+            document.getElementById('hunt-admin-table-body').innerHTML = `<tr><td colspan="7" class="text-center p-10 text-[#ffeb3b]">⏳ Menarik data Hunt CS...</td></tr>`;
+            try {
+                const snap = await getDocs(collection(db, "hunt_cs"));
+                huntAdminState = [];
+                snap.forEach(doc => huntAdminState.push({ docId: doc.id, ...doc.data() }));
+                huntAdminState.sort((a,b) => new Date(b.Timestamp || 0) - new Date(a.Timestamp || 0)); // Susun terbaru kat atas
+                window.renderAdminHuntTable();
+            } catch(e) { alert("Gagal tarik data Hunt: " + e.message); }
+        };
+
+        window.renderAdminHuntTable = function() {
+            let tbody = document.getElementById('hunt-admin-table-body'); tbody.innerHTML = "";
+            if(huntAdminState.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="7" class="text-center p-5 text-gray-500">Tiada rekod Hunt CS buat masa ini.</td></tr>`; return;
+            }
+            let html = "";
+            huntAdminState.forEach((row, i) => {
+                let st = row.Status || "IN PROGRESS";
+                let stBadge = "";
+                // Logik Warna Status Admin
+                if(st === "DONE") stBadge = `<span class="bg-[#00e676] text-black px-2 py-1 rounded text-[10px] font-bold shadow">DONE</span>`;
+                else if(st === "INVALID") stBadge = `<span class="bg-[#ff5252] text-white px-2 py-1 rounded text-[10px] font-bold shadow">INVALID</span>`;
+                else stBadge = `<span class="bg-[#ffeb3b] text-black px-2 py-1 rounded text-[10px] font-bold shadow">IN PROGRESS</span>`;
+                
+                html += `<tr>
+                    <td class="sticky-col text-center">${i+1}</td>
+                    <td class="font-bold text-[#bb86fc]">${row["Staff Name"] || "-"}</td>
+                    <td class="text-[#00c6ff] font-bold">${row.Name || "-"}</td>
+                    <td>${row.Phone || "-"}</td>
+                    <td>${row.Source || "-"}</td>
+                    <td class="text-center">${stBadge}</td>
+                    <td class="text-center"><button onclick="window.padamHuntCS('${row.docId}', true)" class="bg-red-600 hover:bg-red-500 text-white p-1 rounded shadow cursor-pointer text-xs">🗑️</button></td>
+                </tr>`;
+            });
+            tbody.innerHTML = html;
+        };
+
+        // --- BAHAGIAN STAFF (KAD MOBILE) ---
+        window.loadHuntData = async function(forceRefresh = false) {
+            let container = document.getElementById('hunt-staff-list');
+            container.innerHTML = `<div class="text-center p-10 text-[#ffeb3b]">⏳ Mencari leads untuk dihantui...</div>`;
+            try {
+                const q = fbQuery(collection(db, "hunt_cs"), fbWhere("Staff Name", "==", currentUser));
+                const snap = await getDocs(q);
+                huntStaffState = [];
+                snap.forEach(doc => huntStaffState.push({ docId: doc.id, ...doc.data() }));
+                
+                // Susunan Pintar: IN PROGRESS duduk atas. DONE & INVALID mendap ke bawah.
+                huntStaffState.sort((a,b) => {
+                    let stA = a.Status || "IN PROGRESS"; let stB = b.Status || "IN PROGRESS";
+                    if(stA === "IN PROGRESS" && stB !== "IN PROGRESS") return -1;
+                    if(stA !== "IN PROGRESS" && stB === "IN PROGRESS") return 1;
+                    return new Date(b.Timestamp || 0) - new Date(a.Timestamp || 0); // Kalau sama status, terbaru kat atas
+                });
+                window.renderHuntStaffList();
+            } catch(e) { container.innerHTML = `<div class="text-center text-red-500 p-5">Gagal: ${e.message}</div>`; }
+        };
+
+        window.renderHuntStaffList = function() {
+            let container = document.getElementById('hunt-staff-list'); container.innerHTML = "";
+            if(huntStaffState.length === 0) {
+                container.innerHTML = `<div class="text-center p-10 text-gray-500 text-sm">Kawasan clear boss. Tiada leads buat masa ni. Minta admin suap lagi!</div>`; return;
+            }
+
+            let html = "";
+            huntStaffState.forEach(row => {
+                let isDone = row.Status === "DONE";
+                let isInv = row.Status === "INVALID";
+                
+                // Tema Warna Kad
+                let bgClass = isDone ? "bg-[#1a3a2a] border-[#00e676]" : (isInv ? "bg-[#3a1a1a] border-[#ff5252]" : "bg-[#1a1a1a] border-[#444] hover:border-[#ffeb3b]");
+                
+                let phone = String(row.Phone || "").replace(/[^0-9]/g, '');
+                if(phone.startsWith('60')) phone = phone.substring(2);
+                if(phone.startsWith('0')) phone = phone.substring(1);
+                let waLink = phone ? `https://wa.me/60${phone}` : `#`;
+                
+                html += `
+                <div class="${bgClass} p-4 rounded-xl border transition-all shadow-lg relative flex flex-col gap-2 opacity-${isDone||isInv ? '60' : '100'}">
+                    <div class="flex justify-between items-start">
+                        <div class="flex items-center gap-3">
+                            <label class="cursor-pointer relative flex items-center h-full" title="Tandakan jika sudah approach">
+                                <input type="checkbox" onchange="window.updateHuntStatus('${row.docId}', this.checked ? 'DONE' : 'IN PROGRESS')" class="w-6 h-6 accent-[#00e676] cursor-pointer shadow" ${isDone ? 'checked' : ''} ${isInv ? 'disabled' : ''}>
+                            </label>
+                            <div>
+                                <h4 class="text-white font-bold text-base m-0 ${isDone || isInv ? 'line-through text-gray-400' : ''}">${row.Name || "Unknown"}</h4>
+                                <span class="text-[10px] bg-[#333] text-gray-300 px-1.5 py-0.5 rounded border border-[#555]">Source: ${row.Source || "-"}</span>
+                            </div>
+                        </div>
+                        
+                        <button onclick="window.updateHuntStatus('${row.docId}', 'INVALID')" class="text-[10px] bg-[#ff5252] hover:bg-red-600 text-white px-2 py-1 rounded font-bold shadow transition ${isInv||isDone ? 'hidden' : ''}">❌ INVALID</button>
+                        ${isInv ? `<span class="text-[10px] bg-[#ff5252] text-white px-2 py-1 rounded font-bold border border-red-800">INVALID NUM</span>` : ''}
+                    </div>
+                    
+                    <div class="mt-2 pl-9">
+                        <a href="${waLink}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 py-1.5 rounded-lg text-xs no-underline flex items-center gap-2 w-fit font-bold shadow transition ${isDone || isInv ? 'pointer-events-none grayscale' : ''}">💬 WhatsApp ${row.Phone || "-"}</a>
+                    </div>
+                </div>`;
+            });
+            container.innerHTML = html;
+        };
+
+        // --- FUNGSI UNIVERSAL: UPDATE STATUS & PADAM ---
+        window.updateHuntStatus = async function(docId, newStatus) {
+            try {
+                await updateDoc(doc(db, "hunt_cs", docId), { "Status": newStatus });
+                let idx = huntStaffState.findIndex(r => r.docId === docId);
+                if(idx !== -1) {
+                    huntStaffState[idx].Status = newStatus;
+                    // Tembak sort balik supaya card berubah susunan (Auto-Magic!)
+                    huntStaffState.sort((a,b) => {
+                        let stA = a.Status || "IN PROGRESS"; let stB = b.Status || "IN PROGRESS";
+                        if(stA === "IN PROGRESS" && stB !== "IN PROGRESS") return -1;
+                        if(stA !== "IN PROGRESS" && stB === "IN PROGRESS") return 1;
+                        return new Date(b.Timestamp || 0) - new Date(a.Timestamp || 0);
+                    });
+                    window.renderHuntStaffList();
+                }
+            } catch(e) { alert("Gagal update status: " + e.message); }
+        };
+
+        window.padamHuntCS = async function(docId, isAdmin) {
+            if(!confirm("Boss pasti nak buang rekod Hunt CS ni?")) return;
+            try {
+                await deleteDoc(doc(db, "hunt_cs", docId));
+                if(isAdmin) { huntAdminState = huntAdminState.filter(r => r.docId !== docId); window.renderAdminHuntTable(); } 
+                else { huntStaffState = huntStaffState.filter(r => r.docId !== docId); window.renderHuntStaffList(); }
+            } catch(e) { alert("Ralat: " + e.message); }
         };
 
         // ==========================================
