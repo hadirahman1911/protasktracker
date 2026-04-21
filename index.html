@@ -257,7 +257,7 @@
                             <input type="text" id="crm-mobile-search-false" oninput="window.renderCRMMobileList(false)" placeholder="🔍 Search Name or Contact..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#25D366] text-sm mb-3">
                             
                             <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
-                                <button id="m-crm-sort-false" onclick="window.toggleCRMMobileSort('Lead ID', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Inbound <span id="m-crm-sort-icon-false">↕️</span></button>
+                                <button id="m-crm-sort-false" onclick="window.toggleCRMMobileSort('LEAD_ID', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">🏷️ Lead ID <span id="m-crm-sort-icon-false">↕️</span></button>
                                 <button id="m-crm-sort-fu-false" onclick="window.toggleCRMMobileSort('FU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-crm-sort-fu-icon-false">↕️</span></button>
                                 <button id="m-filter-All-false" onclick="window.setCRMMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#25D366] text-black shadow-md transition">All</button>
                                 <button id="m-filter-TOFU-false" onclick="window.setCRMMobileFilter('TOFU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
@@ -442,7 +442,7 @@
                         <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
                             <input type="text" id="crm-mobile-search-true" oninput="window.renderCRMMobileList(true)" placeholder="🔍 Search Name or Contact..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#25D366] text-sm mb-3">
                             <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
-                                <button id="m-crm-sort-true" onclick="window.toggleCRMMobileSort('INBOUND', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Inbound <span id="m-crm-sort-icon-true">↕️</span></button>
+                                <button id="m-crm-sort-true" onclick="window.toggleCRMMobileSort('LEAD_ID', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">🏷️ Lead ID <span id="m-crm-sort-icon-true">↕️</span></button>
                                 <button id="m-crm-sort-fu-true" onclick="window.toggleCRMMobileSort('FU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-crm-sort-fu-icon-true">↕️</span></button>
                                 <button id="m-filter-All-true" onclick="window.setCRMMobileFilter('All', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#25D366] text-black shadow-md transition">All</button>
                                 <button id="m-filter-TOFU-true" onclick="window.setCRMMobileFilter('TOFU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
@@ -4927,7 +4927,7 @@
 
         // 🌟 ENJIN SORT CRM MOBILE (INBOUND DATE & FU DATE)
         window.crmMobileSortMode = 'DEFAULT'; // 'DEFAULT', 'DESC', 'ASC'
-        window.crmMobileSortField = 'INBOUND'; // 'INBOUND', 'FU'
+        window.crmMobileSortField = 'LEAD_ID'; // 'LEAD_ID', 'FU'
 
         window.toggleCRMMobileSort = function(field, isAdmin) {
             if (window.crmMobileSortField !== field) {
@@ -4960,8 +4960,8 @@
             if(inbIcon) inbIcon.innerText = "↕️";
             if(fuIcon) fuIcon.innerText = "↕️";
 
-            let activeBtn = window.crmMobileSortField === 'INBOUND' ? inbBtn : fuBtn;
-            let activeIcon = window.crmMobileSortField === 'INBOUND' ? inbIcon : fuIcon;
+            let activeBtn = window.crmMobileSortField === 'LEAD_ID' ? inbBtn : fuBtn;
+            let activeIcon = window.crmMobileSortField === 'LEAD_ID' ? inbIcon : fuIcon;
 
             if(activeBtn && window.crmMobileSortMode !== 'DEFAULT') {
                 activeBtn.className = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-md flex items-center gap-1";
@@ -5006,7 +5006,7 @@
 
             // 4. Sorting Logic (TUKAR: INBOUND SORT SEKARANG GUNA LEAD ID)
             filtered.sort((a, b) => {
-                if (window.crmMobileSortField === 'INBOUND') {
+                if (window.crmMobileSortField === 'LEAD_ID') {
                     // Susun ikut Lead ID (String Comparison)
                     let vA = a.leadId;
                     let vB = b.leadId;
@@ -5711,7 +5711,7 @@
                         </div>
                         
                         <button onclick="window.updateHuntStatus('${row.docId}', 'INVALID')" class="text-[10px] bg-[#ff5252] hover:bg-red-600 text-white px-2 py-1 rounded font-bold shadow transition ${isInv||isDone ? 'hidden' : ''}">❌ INVALID</button>
-                        ${isInv ? `<span class="text-[10px] bg-[#ff5252] text-white px-2 py-1 rounded font-bold border border-red-800">INVALID NUM</span>` : ''}
+                        ${isInv ? `<div class="flex items-center gap-1"><span class="text-[10px] bg-[#ff5252] text-white px-2 py-1 rounded font-bold border border-red-800">INVALID NUM</span><button onclick="window.updateHuntStatus('${row.docId}', 'IN PROGRESS')" class="text-[10px] bg-[#555] hover:bg-[#777] text-white px-2 py-1 rounded font-bold shadow transition cursor-pointer">♻️ Undo</button></div>` : ''}
                     </div>
                     
                     <div class="mt-2 pl-9">
