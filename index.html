@@ -160,6 +160,7 @@
                 <button id="btn-tab-crm" onclick="tukarTabStaf('crm')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">👥 Tab CRM</button>
                 <button id="btn-tab-hunt" onclick="window.tukarTabStaf('hunt')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">🎯 Tab Hunt CS</button>
                 <button id="btn-tab-ps" onclick="window.tukarTabStaf('ps')" class="tab-btn bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
+                <button id="btn-tab-enroll" onclick="window.tukarTabStaf('enroll')" class="px-6 py-3 font-bold text-gray-500 border-b-2 border-transparent hover:bg-[#222] hover:text-gray-300 transition-colors rounded-t-lg outline-none whitespace-nowrap">📝 PS Enroll</button>
             </div>
 
             <div id="view-task" class="block">
@@ -262,6 +263,7 @@
                                 <button id="m-filter-All-false" onclick="window.setCRMMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#25D366] text-black shadow-md transition">All</button>
                                 <button id="m-filter-TOFU-false" onclick="window.setCRMMobileFilter('TOFU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
                                 <button id="m-filter-Nurturing-false" onclick="window.setCRMMobileFilter('Nurturing', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Nurturing</button>
+                                <button id="m-filter-Preloved-false" onclick="window.setCRMMobileFilter('Preloved', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Preloved</button>
                             </div>
                         </div>
                         <div id="crm-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
@@ -341,7 +343,41 @@
             </div>
 
         </div>   
+
+        <div id="view-enroll" class="hidden w-full overflow-hidden">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333]">
+                    <h3 class="text-[#00c6ff] font-bold mb-4 flex items-center gap-2">📝 PS Enroll (My Students)
+                        <button onclick="window.loadEnrollData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1 px-3 rounded text-xs ml-auto">🔄 Refresh</button>
+                    </h3>
+                </div>  
+
+                <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
+                    <button id="btn-enroll-desktop-false" onclick="window.toggleEnrollViewMode('desktop', false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-lg transition">💻 Desktop View</button>
+                    <button id="btn-enroll-mobile-false" onclick="window.toggleEnrollViewMode('mobile', false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition">📱 Mobile View</button>
+                </div>
+
+                <div id="enroll-desktop-wrapper-false">
+                    <div class="crm-table-wrapper">
+                        <table class="crm-table"><thead id="team-enroll-head"></thead><tbody id="enroll-table-body"></tbody></table>
+                    </div>
+                    <div class="pagination-bar">
+                        <button class="btn-page" onclick="window.prevEnrollTeam()">⬅ Prev</button>
+                        <span id="team-enroll-page-info" class="font-bold text-sm">Page 1</span>
+                        <button class="btn-page" onclick="window.nextEnrollTeam()">Next ➡</button>
+                    </div>
+                </div> 
+                
+                <div id="enroll-mobile-wrapper-false" style="display:none;" class="w-full max-w-lg mx-auto bg-[#121212] rounded-xl border border-[#333] overflow-hidden mt-2 shadow-2xl">
+                    <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
+                        <input type="text" id="enroll-mobile-search-false" oninput="window.renderEnrollMobileList(false)" placeholder="🔍 Search Name or Invoice..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#00c6ff] text-sm mb-3">
+                    </div>
+                    <div id="enroll-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
+                </div>
+            </div>
+
     </div>
+
+    
 
     <div id="admin-panel" class="fixed inset-0 bg-[#121212] z-50 hidden flex-col">
         <div class="admin-top-bar flex flex-col md:flex-row justify-between items-center gap-4">
@@ -368,6 +404,7 @@
             <button id="btn-adm-crm" onclick="window.switchAdminTab('crm')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">👥 CRM Master</button>
             <button id="btn-adm-hunt" onclick="window.switchAdminTab('hunt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Hunt CS</button>
             <button id="btn-adm-ps" onclick="window.switchAdminTab('ps')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
+            <button id="btn-adm-enroll" onclick="window.switchAdminTab('enroll')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📝 PS Enroll</button>
             <button id="btn-adm-logs" onclick="window.switchAdminTab('logs')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📋 Daily Logs</button>
             <button id="btn-adm-setup" onclick="window.switchAdminTab('setup')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🛠️ System Setup</button>
         </div>
@@ -414,6 +451,18 @@
                         <button onclick="window.openAddCRMModal(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-auto md:ml-4 flex items-center gap-1">➕ Add Lead</button>
                     </div>
 
+                    <<!-- 🌟 PANEL BULK EDIT CRM (DIKEMASKINI) -->
+                    <div id="crm-bulk-panel" class="hidden bg-[#1a3a2a] border border-[#00e676] p-3 rounded-lg mb-3 flex flex-col md:flex-row items-start md:items-center justify-between shadow-lg">
+                        <div class="mb-2 md:mb-0">
+                            <span class="text-[#00e676] font-bold text-lg" id="crm-bulk-count">0</span> <span class="text-gray-300">lead(s) dipilih.</span>
+                        </div>
+                        <div class="flex gap-2 items-center">
+                            <!-- Butang Bulk Edit (Buka Modal) & Delete -->
+                            <button onclick="window.openCRMBulkModal()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-4 py-2 rounded shadow transition text-xs md:text-sm">🛠️ Bulk Edit</button>
+                            <button id="btn-bulk-delete" onclick="window.crmBulkDelete()" class="bg-red-600 hover:bg-red-500 text-white font-bold px-4 py-2 rounded shadow transition text-xs md:text-sm">🗑️ Delete</button>
+                        </div>
+                    </div>
+
                     <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
                         <button id="btn-crm-desktop-true" onclick="window.toggleCRMViewMode('desktop', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-lg transition">💻 Desktop View</button>
                         <button id="btn-crm-mobile-true" onclick="window.toggleCRMViewMode('mobile', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition">📱 Mobile View</button>
@@ -447,10 +496,12 @@
                                 <button id="m-filter-All-true" onclick="window.setCRMMobileFilter('All', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#25D366] text-black shadow-md transition">All</button>
                                 <button id="m-filter-TOFU-true" onclick="window.setCRMMobileFilter('TOFU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
                                 <button id="m-filter-Nurturing-true" onclick="window.setCRMMobileFilter('Nurturing', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Nurturing</button>
+                                <button id="m-filter-Preloved-true" onclick="window.setCRMMobileFilter('Preloved', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Preloved</button>
                             </div>
                         </div>
                         <div id="crm-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                     </div>
+
                 </div>
             </div>
 
@@ -641,6 +692,22 @@
                     </div>
                 </div>
 
+                <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-5 mb-6 shadow-lg">
+                    <h3 class="text-[#00e676] font-bold text-lg mb-3">🔍 Crosscheck Nombor Telefon (Semak Duplikasi)</h3>
+                    <p class="text-gray-400 text-xs mb-3">Paste senarai nombor telefon dari Excel boss kat sini (satu nombor satu baris). Sistem akan tolong cari mana yang dah wujud dalam CRM.</p>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <textarea id="crosscheck-input" rows="8" class="w-full bg-[#111] text-[#00c6ff] p-3 rounded border border-[#555] outline-none focus:border-[#00e676] text-xs font-mono" placeholder="Contoh:\n0123456789\n60198765432"></textarea>
+                            <button onclick="window.runCrosscheck()" class="mt-2 w-full bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold py-2 rounded shadow transition text-sm">Semak Nombor</button>
+                        </div>
+                        
+                        <div class="bg-[#111] border border-[#555] rounded p-3 overflow-y-auto h-48 md:h-full shadow-inner" id="crosscheck-results">
+                            <div class="text-gray-500 italic text-sm text-center mt-10">Keputusan akan dipaparkan di sini...</div>
+                        </div>
+                    </div>
+                </div>
+
 
             </div>
 
@@ -686,6 +753,52 @@
                 </div>
             </div>
 
+            <div id="adm-view-enroll" class="hidden">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333]">
+                    <h3 class="text-[#00c6ff] font-bold mb-4 flex items-center gap-2">📝 PS Enroll Master
+                        <button onclick="window.loadAdminEnrollData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1 px-3 rounded text-xs ml-auto">🔄 Refresh</button>
+                    </h3>
+                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
+                        <span class="text-[#00e676] font-bold text-sm">📲 Copy WhatsApp Collection:</span>
+                        <select id="copy-enroll-staff" class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-sm flex-1 md:flex-none md:w-48">
+                            <option value="">- Pilih Staf -</option>
+                        </select>
+                        <button onclick="window.copyEnrollCollection(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-sm shadow">📋 Copy Text</button>
+                    </div>
+
+                    <div class="mb-4 bg-[#111] p-3 rounded-lg border border-[#333]">
+                        <h4 class="text-gray-400 font-bold text-sm mb-2">🕒 Sejarah Upload Terakhir (PS Enroll)</h4>
+                        <div id="enroll-upload-logs-container" class="max-h-40 overflow-y-auto"></div>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
+                        <span class="text-[#00c6ff] font-bold text-sm min-w-[150px]">📥 Import PS Enroll (Excel):</span>
+                        <input type="file" id="failEnrollSetup" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <button onclick="window.prosesImportEnrollExcel('failEnrollSetup', 'statusEnrollSetup', this, false)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
+                        <span id="statusEnrollSetup" class="text-xs font-bold text-[#00c6ff] ml-2"></span>
+                    </div>
+                    <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
+                        <button id="btn-enroll-desktop-true" onclick="window.toggleEnrollViewMode('desktop', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-lg transition">💻 Desktop View</button>
+                        <button id="btn-enroll-mobile-true" onclick="window.toggleEnrollViewMode('mobile', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition">📱 Mobile View</button>
+                    </div>
+                    <div id="enroll-desktop-wrapper-true">
+                        <div class="crm-table-wrapper">
+                            <table class="crm-table"><thead id="admin-enroll-head"></thead><tbody id="admin-enroll-table-body"></tbody></table>
+                        </div>
+                        <div class="pagination-bar">
+                            <button class="btn-page" onclick="window.prevEnrollAdmin()">⬅ Prev</button>
+                            <span id="admin-enroll-page-info" class="font-bold text-sm">Page 1</span>
+                            <button class="btn-page" onclick="window.nextEnrollAdmin()">Next ➡</button>
+                        </div>
+                    </div>
+                    <div id="enroll-mobile-wrapper-true" style="display:none;" class="w-full max-w-lg mx-auto bg-[#121212] rounded-xl border border-[#333] overflow-hidden mt-2 shadow-2xl">
+                        <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
+                            <input type="text" id="enroll-mobile-search-true" oninput="window.renderEnrollMobileList(true)" placeholder="🔍 Search Name or Invoice..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#00c6ff] text-sm mb-3">
+                        </div>
+                        <div id="enroll-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
 
@@ -721,10 +834,25 @@
                           <option value="In Progress">In Progress</option>
                           <option value="Nurturing">Nurturing</option>
                           <option value="Invite">Invite</option>
+                          <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
                         </select>
                     </div>
-                    <div class="form-group-crm"><label class="text-[#00e676]">★ TO FU (Action)</label>
-                        <input type="text" id="crm-tofu" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Cth: Sembang Harga" oninput="window.updatePreviewFU()">
+                    
+                    <div class="form-group-crm col-span-2 bg-[#111] p-3 rounded-lg border border-[#333] mb-2">
+                        <div class="flex justify-between items-center mb-2">
+                            <label class="text-[#ff9800] font-bold text-xs">Current Assignment:</label>
+                            <span id="crm-staff-display" class="text-[#bb86fc] font-bold text-xs">-</span>
+                        </div>
+                        
+                        <label class="text-gray-400 text-[10px]">Reassign to New Staff:</label>
+                        <select id="crm-edit-staff" class="w-full bg-[#222] text-white p-2 rounded border border-[#555] outline-none mt-1 text-sm focus:border-[#ff9800]">
+                            <option value="">- Pilih Staf Baru -</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group-crm">
+                        <label class="text-[#00e676] font-bold">TO FU (Action)</label>
+                        <input type="text" id="crm-tofu" oninput="window.updatePreviewFU()" placeholder="Contoh: Call / WS..." class="w-full bg-[#222] text-white p-2 rounded border border-[#555] outline-none mt-1 focus:border-[#00e676]">
                     </div>
                     
                     <div class="form-group-crm"><label>FU Date / Time</label>
@@ -823,6 +951,7 @@
                     <option value="In Progress" selected>In Progress</option>
                     <option value="Nurturing">Nurturing</option>
                     <option value="Invite">Invite</option>
+                    <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
                   </select>
               </div>
               <div class="form-group-crm"><label>Source (Sumber)</label><input type="text" id="add-crm-source" placeholder="Cth: TikTok, WhatsApp"></div>
@@ -833,6 +962,57 @@
           </div>
 
           <button id="btn-save-new-crm" onclick="window.saveNewCRMLead()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold w-full p-3 border-none rounded-lg mt-5 text-lg cursor-pointer transition shadow-lg">💾 SIMPAN LEAD BARU</button>
+        </div>
+    </div>
+
+    <!-- 🌟 MODAL BULK EDIT CRM BARU -->
+    <div id="modal-crm-bulk" class="modal-overlay" style="z-index: 9999;">
+        <div class="modal-box border-t-4 border-[#00c6ff]">
+            <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
+                <h3 class="text-white m-0 font-bold text-xl">🛠️ Bulk Edit CRM Leads</h3>
+                <button onclick="document.getElementById('modal-crm-bulk').style.display='none'" class="bg-transparent border-none text-[#aaa] text-2xl cursor-pointer hover:text-white">&times;</button>
+            </div>
+            
+            <p class="text-sm text-gray-300 mb-4 bg-[#222] p-2 rounded border border-[#444]">Anda sedang mengemaskini <span id="crm-modal-bulk-count" class="font-bold text-[#00c6ff] text-lg">0</span> rekod serentak.</p>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="form-group-crm col-span-2">
+                    <label class="text-[#ff9800]">Reassign to New Staff:</label>
+                    <select id="crm-bulk-staff" class="border-[#ff9800] bg-[#1a1a1a]">
+                        <option value="">- Tiada Perubahan -</option>
+                        <!-- Pilihan staf akan diisi automatik oleh JS -->
+                    </select>
+                </div>
+
+                <div class="form-group-crm">
+                    <label>Status:</label>
+                    <select id="crm-bulk-status">
+                        <option value="">- Tiada Perubahan -</option>
+                        <option value="New">New</option>
+                        <option value="In Progress">In Progress</option>
+                        <option value="Nurturing">Nurturing</option>
+                        <option value="Invite">Invite</option>
+                        <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
+                    </select>
+                </div>
+                
+                <div class="form-group-crm">
+                    <label class="text-[#00e676]">★ TO FU (Action)</label>
+                    <input type="text" id="crm-bulk-tofu" class="border border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Cth: Sembang Harga">
+                </div>
+                
+                <div class="form-group-crm">
+                    <label>FU Date</label>
+                    <input type="date" id="crm-bulk-fudate">
+                </div>
+                
+                <div class="form-group-crm">
+                    <label>FU Time</label>
+                    <input type="time" id="crm-bulk-futime">
+                </div>
+            </div>
+
+            <button onclick="window.saveCRMBulkData()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold w-full p-3 rounded-lg mt-5 text-lg shadow-lg">🚀 APPLY BULK EDIT</button>
         </div>
     </div>
 
@@ -920,6 +1100,61 @@
             </div>
 
             <button onclick="window.savePSBulkData()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold w-full p-3 rounded-lg mt-5 text-lg shadow-lg">🚀 APPLY BULK EDIT</button>
+        </div>
+    </div>
+
+    <div id="modal-enroll" class="modal-overlay">
+        <div class="modal-box border-t-4 border-[#00c6ff]">
+            <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
+                <h3 class="text-white m-0 font-bold text-xl">📝 Edit PS Enroll</h3>
+                <button onclick="window.closeEnrollModal()" class="bg-transparent border-none text-[#aaa] text-2xl cursor-pointer hover:text-white">&times;</button>
+            </div>
+            <input type="hidden" id="enroll-docid">
+            
+            <div class="grid grid-cols-2 gap-3">
+                <div class="form-group-crm"><label>Inviter (Staff)</label><input type="text" id="enroll-inviter" readonly class="bg-[#111] text-gray-400"></div>
+                <div class="form-group-crm"><label>Student Name</label><input type="text" id="enroll-name" readonly class="bg-[#111] text-gray-400"></div>
+                
+                <div class="form-group-crm col-span-2">
+                    <a href="#" id="enroll-info-link" target="_blank" class="bg-[#00c6ff] hover:bg-[#009ee0] text-black font-bold py-2 px-4 rounded-lg shadow block text-center no-underline">ℹ️ Info Student (Buka di CRM)</a>
+                </div>
+
+                <div class="form-group-crm"><label class="text-[#00e676]">★ TO FU (Action)</label>
+                    <input type="text" id="enroll-tofu" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Cth: Tunggu Payment" oninput="window.updateEnrollPreview()">
+                </div>
+                <div class="form-group-crm"><label class="text-[#ffeb3b]">Class Progress</label>
+                    <select id="enroll-classprog" class="border-[#ffeb3b] border bg-[#1a1a1a]" onchange="window.updateEnrollPreview()">
+                        <option value="">- Pilih -</option>
+                        <option value="CIC1">CIC1</option><option value="CIC2">CIC2</option><option value="CIC3">CIC3</option><option value="CIC4">CIC4</option>
+                        <option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="A7">A7</option><option value="A8">A8</option><option value="A9">A9</option><option value="A10">A10</option><option value="A11">A11</option><option value="A12">A12</option>
+                    </select>
+                </div>
+                
+                <div class="form-group-crm"><label>FU Date</label><input type="date" id="enroll-fudate" onchange="window.updateEnrollPreview()"></div>
+                <div class="form-group-crm"><label>FU Time</label><input type="time" id="enroll-futime" onchange="window.updateEnrollPreview()"></div>
+                
+                <div class="form-group-crm col-span-2 mt-2">
+                    <label class="text-[#00c6ff]">Preview History (Auto-generated)</label>
+                    <label for="enroll-auto-append-history" class="flex items-start gap-2.5 mb-2.5 mt-1.5 p-2.5 bg-[#111] border border-[#333] rounded-lg cursor-pointer hover:border-[#00c6ff] transition group w-full">
+                        <input type="checkbox" id="enroll-auto-append-history" checked class="accent-[#00c6ff] w-4 h-4 mt-0.5 shrink-0 cursor-pointer">
+                        <span class="text-xs text-gray-300 font-bold leading-tight group-hover:text-white transition">Auto-tambah Preview ini ke dalam <span class="text-[#00c6ff]">History FU</span></span>
+                    </label>
+                    <div class="flex gap-2">
+                        <input type="text" id="enroll-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
+                    </div>
+                </div>
+                <div class="form-group-crm col-span-2">
+                    <label>History FU</label>
+                    <textarea id="enroll-history" class="crm-textarea" rows="3"></textarea>
+                </div>
+            </div>
+            
+            <details class="mt-4 text-[#00c6ff] cursor-pointer p-3 bg-[#1a1a1a] rounded-lg border border-[#333]">
+                <summary class="font-bold text-sm">Show All Other Details ▾</summary>
+                <div id="enroll-other-details" class="grid grid-cols-2 gap-3 mt-4 cursor-default text-white pointer-events-none opacity-60">
+                </div>
+            </details>
+            <button onclick="window.saveEnrollData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold w-full p-3 rounded-lg mt-5 text-lg shadow-lg">💾 SAVE UPDATES</button>
         </div>
     </div>
 
@@ -1049,7 +1284,7 @@
         });
 
         // ==========================================
-        // ENJIN IMPORT LEADS CRM - UNIVERSAL (UNTUK SEMUA TAB)
+        // ENJIN IMPORT LEADS CRM - UNIVERSAL (CSV VERSION - FIX OVERWRITE)
         // ==========================================
         window.prosesImportCRM = async function(inputId, statusId, btnId, isStaffView, dropId) {
             const fail = document.getElementById(inputId).files[0];
@@ -1057,7 +1292,6 @@
             let btn = document.getElementById(btnId);
             
             let selectedStaff = "";
-            // Kalau staff panel, automatik guna nama staf tu.
             if (isStaffView) {
                 selectedStaff = currentUser;
                 if(!selectedStaff) { alert("Sila login semula."); return; }
@@ -1089,7 +1323,6 @@
                     let data = d.data();
                     let leadId = data["Lead ID"];
                     let cleanContact = formatPhone60(data["CONTACT"] || data.contact);
-                    let cleanName = String(data["NAME"] || data.name || "").trim().toLowerCase(); // 🌟 KUMPUL NAMA (EXACT MATCH)
                     
                     if (leadId) {
                         existingMap[`id_${leadId}`] = { docId: d.id, ...data };
@@ -1100,7 +1333,7 @@
                         }
                     }
                     if (cleanContact && cleanContact !== "-") existingMap[`phone_${cleanContact}`] = { docId: d.id, ...data };
-                    if (cleanName && cleanName !== "-") existingMap[`name_${cleanName}`] = { docId: d.id, ...data }; // 🌟 DAFTAR NAMA
+                    // 🌟 NAME MATCHING DIBUANG UNTUK ELAK OVERWRITE ORANG LAIN
                 });
             } catch(e) { console.error("Gagal tarik existing CRM:", e); }
 
@@ -1114,6 +1347,7 @@
                     for (let i = 0; i < results.data.length; i++) {
                         let rowData = results.data[i];
                         
+                        // 🌟 SEDUT STAFF NAME DARI CSV
                         let staffName = rowData["Staff Name"] ? String(rowData["Staff Name"]).trim() : "";
                         if (!staffName) {
                             if (selectedStaff) staffName = selectedStaff; 
@@ -1125,24 +1359,23 @@
                         if(rCleanContact) rowData["CONTACT"] = rCleanContact; 
                         
                         let csvLeadId = rowData["Lead ID"] ? String(rowData["Lead ID"]).trim() : "";
-                        let csvName = String(rowData["NAME"] || rowData["name"] || "").trim().toLowerCase(); // 🌟 BACA NAMA CSV
                         let foundExisting = null;
 
-                        // 🌟 LOGIK CARI (Lead ID -> Phone -> Exact Name)
+                        // 🌟 LOGIK CARI (Hanya guna Lead ID & Phone)
                         if (csvLeadId && existingMap[`id_${csvLeadId}`]) foundExisting = existingMap[`id_${csvLeadId}`];
                         else if (rCleanContact && rCleanContact !== "-" && existingMap[`phone_${rCleanContact}`]) foundExisting = existingMap[`phone_${rCleanContact}`];
-                        else if (csvName && csvName !== "-" && existingMap[`name_${csvName}`]) foundExisting = existingMap[`name_${csvName}`]; // 🌟 CARI EXACT NAME
 
                         try { 
                             if (foundExisting) {
-                                // 🌟 MAGIK SMART IMPORT: Data Lama Menang KECUALI ALL CHAT
+                                // 🌟 MAGIK SMART IMPORT: Data Lama Menang (TERMASUK HISTORY FU)
                                 Object.keys(foundExisting).forEach(key => {
-                                    if (key !== "ALL CHAT (JSON)") {
+                                    // Pengecualian: Kita KECUALIKAN 'Staff Name' supaya Excel/CSV boleh overwrite nama staf lama
+                                    if (key !== "ALL CHAT (JSON)" && key !== "Staff Name") {
                                         let dataLama = foundExisting[key];
                                         let adaIsiLama = dataLama !== undefined && dataLama !== null && String(dataLama).trim() !== "" && String(dataLama).trim() !== "-";
                                         
                                         if (adaIsiLama) {
-                                            // Data lama wujud! Paksa sistem kekalkan data berharga ni
+                                            // 🌟 Ini akan pastikan HISTORY FU dan data lain dari Firebase menimpa data CSV
                                             rowData[key] = dataLama;
                                         }
                                     }
@@ -1153,7 +1386,7 @@
                                 await updateDoc(doc(db, "crm_leads", foundExisting.docId), rowData); 
                                 bUpdated++;
                             } else {
-                                // ADD LEAD BARU MACAM BIASA
+                                // ADD LEAD BARU (Termasuk History FU dari CSV sebab dia orang baru)
                                 rowData["Timestamp Masuk"] = new Date().toISOString(); 
                                 if (!csvLeadId) {
                                     maxLeadNumber++;
@@ -1165,7 +1398,6 @@
                                 
                                 existingMap[`id_${csvLeadId}`] = { docId: newDocRef.id, ...rowData };
                                 if (rCleanContact) existingMap[`phone_${rCleanContact}`] = { docId: newDocRef.id, ...rowData };
-                                if (csvName && csvName !== "-") existingMap[`name_${csvName}`] = { docId: newDocRef.id, ...rowData };
                             }
                         } catch (e) { ralat++; }
                     }
@@ -1177,14 +1409,273 @@
                     document.getElementById(inputId).value = ""; 
                     btn.disabled = false;
 
-                    // Auto Refresh ikut view mana yang tengah buka
+                    // Auto Refresh
                     if(isStaffView && !document.getElementById('view-crm').classList.contains('hidden')) {
-                        window.loadCRMData(true);
-                    } else if (!document.getElementById('adm-view-crm').classList.contains('hidden')) {
-                        window.loadAdminCRMData(true);
+                        if (typeof window.loadCRMData === 'function') window.loadCRMData(true);
+                    } else if (document.getElementById('adm-view-crm') && !document.getElementById('adm-view-crm').classList.contains('hidden')) {
+                        if (typeof window.loadAdminCRMData === 'function') window.loadAdminCRMData(true);
                     }
                 }
             });
+        };
+
+        // ==========================================
+        // 🌟 MODUL CROSSCHECK PHONE NUMBERS (SYSTEM SETUP)
+        // ==========================================
+        window.runCrosscheck = async function() {
+            let input = document.getElementById('crosscheck-input').value;
+            let resDiv = document.getElementById('crosscheck-results');
+            
+            if(!input.trim()) { alert("Sila paste nombor telefon dulu boss!"); return; }
+            
+            resDiv.innerHTML = `<div class="text-[#ff9800] text-sm text-center mt-10 font-bold animate-pulse">⏳ Sedang pusing database...</div>`;
+            
+            // Formula bersihkan nombor telefon sama macam enjin import
+            const formatPhone60 = (p) => {
+                let n = String(p || "").replace(/[^0-9]/g, '');
+                if (!n) return "";
+                if (n.startsWith('60')) return n;
+                if (n.startsWith('0')) return '60' + n.substring(1);
+                return '60' + n; 
+            };
+            
+            // Baca input boss dan buang nombor kosong/bertindih dalam input tu sendiri
+            let rawNumbers = input.split('\n').map(n => n.trim()).filter(n => n !== "");
+            let cleanInputNumbers = [...new Set(rawNumbers.map(n => formatPhone60(n)).filter(n => n !== ""))];
+            
+            try {
+                // Tarik semua database CRM untuk semakan
+                const snap = await getDocs(collection(db, "crm_leads"));
+                let dbMap = {}; 
+                snap.forEach(doc => {
+                    let d = doc.data();
+                    let cleanPhone = formatPhone60(d["CONTACT"] || d.contact);
+                    if(cleanPhone) dbMap[cleanPhone] = d;
+                });
+                
+                let wujud = [];
+                let takWujud = [];
+                
+                // Semak satu-satu nombor dari senarai boss
+                cleanInputNumbers.forEach(num => {
+                    if(dbMap[num]) {
+                        wujud.push({ phone: num, staff: dbMap[num]["Staff Name"] || "-", status: dbMap[num]["STATUS"] || "-" });
+                    } else {
+                        takWujud.push(num);
+                    }
+                });
+                
+                // --- LUKIS KEPUTUSAN KAT SKRIN ---
+                let html = `<div class="mb-3 text-sm pb-2 border-b border-[#444]">
+                    <span class="text-[#00e676] font-bold">✅ Boleh Upload: ${takWujud.length}</span> <br> 
+                    <span class="text-red-400 font-bold">❌ Dah Wujud (Duplicate): ${wujud.length}</span>
+                </div>`;
+                
+                if(wujud.length > 0) {
+                    html += `<div class="text-red-400 font-bold text-xs mb-1">🚨 Dah ada dalam sistem:</div>`;
+                    html += `<div class="max-h-40 overflow-y-auto mb-3 border border-red-900 rounded bg-[#1a0f0f] p-1">`;
+                    wujud.forEach(w => {
+                        html += `<div class="text-[10px] text-gray-300 border-b border-[#333] p-1.5 flex justify-between items-center hover:bg-[#333]">
+                            <span class="font-bold">📞 ${w.phone}</span>
+                            <span class="text-[#ff9800] text-right bg-[#222] px-1.5 py-0.5 rounded">${w.staff} <br> <span class="text-gray-400 text-[8px]">${w.status}</span></span>
+                        </div>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                if(takWujud.length > 0) {
+                    html += `<div class="text-[#00e676] font-bold text-xs mb-1">✨ Nombor Baru (Selamat):</div>`;
+                    html += `<div class="max-h-32 overflow-y-auto border border-green-900 rounded bg-[#0f1a15] p-1">`;
+                    takWujud.forEach(num => {
+                        html += `<div class="text-[10px] text-gray-300 border-b border-[#333] p-1">📞 ${num}</div>`;
+                    });
+                    html += `</div>`;
+                }
+                
+                resDiv.innerHTML = html;
+                
+            } catch(e) {
+                resDiv.innerHTML = `<div class="text-red-500 text-sm p-5">❌ Ralat: ${e.message}</div>`;
+            }
+        };
+
+        // ==========================================
+        // 🌟 ENJIN BULK EDIT CRM (DELETE & REASSIGN)
+        // ==========================================
+        window.selectedCRMRows = []; // Simpan memori ID lead yang kena tick
+
+        // Fungsi tick satu-satu
+        window.toggleCRMSelection = function(docId, checkbox) {
+            if (checkbox.checked) {
+                if (!window.selectedCRMRows.includes(docId)) window.selectedCRMRows.push(docId);
+            } else {
+                window.selectedCRMRows = window.selectedCRMRows.filter(id => id !== docId);
+            }
+            window.updateCRMBulkPanel();
+        };
+
+        // Fungsi tick semua serentak (Select All)
+        window.toggleAllCRMSelection = function(checkbox) {
+            let rowCheckboxes = document.querySelectorAll('.crm-row-cb');
+            if (!checkbox.checked) {
+                window.selectedCRMRows = []; // Kosongkan kalau untick all
+            }
+            
+            rowCheckboxes.forEach(cb => {
+                cb.checked = checkbox.checked;
+                if (checkbox.checked && !window.selectedCRMRows.includes(cb.value)) {
+                    window.selectedCRMRows.push(cb.value);
+                }
+            });
+            window.updateCRMBulkPanel();
+        };
+
+        // Update paparan Panel Hijau kat atas tu
+        window.updateCRMBulkPanel = function() {
+            let panel = document.getElementById('crm-bulk-panel');
+            let countSpan = document.getElementById('crm-bulk-count');
+            if(!panel || !countSpan) return;
+
+            if (window.selectedCRMRows.length > 0) {
+                countSpan.innerText = window.selectedCRMRows.length;
+                panel.classList.remove('hidden');
+                panel.classList.add('flex');
+                
+                // Masukkan nama staf ke dalam dropdown kalau belum wujud
+                let staffSel = document.getElementById('crm-bulk-staff');
+                if (staffSel && staffSel.options.length <= 1 && typeof adminState !== 'undefined' && adminState.users) {
+                    let html = `<option value="">- Pilih Staf Baru -</option>`;
+                    adminState.users.forEach(u => { html += `<option value="${u}">${u}</option>`; });
+                    staffSel.innerHTML = html;
+                }
+            } else {
+                panel.classList.add('hidden');
+                panel.classList.remove('flex');
+            }
+        };
+
+        // 💥 FUNGSI BULK DELETE
+        window.crmBulkDelete = async function() {
+            if (window.selectedCRMRows.length === 0) return;
+            if (!confirm(`Sahkan untuk padam ${window.selectedCRMRows.length} leads secara serentak? Tindakan ini tak boleh diundur!`)) return;
+
+            // Cari baris ni: 
+            // let btn = document.querySelector('#crm-bulk-panel button.bg-red-600');
+            
+            // GANTIKAN DENGAN NI:
+            let btn = document.getElementById('btn-bulk-delete');
+            if(btn) { btn.innerText = "⏳ Memadam..."; btn.disabled = true; }
+
+            try {
+                for (let docId of window.selectedCRMRows) {
+                    await deleteDoc(doc(db, "crm_leads", docId));
+                    // Padam dari memori jadual supaya terus hilang dari skrin
+                    crmState.adminData = crmState.adminData.filter(r => r.docId !== docId);
+                    crmState.data = crmState.data.filter(r => r.docId !== docId);
+                }
+                
+                alert(`✅ Berjaya memadam ${window.selectedCRMRows.length} rekod.`);
+                window.selectedCRMRows = []; // Reset memori
+                
+                let headerCb = document.querySelector('th.sticky-col input[type="checkbox"]');
+                if(headerCb) headerCb.checked = false;
+
+                window.renderAdminCRMTable(); // Refresh table pantas
+                window.updateCRMBulkPanel();
+            } catch (e) { alert("Ralat: " + e.message); }
+            
+            btn.innerText = "🗑️ Delete"; btn.disabled = false;
+        };
+
+        // 🌟 BUKA MODAL BULK EDIT CRM
+        window.openCRMBulkModal = function() {
+            if (window.selectedCRMRows.length === 0) {
+                alert("Sila 'Tick' kotak di sebelah kiri jadual untuk leads yang nak diubah."); 
+                return;
+            }
+            
+            document.getElementById('crm-modal-bulk-count').innerText = window.selectedCRMRows.length;
+            
+            // Reset borang
+            document.getElementById('crm-bulk-status').value = "";
+            document.getElementById('crm-bulk-tofu').value = "";
+            document.getElementById('crm-bulk-fudate').value = ""; // Jangan auto isi tarikh, biar kosong
+            document.getElementById('crm-bulk-futime').value = "";
+            
+            // Isi dropdown staf
+            let staffSel = document.getElementById('crm-bulk-staff');
+            if (staffSel && typeof adminState !== 'undefined' && adminState.users) {
+                let html = `<option value="">- Tiada Perubahan -</option>`;
+                adminState.users.forEach(u => { html += `<option value="${u}">${u}</option>`; });
+                staffSel.innerHTML = html;
+            }
+
+            document.getElementById('modal-crm-bulk').style.display = 'flex';
+        };
+
+        // 🚀 SIMPAN DATA BULK EDIT CRM KE FIREBASE
+        window.saveCRMBulkData = async function() {
+            if (window.selectedCRMRows.length === 0) return;
+
+            let newStaff = document.getElementById('crm-bulk-staff').value;
+            let newStatus = document.getElementById('crm-bulk-status').value;
+            let newTofu = document.getElementById('crm-bulk-tofu').value.trim();
+            let newFuDate = document.getElementById('crm-bulk-fudate').value;
+            let newFuTime = document.getElementById('crm-bulk-futime').value;
+
+            // Pastikan ada benda nak ditukar
+            if (!newStaff && !newStatus && !newTofu && !newFuDate && !newFuTime) {
+                alert("❌ Boss tak ubah apa-apa pun! Sila isi sekurang-kurangnya satu ruangan.");
+                return;
+            }
+
+            if (!confirm(`Sahkan untuk mengubah ${window.selectedCRMRows.length} leads secara pukal?`)) return;
+
+            let btn = document.querySelector('#modal-crm-bulk button');
+            if(btn) { btn.innerText = "⏳ APPLYING BULK EDIT..."; btn.disabled = true; }
+
+            // Susun data yang nak diupdate
+            let updateData = {};
+            if (newStaff) updateData["Staff Name"] = newStaff;
+            if (newStatus) updateData["STATUS"] = newStatus;
+            if (newTofu) updateData["TO FU"] = newTofu;
+            if (newFuDate) updateData["FOLLOW UP (DATE)"] = window.toSheetDate(newFuDate); // Format DD/MM/YYYY
+            if (newFuTime) updateData["FOLLOW UP (TIME)"] = newFuTime;
+
+            try {
+                // Tembak Firebase & Update Memori Serentak
+                for (let docId of window.selectedCRMRows) {
+                    await updateDoc(doc(db, "crm_leads", docId), updateData);
+                    
+                    // Kemaskini memori jadual (Admin)
+                    let aIdx = crmState.adminData.findIndex(r => r.docId === docId);
+                    if(aIdx > -1) crmState.adminData[aIdx] = { ...crmState.adminData[aIdx], ...updateData };
+                    
+                    // Kemaskini memori jadual (Staff)
+                    let sIdx = crmState.data.findIndex(r => r.docId === docId);
+                    if(sIdx > -1) crmState.data[sIdx] = { ...crmState.data[sIdx], ...updateData };
+                }
+                
+                alert(`✅ Berjaya kemaskini ${window.selectedCRMRows.length} leads secara pukal!`);
+                window.selectedCRMRows = []; // Reset memori selection
+                
+                // Reset checkbox kat header table
+                let headerCb = document.querySelector('th.sticky-col input[type="checkbox"]');
+                if(headerCb) headerCb.checked = false;
+
+                document.getElementById('modal-crm-bulk').style.display = 'none';
+                
+                // Refresh table
+                let admView = document.getElementById('adm-view-crm');
+                let isAdmin = admView && !admView.classList.contains('hidden');
+                
+                if(isAdmin && typeof window.renderAdminCRMTable === 'function') window.renderAdminCRMTable();
+                else if(typeof window.renderCRMTable === 'function') window.renderCRMTable();
+                
+                window.updateCRMBulkPanel();
+            } catch (e) { alert("Ralat Bulk Edit: " + e.message); }
+            
+            if(btn) { btn.innerText = "🚀 APPLY BULK EDIT"; btn.disabled = false; }
         };
 
         // SAMBUNG BUTANG KE FUNGSI UNIVERSAL
@@ -1286,7 +1777,7 @@
         // 1. UPDATE FUNGSI TUKAR TAB (Supaya dia panggil pelukis UI)
         // 🌟 FIX: Samakan ejaan array dengan ID HTML ('schedule' dan 'report')
         window.tukarTabStaf = function(tab) {
-            ['task', 'schedule', 'report', 'crm', 'ps', 'hunt'].forEach(t => {
+            ['task', 'schedule', 'report', 'crm', 'ps', 'hunt', 'enroll'].forEach(t => {
                 let btn = document.getElementById(`btn-tab-${t}`);
                 let view = document.getElementById(`view-${t}`);
                 
@@ -1310,6 +1801,7 @@
             if(tab === 'crm') window.loadCRMData();
             if(tab === 'ps') window.loadPSData();
             if(tab === 'hunt') window.loadHuntData();
+            if(tab === 'enroll') window.loadEnrollData();
         };
 
         document.getElementById('pilihTarikh').addEventListener('change', tarikDataDanBinaSistem);
@@ -1820,6 +2312,7 @@
         let adminState = { users: [], tasks: [], targets: {}, logs: {}, pointsData: { earned: {}, target: {} } }
 
         // 🌟 FUNGSI CCTV: Lukis Sejarah Upload
+        // 🌟 FUNGSI CCTV: Lukis Sejarah Upload (FIX: Susun Terbaru di Atas)
         window.renderPSUploadLogs = async function() {
             let c = document.getElementById('ps-upload-logs-container');
             if(!c) return;
@@ -1831,7 +2324,11 @@
                     let html = `<table class="w-full text-xs text-left border border-[#444] rounded mt-2">
                         <tr class="bg-[#222] text-[#00c6ff]"><th class="p-2 border-b border-[#444]">Nama Staf</th><th class="p-2 border-b border-[#444]">Upload Terakhir (PS Master)</th></tr>`;
                     
-                    let staffs = Object.keys(data).sort();
+                    // 🌟 MAGIK BARU: Susun staf mengikut tarikh/masa upload TERBARU
+                    let staffs = Object.keys(data).filter(s => s.trim() !== "").sort((a, b) => {
+                        return new Date(data[b]).getTime() - new Date(data[a]).getTime(); // DESCENDING (Terbaru atas)
+                    });
+
                     staffs.forEach(s => {
                         let d = new Date(data[s]);
                         // Format comel: 09/04/2026, 12:30 PM
@@ -1850,31 +2347,48 @@
 
         // Gantikan Suis Admin sedia ada supaya dia "On" kan CCTV ni bila buka tab Setup!
         window.switchAdminTab = function(tab) {
-            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt'].forEach(t => {
-                document.getElementById(`btn-adm-${t}`).classList.remove('bg-[#0072ff]', 'text-white');
-                document.getElementById(`btn-adm-${t}`).classList.add('bg-[#333]', 'text-gray-400');
-                document.getElementById(`adm-view-${t}`).classList.add('hidden');
+            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt', 'enroll'].forEach(t => {
+                let btn = document.getElementById(`btn-adm-${t}`);
+                let view = document.getElementById(`adm-view-${t}`);
+                
+                // 🌟 Check dulu ada ke tak, kalau takde dia skip (tak crash)
+                if(btn) {
+                    btn.classList.remove('bg-[#0072ff]', 'text-white');
+                    btn.classList.add('bg-[#333]', 'text-gray-400');
+                }
+                if(view) {
+                    view.classList.add('hidden');
+                }
             });
-            document.getElementById(`btn-adm-${tab}`).classList.remove('bg-[#333]', 'text-gray-400');
-            document.getElementById(`btn-adm-${tab}`).classList.add('bg-[#0072ff]', 'text-white');
-            document.getElementById(`adm-view-${tab}`).classList.remove('hidden');
+
+            // Lepas dah tutup semua, baru buka tab yang kita nak
+            let activeBtn = document.getElementById(`btn-adm-${tab}`);
+            let activeView = document.getElementById(`adm-view-${tab}`);
+
+            if(activeBtn) {
+                activeBtn.classList.remove('bg-[#333]', 'text-gray-400');
+                activeBtn.classList.add('bg-[#0072ff]', 'text-white');
+            }
+            if(activeView) {
+                activeView.classList.remove('hidden');
+            }
             
+            // Trigger tarik data
             if(tab === 'crm') window.loadAdminCRMData();
             if(tab === 'logs') window.loadAdminLogsData();
-            
-            // 🌟 MAGIK BARU: Panggil jadual PS dan CCTV Sejarah Upload serentak!
             if(tab === 'ps') {
                 window.loadAdminPSData();
                 window.renderPSUploadLogs(); 
             }
-            
-            // Setup sekarang cuma perlu load staf
-            if(tab === 'setup') {
-                window.renderUrusStaf(); 
-            }
+            if(tab === 'setup') window.renderUrusStaf(); 
             if(tab === 'hunt') {
                 window.loadAdminHuntData();
-                window.renderUrusStaf(); // 🌟 Pastikan ini dipanggil agar dropdown terisi
+                window.renderUrusStaf(); 
+            }
+            if(tab === 'enroll') {
+                window.loadAdminEnrollData();
+                window.populateEnrollCopyDropdown(); // 🌟 Tambah ni
+                window.renderEnrollUploadLogs();     // 🌟 Tambah ni
             }
         };
 
@@ -2644,15 +3158,19 @@
           let currSortCol = isAdmin ? adminSortCol : teamSortCol;
           let currSortAsc = isAdmin ? adminSortAsc : teamSortAsc;
           let currentFilters = isAdmin ? adminFilters : teamFilters;
+          
+          // 🌟 Auto-panggil fungsi render yang betul!
+          let renderFunc = isAdmin ? 'window.renderAdminCRMTable()' : 'window.renderCRMTable()';
 
           function getIcon(colKey) { return currSortCol === colKey ? (currSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕'; }
 
-          // Tambah top: 0, z-index: 30 untuk bekukan lajur No & Action
+          // 🌟 TUKAR TH "No" JADI CHECKBOX (SELECT ALL)
           let html = `<tr>
-              <th class="sticky-col" style="z-index: 30; top: 0;">No</th>
-              <th class="sticky-col" style="left:40px; z-index: 30; top: 0; min-width:85px; text-align:center;">Action</th>`;
+              <th class="sticky-col" style="z-index: 30; top: 0; width: 45px; min-width: 45px; max-width: 45px; text-align: center;">
+                  <input type="checkbox" onclick="window.toggleAllCRMSelection(this)" class="accent-[#00c6ff] w-4 h-4 cursor-pointer mt-1">
+              </th>
+              <th class="sticky-col" style="left: 45px; z-index: 30; top: 0; width: 85px; min-width: 85px; max-width: 85px; text-align:center;">Action</th>`;
               
-          // GANTI KODE INI (Sekitar baris 1125)
             if(isAdmin) {
                 let colKey = 'Staff Name';
                 let selectedArr = currentFilters[colKey] || [];
@@ -2660,15 +3178,18 @@
                 let btnText = selectedCount > 0 ? `<span class="text-[#00e676] font-bold">${selectedCount} Selected</span>` : "All";
                 let btnBg = selectedCount > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
 
-                // TAMBAHKAN class="sticky-col" DAN style="left:125px; z-index:30;"
-                html += `<th class="sticky-col" style="left:125px; overflow: visible; position: sticky; top: 0; z-index: 30; background-color: #1e1e1e; min-width: 140px;">
+                // 🌟 KUNCI SAIZ HEADER (Staff Name) - Perhatikan left: 130px (iaitu 45 + 85)
+                html += `<th class="sticky-col" style="left: 130px; overflow: visible; position: sticky; top: 0; z-index: 30; background-color: #1e1e1e; width: 180px; min-width: 180px; max-width: 180px;">
                     <div class="th-content">Staff Name <span class="sort-icon" onclick="window.${fSort}('${colKey}')">${getIcon(colKey)}</span></div>
+                    
                     <div class="mt-1 text-left relative">
                         <button onclick="window.toggleCRMFilterMenu('${colKey}', ${isAdmin})" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                             ${btnText} <span class="text-[8px] ml-1">▼</span>
                         </button>
-                        <div id="crm-filter-menu-${colKey}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-48 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-60 overflow-y-auto p-2 text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
+                        <div id="crm-filter-menu-${colKey}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
                     </div>
+
+                    <input type="text" data-col="${colKey}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mt-2 bg-[#1a1a1a] text-[#00c6ff] p-2.5 rounded border border-[#00c6ff] outline-none text-xs font-bold placeholder-gray-600 shadow-inner">
                 </th>`;
             }
 
@@ -2681,12 +3202,15 @@
 
               html += `<th style="${colSty} overflow: visible; position: sticky; top: 0; z-index: 20; background-color: #1e1e1e;min-width: 140px;">
                   <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${col.key}')">${getIcon(col.key)}</span></div>
+                  
                   <div class="mt-1 text-left relative">
                       <button onclick="window.toggleCRMFilterMenu('${col.key}', ${isAdmin})" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                           ${btnText} <span class="text-[8px] ml-1">▼</span>
                       </button>
-                      <div id="crm-filter-menu-${col.key}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-48 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-60 overflow-y-auto p-2 text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
+                      <div id="crm-filter-menu-${col.key}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
                   </div>
+
+                  <input type="text" data-col="${col.key}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mt-1.5 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner">
               </th>`;
           });
           return html + `</tr>`;
@@ -2800,6 +3324,7 @@
         window.renderCRMTable = function() {
           let tbody = document.getElementById('crm-table-body'); tbody.innerHTML = "";
           let filteredData = applySortAndFilter(crmState.data, teamFilters, teamSortCol, teamSortAsc);
+          
           // 🌟 MAGIK TAPISAN BUBBLE DESKTOP CRM
           let dState = window.crmDesktopFilterState ? window.crmDesktopFilterState[false] : 'All';
           if(dState === 'TOFU') {
@@ -2807,10 +3332,27 @@
           } else if(dState === 'Nurturing') {
               filteredData = filteredData.filter(row => String(row["STATUS"]||"").toLowerCase().trim() === "nurturing");
           }
+
+          // ⚡ NEW: MAGIK TAPISAN SEARCH BOX (PER COLUMN)
+          if (typeof crmColumns !== 'undefined') {
+              crmColumns.forEach(col => {
+                  // Perhatikan id 'false' sebab ini view Staff
+                  let searchInput = document.getElementById(`quick-search-${col.key}-false`);
+                  if (searchInput && searchInput.value.trim() !== "") {
+                      let query = searchInput.value.toLowerCase().trim();
+                      filteredData = filteredData.filter(r => {
+                          let cellData = String(r[col.key] || "").toLowerCase();
+                          return cellData.includes(query);
+                      });
+                  }
+              });
+          }
+
           if(filteredData.length === 0) {
               tbody.innerHTML = `<tr><td colspan="20" class="text-center p-5 text-gray-500">Tiada data CRM dijumpai.</td></tr>`;
               document.getElementById('crm-page-info').innerText = "Page 1 of 1"; return;
           }
+          
           let totalPages = Math.ceil(filteredData.length / rowsPerPage);
           if(teamCrmPage > totalPages) teamCrmPage = totalPages; if(teamCrmPage < 1) teamCrmPage = 1;
           document.getElementById('crm-page-info').innerText = `Page ${teamCrmPage} of ${totalPages} (Total: ${filteredData.length})`;
@@ -2819,8 +3361,9 @@
           pageData.forEach((row, i) => {
               let actualIdx = crmState.data.indexOf(row);
               let tr = document.createElement('tr');
-              let html = `<td class="sticky-col">${startIdx + i + 1}</td>
-                          <td class="sticky-col" style="left:40px;">
+              // 🌟 KUNCI SAIZ DATA STAF
+              let html = `<td class="sticky-col" style="width: 45px; min-width: 45px; max-width: 45px; text-align: center;">${startIdx + i + 1}</td>
+                          <td class="sticky-col" style="left: 45px; width: 85px; min-width: 85px; max-width: 85px;">
                               <div class="flex gap-1 items-center justify-center">
                                   <button class="bg-[#0072ff] hover:bg-[#00c6ff] text-white p-1 rounded shadow cursor-pointer text-xs border-none" onclick="window.openCRMModal(false, ${actualIdx})">✏️</button>
                                   <button class="bg-red-600 hover:bg-red-500 text-white p-1 rounded shadow cursor-pointer text-xs border-none" onclick="window.padamLeadCRM('${row.docId}', false)">🗑️</button>
@@ -2904,6 +3447,7 @@
         window.renderAdminCRMTable = function() {
           let tbody = document.getElementById('admin-crm-table-body'); tbody.innerHTML = "";
           let filteredData = applySortAndFilter(crmState.adminData, adminFilters, adminSortCol, adminSortAsc);
+          
           // 🌟 MAGIK TAPISAN BUBBLE DESKTOP CRM (ADMIN)
           let dState = window.crmDesktopFilterState ? window.crmDesktopFilterState[true] : 'All';
           if(dState === 'TOFU') {
@@ -2911,10 +3455,22 @@
           } else if(dState === 'Nurturing') {
               filteredData = filteredData.filter(row => String(row["STATUS"]||"").toLowerCase().trim() === "nurturing");
           }
+
+          // ⚡ NEW: MAGIK TAPISAN SEARCH BOX (PER COLUMN UNTUK ADMIN)
+          let searchBoxes = document.querySelectorAll('#adm-view-crm .crm-quick-search');
+          searchBoxes.forEach(input => {
+              let query = input.value.toLowerCase().trim();
+              let colKey = input.getAttribute('data-col'); // Tarik nama kolum
+              if (query !== "") {
+                  filteredData = filteredData.filter(r => String(r[colKey] || "").toLowerCase().includes(query));
+              }
+          });
+
           if(filteredData.length === 0) {
               tbody.innerHTML = `<tr><td colspan="22" class="text-center p-5 text-gray-500">Tiada data CRM.</td></tr>`;
               document.getElementById('admin-crm-page-info').innerText = "Page 1 of 1"; return;
           }
+          
           let totalPages = Math.ceil(filteredData.length / rowsPerPage);
           if(adminCrmPage > totalPages) adminCrmPage = totalPages; if(adminCrmPage < 1) adminCrmPage = 1;
           document.getElementById('admin-crm-page-info').innerText = `Page ${adminCrmPage} of ${totalPages} (Total: ${filteredData.length})`;
@@ -2923,15 +3479,20 @@
           pageData.forEach((row, i) => {
               let actualIdx = crmState.adminData.indexOf(row);
               let tr = document.createElement('tr');
-              // GANTI BARIS INI (Di dalam pageData.forEach)
-              let html = `<td class="sticky-col">${startIdx + i + 1}</td>
-                        <td class="sticky-col" style="left:40px;">
+              
+              // 🌟 LOGIK BARU: Semak kalau ID ni dah ada dalam memori selection
+              let isChecked = window.selectedCRMRows.includes(row.docId) ? 'checked' : '';
+
+              let html = `<td class="sticky-col" style="width: 45px; min-width: 45px; max-width: 45px; text-align: center; background:#1e1e1e;">
+                            <input type="checkbox" value="${row.docId}" ${isChecked} class="crm-row-cb accent-[#00c6ff] w-4 h-4 cursor-pointer" onclick="window.toggleCRMSelection('${row.docId}', this)">
+                        </td>
+                        <td class="sticky-col" style="left: 45px; width: 85px; min-width: 85px; max-width: 85px; background:#1e1e1e;">
                             <div class="flex gap-1 items-center justify-center">
                                 <button class="bg-[#0072ff] hover:bg-[#00c6ff] text-white p-1 rounded shadow cursor-pointer text-xs border-none" onclick="window.openCRMModal(true, ${actualIdx})">✏️</button>
                                 <button class="bg-red-600 hover:bg-red-500 text-white p-1 rounded shadow cursor-pointer text-xs border-none" onclick="window.padamLeadCRM('${row.docId}', true)">🗑️</button>
                             </div>
                         </td>
-                        <td class="sticky-col text-[#bb86fc] font-bold" style="left:125px; z-index:4; background-color: #1a1a1a;">${row["Staff Name"]||"-"}</td>`;
+                        <td class="sticky-col text-[#bb86fc] font-bold" style="left: 130px; z-index: 4; background-color: #1a1a1a; width: 180px; min-width: 180px; max-width: 180px;">${row["Staff Name"]||"-"}</td>`;
               
               crmColumns.forEach(col => {
                   if(col.isChat) {
@@ -2962,6 +3523,58 @@
               });
               tr.innerHTML = html; tbody.appendChild(tr);
           });
+          // 🌟 PENTING: Lepas lukis table, kita reset butang "Select All" kat header 
+          // supaya dia tak "stuck" ticked kalau page baru ni belum select semua.
+          window.syncCRMHeaderCheckbox();
+        };
+
+        // 🌟 FUNGSI BARU: Sinkronkan Checkbox Header dengan Page Semasa
+        window.syncCRMHeaderCheckbox = function() {
+            let headerCb = document.querySelector('th input[onclick="window.toggleAllCRMSelection(this)"]');
+            if (!headerCb) return;
+
+            let rowCheckboxes = document.querySelectorAll('.crm-row-cb');
+            if (rowCheckboxes.length === 0) {
+                headerCb.checked = false;
+                return;
+            }
+
+            // Check kalau SEMUA checkbox yang nampak kat skrin sekarang ada dalam window.selectedCRMRows
+            let allOnPageSelected = Array.from(rowCheckboxes).every(cb => window.selectedCRMRows.includes(cb.value));
+            headerCb.checked = allOnPageSelected;
+        };
+
+        // 🌟 IMPROVED: Toggle Select All (Hanya untuk page semasa)
+        window.toggleAllCRMSelection = function(headerCheckbox) {
+            let rowCheckboxes = document.querySelectorAll('.crm-row-cb');
+            
+            rowCheckboxes.forEach(cb => {
+                cb.checked = headerCheckbox.checked;
+                let docId = cb.value;
+
+                if (headerCheckbox.checked) {
+                    // Masukkan dalam memori kalau belum ada
+                    if (!window.selectedCRMRows.includes(docId)) {
+                        window.selectedCRMRows.push(docId);
+                    }
+                } else {
+                    // Buang dari memori kalau user uncheck
+                    window.selectedCRMRows = window.selectedCRMRows.filter(id => id !== docId);
+                }
+            });
+
+            window.updateCRMBulkPanel();
+        };
+        
+        // 🌟 IMPROVED: Toggle Individu (Tambah sync header)
+        window.toggleCRMSelection = function(docId, checkbox) {
+            if (checkbox.checked) {
+                if (!window.selectedCRMRows.includes(docId)) window.selectedCRMRows.push(docId);
+            } else {
+                window.selectedCRMRows = window.selectedCRMRows.filter(id => id !== docId);
+            }
+            window.syncCRMHeaderCheckbox(); // Cek header balik
+            window.updateCRMBulkPanel();
         };
 
         window.prevAdminCRM = function() { if(adminCrmPage > 1) { adminCrmPage--; window.renderAdminCRMTable(); } };
@@ -3049,23 +3662,40 @@
             return str;
         };
 
-        // --- PREVIEW HISTORY AUTO-GENERATE ---
+        // --- PREVIEW HISTORY AUTO-GENERATE (VERSI KEBAL) ---
         window.updatePreviewFU = function() {
-            let action = document.getElementById('crm-tofu').value;
-            let d = document.getElementById('crm-fu-date').value; 
-            let t = document.getElementById('crm-fu-time').value;
+            // 1. Cari elemen dengan berhati-hati
+            let actionEl = document.getElementById('crm-tofu');
+            let dEl = document.getElementById('crm-fu-date'); 
+            let tEl = document.getElementById('crm-fu-time');
+            let previewEl = document.getElementById('crm-preview-fu');
+
+            // 2. Ambil nilai kalau wujud, kalau takde letak kosong/dash
+            let action = actionEl ? actionEl.value : "-";
+            let d = dEl ? dEl.value : "";
+            let t = tEl ? tEl.value : "";
             
+            // 3. Auto isi tarikh/masa kalau kosong
             if(!d) d = new Date().toISOString().split('T')[0];
             if(!t) t = "00:00";
             
-            document.getElementById('crm-preview-fu').value = `[${d} ${t}] Action: ${action}`;
+            // 4. Sumbat dalam kotak preview (HANYA kalau kotak tu wujud)
+            if(previewEl) {
+                previewEl.value = `[${d} ${t}] Action: ${action}`;
+            }
         };
 
         window.copyPreview = function() {
             let copyText = document.getElementById("crm-preview-fu");
-            copyText.select();
-            document.execCommand("copy");
-            alert("✅ Preview History disalin! Sila paste di dalam ruangan History FU.");
+            
+            // Semak wujud ke tak kotak tu sebelum copy
+            if(copyText) {
+                copyText.select();
+                document.execCommand("copy");
+                alert("✅ Preview History disalin! Sila paste di dalam ruangan History FU.");
+            } else {
+                console.warn("Kotak preview tak jumpa kat HTML boss.");
+            }
         };
 
         // ==========================================
@@ -3143,75 +3773,103 @@
           document.getElementById('crm-ft').value = data["FIRST TIME BELAJAR"] || data.ft_belajar || "";
           document.getElementById('crm-reason').value = data["REASON LEARN"] || data.reason || "";
           document.getElementById('crm-concern').value = data["CONCERN PS"] || data.concern || "";
-          // 🌟 TARIK DATA BARU MASUK MODAL
           document.getElementById('crm-class').value = data["Class"] || "";
           document.getElementById('crm-class-dt').value = data["Class Date & Time"] || "";
           document.getElementById('crm-parents').value = data["Parents Detail"] || "";
-          
           document.getElementById('crm-chat').value = data["ALL CHAT (JSON)"] || data.all_chat || "";
+
+          // 🌟 [SUNTIKAN BARU] SET PAPARAN STAF SEMASA & ISI DROPDOWN STAF
+          let currentStaff = data["Staff Name"] || "-";
+          let staffDisplayElem = document.getElementById('crm-staff-display');
+          if(staffDisplayElem) staffDisplayElem.innerText = currentStaff;
+
+          let staffSel = document.getElementById('crm-edit-staff');
+          if(staffSel && typeof senaraiStafAdmin !== 'undefined') {
+              let html = `<option value="">- Kekalkan Staf (${currentStaff}) -</option>`;
+              senaraiStafAdmin.forEach(s => {
+                  let selected = (s.name === currentStaff) ? "selected" : "";
+                  let fullNameStr = s.fullName ? `(${s.fullName})` : "";
+                  html += `<option value="${s.name}" ${selected}>${s.name} ${fullNameStr}</option>`;
+              });
+              staffSel.innerHTML = html;
+          }
 
           window.updatePreviewFU(); 
           document.getElementById('modal-crm').style.display = 'flex';
         };
 
-        window.closeCRMModal = function() { document.getElementById('modal-crm').style.display = 'none'; };
-
+        // ==========================================
+        // FUNGSI SAVE CRM DATA (YANG HILANG TU! 🚀)
+        // ==========================================
         window.saveCRMData = async function() {
-          let btn = document.getElementById('btn-save-crm');
-          let docId = document.getElementById('crm-docid').value;
+          // Cari butang save (Admin atau Staff punya)
+          let btn = document.getElementById('btn-save-crm') || document.querySelector('#modal-crm button[onclick="window.saveCRMData()"]');
+          let docId = document.getElementById('crm-docid') ? document.getElementById('crm-docid').value : "";
           if(!docId) return;
           
-          btn.innerText = "⏳ SAVING TO FIREBASE..."; btn.disabled = true;
+          if(btn) { btn.innerText = "⏳ SAVING TO FIREBASE..."; btn.disabled = true; }
 
           // 🌟 MAGIK AUTO-APPEND HISTORY FU (LATEST ON TOP)
-          let actionVal = document.getElementById('crm-tofu').value.trim();
-          let previewTxt = document.getElementById('crm-preview-fu').value.trim();
-          let currentHistory = document.getElementById('crm-history').value.trim();
-          let isAutoAppend = document.getElementById('crm-auto-append-history').checked; // 🌟 BACA KOTAK CHECKBOX
+          let actionVal = document.getElementById('crm-tofu') ? document.getElementById('crm-tofu').value.trim() : "";
+          let previewTxt = document.getElementById('crm-preview-fu') ? document.getElementById('crm-preview-fu').value.trim() : "";
+          let historyEl = document.getElementById('crm-history');
+          let currentHistory = historyEl ? historyEl.value.trim() : "";
+          let autoAppendCb = document.getElementById('crm-auto-append-history');
+          let isAutoAppend = autoAppendCb ? autoAppendCb.checked : false; 
           
           // Semak: Kalau kotak di-TICK, TO FU ada isi, DAN ayat preview takde lagi kat baris atas history
           if (isAutoAppend && actionVal !== "" && !currentHistory.startsWith(previewTxt)) {
-              // Kita cantumkan: Ayat Baru + (Enter) + Ayat Lama
               currentHistory = currentHistory ? (previewTxt + "\n" + currentHistory) : previewTxt;
-              
-              // 🌟 FIX VISUAL: Tunjuk terus kat skrin boss magik cantuman tu sebelum modal tutup!
-              document.getElementById('crm-history').value = currentHistory;
+              if(historyEl) historyEl.value = currentHistory;
           }
 
+          // 🌟 BACA STAF BARU DARI DROPDOWN
+          let staffSelElem = document.getElementById('crm-edit-staff');
+          let newStaff = staffSelElem ? staffSelElem.value : "";
+
+          // 🛡️ HELPER: Ambil value dengan selamat (elak crash)
+          const getSafeVal = (id) => { let el = document.getElementById(id); return el ? el.value : ""; };
+
           let updateData = {
-              "LEADS INBOUND": window.toSheetDate(document.getElementById('crm-inbound-date').value), 
-              "LEADS INBOUND TIME": document.getElementById('crm-inbound-time').value,
-              "NAME": document.getElementById('crm-name').value, 
-              "CONTACT": document.getElementById('crm-contact').value,
-              "STATUS": document.getElementById('crm-status').value, 
+              "LEADS INBOUND": window.toSheetDate(getSafeVal('crm-inbound-date')), 
+              "LEADS INBOUND TIME": getSafeVal('crm-inbound-time'),
+              "NAME": getSafeVal('crm-name'), 
+              "CONTACT": getSafeVal('crm-contact'),
+              "STATUS": getSafeVal('crm-status'), 
               "TO FU": actionVal, 
-              "FOLLOW UP (DATE)": window.toSheetDate(document.getElementById('crm-fu-date').value), 
-              "FOLLOW UP (TIME)": document.getElementById('crm-fu-time').value, 
-              "SOURCE": document.getElementById('crm-source').value, 
-              "STATE": document.getElementById('crm-state').value, 
-              "UMUR": document.getElementById('crm-umur').value, 
-              "OCCUPATION": document.getElementById('crm-occ').value, 
-              "EMAIL": document.getElementById('crm-email').value, 
-              "FIRST TIME BELAJAR": document.getElementById('crm-ft').value, 
-              "REASON LEARN": document.getElementById('crm-reason').value, 
-              "CONCERN PS": document.getElementById('crm-concern').value, 
-              "Class": document.getElementById('crm-class').value, 
-              "Class Date & Time": document.getElementById('crm-class-dt').value, 
-              "Parents Detail": document.getElementById('crm-parents').value, 
-              "LAST CONTACTED (DATE)": window.toSheetDate(document.getElementById('crm-lc-date').value), 
-              "LAST CONTACTED (TIME)": document.getElementById('crm-lc-time').value, 
-              "ALL CHAT (JSON)": document.getElementById('crm-chat').value, 
-              "HISTORY FU": currentHistory // 🌟 Tembak History yang dah siap auto-append ke Firebase
+              "FOLLOW UP (DATE)": window.toSheetDate(getSafeVal('crm-fu-date')), 
+              "FOLLOW UP (TIME)": getSafeVal('crm-fu-time'), 
+              "SOURCE": getSafeVal('crm-source'), 
+              "STATE": getSafeVal('crm-state'), 
+              "UMUR": getSafeVal('crm-umur'), 
+              "OCCUPATION": getSafeVal('crm-occ'), 
+              "EMAIL": getSafeVal('crm-email'), 
+              "FIRST TIME BELAJAR": getSafeVal('crm-ft'), 
+              "REASON LEARN": getSafeVal('crm-reason'), 
+              "CONCERN PS": getSafeVal('crm-concern'), 
+              "Class": getSafeVal('crm-class'), 
+              "Class Date & Time": getSafeVal('crm-class-dt'), 
+              "Parents Detail": getSafeVal('crm-parents'), 
+              "LAST CONTACTED (DATE)": window.toSheetDate(getSafeVal('crm-lc-date')), 
+              "LAST CONTACTED (TIME)": getSafeVal('crm-lc-time'), 
+              "ALL CHAT (JSON)": getSafeVal('crm-chat'), 
+              "HISTORY FU": currentHistory 
           };
+
+          // 🌟 TIMPA STAF LAMA KALAU ADA PERTUKARAN
+          if(newStaff !== "") {
+              updateData["Staff Name"] = newStaff;
+          }
 
           try {
               // 1. Tembak Firebase
               await updateDoc(doc(db, "crm_leads", docId), updateData);
               alert("✅ Data CRM berjaya dikemaskini!");
-              window.closeCRMModal();
+              if(typeof window.closeCRMModal === 'function') window.closeCRMModal();
               
               // 2. Suntik data ke dalam memori jadual (Zero Reads Update)
-              let isAdmin = !document.getElementById('adm-view-crm').classList.contains('hidden');
+              let admView = document.getElementById('adm-view-crm');
+              let isAdmin = admView && !admView.classList.contains('hidden');
               let stateArr = isAdmin ? crmState.adminData : crmState.data;
               
               let rowIndex = stateArr.findIndex(r => r.docId === docId);
@@ -3220,12 +3878,134 @@
               }
               
               // 3. Lukis semula jadual 
-              if(isAdmin) window.renderAdminCRMTable();
-              else window.renderCRMTable();
+              if(isAdmin && typeof window.renderAdminCRMTable === 'function') window.renderAdminCRMTable();
+              else if(typeof window.renderCRMTable === 'function') window.renderCRMTable();
 
           } catch(e) { alert("Gagal update data: " + e.message); }
           
-          btn.innerText = "💾 SAVE CRM UPDATES"; btn.disabled = false;
+          if(btn) { btn.innerText = "💾 SAVE CRM UPDATES"; btn.disabled = false; }
+        };
+
+        window.closeCRMModal = function() { document.getElementById('modal-crm').style.display = 'none'; };
+
+        // ==========================================
+        // MODAL EDIT CRM & FIREBASE UPDATE (TERMASUK SIDE-BY-SIDE CHAT)
+        // ==========================================
+        window.openCRMModal = function(isAdmin, idx) {
+          let data = isAdmin ? crmState.adminData[idx] : crmState.data[idx];
+          if(!data) return;
+          
+          // 🛡️ HELPER FUNCTION: Elak CRASH kalau kotak tak wujud kat HTML
+          const setSafeVal = (id, val) => {
+              let el = document.getElementById(id);
+              if(el) el.value = val;
+          };
+
+          setSafeVal('crm-docid', data.docId);
+
+          // 🌟 LOGIK RENDER CHAT SIDE-BY-SIDE
+          let chatDiv = document.getElementById('crm-modal-chat-content');
+          if (chatDiv) {
+              let jsonStr = data["ALL CHAT (JSON)"] || data.all_chat || "";
+              chatDiv.innerHTML = "";
+              
+              if(jsonStr && String(jsonStr).trim() !== "") {
+                  try {
+                      let chats = JSON.parse(jsonStr);
+                      if(!Array.isArray(chats)) chats = [chats];
+                      let senders = []; chats.forEach(c => { let s = c.sender || c.name || "Unknown"; if(!senders.includes(s)) senders.push(s); });
+                      
+                      let staffNameStr = (data["Staff Name"] || "").toLowerCase().split(" ")[0];
+                      let prospectName = (data["NAME"] || data.name || "").toLowerCase().split(" ")[0];
+                      
+                      chats.forEach(c => {
+                          let text = c.text || c.message || c.msg || JSON.stringify(c);
+                          let sender = c.sender || c.name || "Unknown";
+                          let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
+                          let senderLow = sender.toLowerCase();
+                          let isMe = false;
+                          
+                          if (senderLow.includes("mandarin") || senderLow.includes("class") || senderLow.includes("kunkwan") || senderLow === "me") {
+                              isMe = true;
+                          } else if (staffNameStr && senderLow.includes(staffNameStr)) {
+                              isMe = true;
+                          } else {
+                              isMe = false;
+                          }
+                          
+                          let alignClass = isMe ? 'chat-right' : 'chat-left';
+                          chatDiv.innerHTML += `
+                              <div class="chat-bubble ${alignClass}">
+                                  <div class="chat-header-line"><span class="chat-sender">${sender}</span><span class="chat-time">${dateStr}</span></div>
+                                  <div class="chat-msg">${text}</div>
+                              </div>`;
+                      });
+                  } catch(e) { chatDiv.innerHTML = `<div class="text-gray-500 text-center p-5">Format JSON tidak sah.<br><br><span class="text-[#ff9800] text-xs break-all">${jsonStr}</span></div>`; }
+              } else {
+                  chatDiv.innerHTML = `<div class="text-gray-500 text-center p-10 flex flex-col items-center justify-center h-full"><span class="text-4xl mb-2">📭</span> Tiada rekod perbualan dijumpai.</div>`;
+              }
+          }
+
+          // 🌟 MASUKKAN DATA KE DALAM FORM KIRI (GUNA SAFE VAL SUPAYA TAK CRASH)
+          setSafeVal('crm-name', data["NAME"] || data.name || "");
+          setSafeVal('crm-contact', data["CONTACT"] || data.contact || "");
+          setSafeVal('crm-status', data["STATUS"] || data.status || "");
+          setSafeVal('crm-tofu', data["TO FU"] || data.to_fu || "");
+          
+          setSafeVal('crm-fu-date', window.toInputDate(data["FOLLOW UP (DATE)"] || data.fu_date));
+          setSafeVal('crm-lc-date', window.toInputDate(data["LAST CONTACTED (DATE)"] || data.last_c_date));
+          setSafeVal('crm-fu-time', data["FOLLOW UP (TIME)"] || data.fu_time || "");
+          setSafeVal('crm-lc-time', data["LAST CONTACTED (TIME)"] || data.last_c_time || "");
+          
+          setSafeVal('crm-inbound-date', window.toInputDate(data["LEADS INBOUND"] || data.leads_inbound));
+          setSafeVal('crm-inbound-time', data["LEADS INBOUND TIME"] || data.leads_inbound_time || "");
+          setSafeVal('crm-history', data["HISTORY FU"] || data.history_fu || "");
+          setSafeVal('crm-source', data["SOURCE"] || data.source || "");
+          setSafeVal('crm-state', data["STATE"] || data.state || "");
+          setSafeVal('crm-umur', data["UMUR"] || data.umur || "");
+          setSafeVal('crm-occ', data["OCCUPATION"] || data.occupation || "");
+          setSafeVal('crm-email', data["EMAIL"] || data.email || "");
+          setSafeVal('crm-ft', data["FIRST TIME BELAJAR"] || data.ft_belajar || "");
+          setSafeVal('crm-reason', data["REASON LEARN"] || data.reason || "");
+          setSafeVal('crm-concern', data["CONCERN PS"] || data.concern || "");
+          
+          // ID-ID ni yang biasa jadi punca error sebab boss tak letak kat HTML:
+          setSafeVal('crm-class', data["Class"] || "");
+          setSafeVal('crm-class-dt', data["Class Date & Time"] || "");
+          setSafeVal('crm-parents', data["Parents Detail"] || "");
+          setSafeVal('crm-chat', data["ALL CHAT (JSON)"] || data.all_chat || "");
+
+          // 🌟 SET PAPARAN STAF SEMASA & ISI DROPDOWN STAF
+          let currentStaff = data["Staff Name"] || "-";
+          let staffDisplayElem = document.getElementById('crm-staff-display');
+          if(staffDisplayElem) staffDisplayElem.innerText = currentStaff;
+
+          let staffSel = document.getElementById('crm-edit-staff');
+          if(staffSel) {
+              let html = `<option value="">- Kekalkan Staf (${currentStaff}) -</option>`;
+              
+              // 🌟 FIX: Baca senarai staf dari adminState.users (sistem boss yang sebenar)
+              if (typeof adminState !== 'undefined' && adminState.users && adminState.users.length > 0) {
+                  adminState.users.forEach(u => {
+                      let selected = (u === currentStaff) ? "selected" : "";
+                      html += `<option value="${u}" ${selected}>${u}</option>`;
+                  });
+              } else if (typeof senaraiStafAdmin !== 'undefined' && senaraiStafAdmin.length > 0) {
+                  // Fallback kalau adminState belum loading
+                  senaraiStafAdmin.forEach(s => {
+                      let nama = s.name || s;
+                      let selected = (nama === currentStaff) ? "selected" : "";
+                      html += `<option value="${nama}" ${selected}>${nama}</option>`;
+                  });
+              }
+              
+              staffSel.innerHTML = html;
+          }
+
+          if (typeof window.updatePreviewFU === 'function') window.updatePreviewFU(); 
+          
+          let modalCrm = document.getElementById('modal-crm');
+          if(modalCrm) modalCrm.style.display = 'flex';
         };
         
         // ==========================================
@@ -3532,7 +4312,7 @@
         };
 
         // ==========================================
-        // ENJIN IMPORT PS (SNIPER 12.0 - BATCHED WRITES 🔥)
+        // ENJIN IMPORT PS (SNIPER 12.1 - BATCHED WRITES + ANTI-OVERWRITE 🔥🛡️)
         // ==========================================
         window.prosesImportPSExcel = async function(inputId, statusId, btn, isStaffView = false) {
             const fail = document.getElementById(inputId).files[0];
@@ -3605,12 +4385,9 @@
 
                     let staffTerlibat = [];
                     
-                    // 🌟 MAGIK BATCH MULA DI SINI 🌟
-                    // Kita perlukan fungsi 'writeBatch' dari Firebase
-                    
                     let batch = writeBatch(db);
                     let operationCount = 0;
-                    let totalLori = Math.ceil(validRows.length / 450); // Anggar lori (max 500)
+                    let totalLori = Math.ceil(validRows.length / 450);
                     let loriSekarang = 1;
 
                     status.innerText = `🚀 Mula menembak lori 1 dari ${totalLori}...`;
@@ -3619,7 +4396,6 @@
                         let rowData = row.data;
                         let finalStaffName = row.name;
 
-                        // Kawalan Nama Staf
                         if (isStaffView) {
                             finalStaffName = currentUser;
                         } else {
@@ -3646,10 +4422,16 @@
                             let old = existingMap[row.code];
                             rowData["Timestamp Masuk"] = old["Timestamp Masuk"] || new Date().toISOString();
                             
-                            let docRef = doc(db, "ps_students", old.docId);
-                            batch.update(docRef, rowData); // Masukkan arahan Update dalam lori
+                            // 🛡️ PROTECT MODE: Ambil balik data manual dari Firebase dan timpa data Excel
+                            rowData["TO FU"] = old["TO FU"] || "";
+                            rowData["FU Date"] = old["FU Date"] || "";
+                            rowData["FU Time"] = old["FU Time"] || "";
+                            rowData["Remark 2"] = old["Remark 2"] || ""; // History FU
+                            rowData["Class Progress"] = old["Class Progress"] || "";
                             
-                            // Update memori sementara
+                            let docRef = doc(db, "ps_students", old.docId);
+                            batch.update(docRef, rowData);
+                            
                             let idx = psState.adminData.findIndex(item => item.docId === old.docId);
                             if(idx !== -1) psState.adminData[idx] = { docId: old.docId, ...rowData };
                             if(isStaffView) {
@@ -3660,11 +4442,10 @@
                         } else {
                             // CREATE REKOD (Guna Batch)
                             rowData["Timestamp Masuk"] = new Date().toISOString();
-                            let newDocRef = doc(collection(db, "ps_students")); // Generate ID baru siap-siap
+                            let newDocRef = doc(collection(db, "ps_students"));
                             
-                            batch.set(newDocRef, rowData); // Masukkan arahan Set (Create) dalam lori
+                            batch.set(newDocRef, rowData);
                             
-                            // Update memori sementara
                             psState.adminData.unshift({ docId: newDocRef.id, ...rowData });
                             if(isStaffView) psState.data.unshift({ docId: newDocRef.id, ...rowData });
                             
@@ -3673,39 +4454,38 @@
 
                         operationCount++;
 
-                        // Kalau lori dah penuh (450 bata), kita suruh lori tu jalan!
                         if (operationCount >= 450) {
-                            await batch.commit(); // Tembak lori ke Firebase
+                            await batch.commit();
                             loriSekarang++;
                             status.innerText = `🚀 Mula menembak lori ${loriSekarang} dari ${totalLori}...`;
-                            
-                            // Sediakan lori baru
                             batch = writeBatch(db);
                             operationCount = 0; 
                         }
                     }
 
-                    // Tembak sisa baki dalam lori yang tak penuh (kalau ada)
                     if (operationCount > 0) {
                         await batch.commit();
                     }
-                    // 🌟 MAGIK BATCH TAMAT DI SINI 🌟
 
-                    status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update. (Laju kan?)`;
+                    status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update. (Data Manual Dilindungi 🛡️)`;
                     status.style.color = "#00e676";
                     btn.disabled = false;
                     
-                    // Update CCTV (Rekod Masa Upload)
+                    if (staffTerlibat.length === 0 && !isStaffView) {
+                        staffTerlibat.push("Admin Master (Pukal)");
+                    }
+                    
                     if (staffTerlibat.length > 0) {
                         try {
                             let logUpdates = {};
-                            staffTerlibat.forEach(s => logUpdates[s] = new Date().toISOString());
+                            staffTerlibat.forEach(s => {
+                                if (s.trim() !== "") logUpdates[s] = new Date().toISOString();
+                            });
                             await setDoc(doc(db, "system_settings", "ps_upload_logs"), logUpdates, { merge: true });
                             if (typeof window.renderPSUploadLogs === 'function') window.renderPSUploadLogs();
                         } catch(e) { console.error("Gagal update CCTV:", e); }
                     }
 
-                    // Refresh table
                     if (isStaffView && typeof window.renderPSTable === 'function') window.renderPSTable();
                     else if (!isStaffView && typeof window.renderAdminPSTable === 'function') window.renderAdminPSTable();
 
@@ -4059,15 +4839,28 @@
           let btn = document.querySelector('#modal-ps button[onclick="window.savePSData()"]');
           if(btn) { btn.innerText = "⏳ SAVING TO SERVER..."; btn.disabled = true; }
 
+          // 🌟 MAGIK AUTO-APPEND HISTORY BERMULA DI SINI
+          let actionVal = document.getElementById('ps-tofu').value.trim();
+          let previewTxt = document.getElementById('ps-preview-fu').value.trim();
+          let currentHistory = document.getElementById('ps-rem2').value.trim();
+          let isAutoAppend = document.getElementById('ps-auto-append-history').checked;
+          
+          if (isAutoAppend && actionVal !== "" && !currentHistory.startsWith(previewTxt)) {
+              // Gabungkan preview baru dengan history lama
+              currentHistory = currentHistory ? (previewTxt + "\n" + currentHistory) : previewTxt;
+              document.getElementById('ps-rem2').value = currentHistory;
+          }
+          // 🌟 TAMAT MAGIK
+
           let updateData = {
               "Referral": document.getElementById('ps-ref').value,
               "Student Name": document.getElementById('ps-name').value, 
               "Phone Number": document.getElementById('ps-phone').value,
-              "TO FU": document.getElementById('ps-tofu').value, // 🌟 NEW: Tembak TO FU
+              "TO FU": actionVal, // Tembak TO FU
               "Class Progress": document.getElementById('ps-classprog').value,
               "FU Date": window.toSheetDate(document.getElementById('ps-fudate').value),
               "FU Time": document.getElementById('ps-futime').value,
-              "Remark 2": document.getElementById('ps-rem2').value // History FU
+              "Remark 2": currentHistory // 🌟 Gunakan currentHistory yang dah di-update
           };
 
           try {
@@ -4085,9 +4878,9 @@
           } catch(e) { 
               alert("Gagal update data: " + e.message); 
           }
-          if(btn) { btn.innerText = "💾 SAVE PS UPDATES"; btn.disabled = false; }
+          if(btn) { btn.innerText = "💾 SAVE UPDATES"; btn.disabled = false; }
         };
-
+        
         // --- MODAL BULK EDIT LOGIC ---
         window.openPSBulkEdit = function(isAdmin) {
             let checkedBoxes = document.querySelectorAll('.ps-bulk-cb:checked');
@@ -4441,23 +5234,50 @@
         // ==========================================
         // FUNGSI COPY COLLECTION WHATSAPP (PS MASTER)
         // ==========================================
-        window.populatePSCopyDropdown = function() {
+        window.populatePSCopyDropdown = async function() {
             let sel = document.getElementById('copy-ps-staff');
             if(!sel) return;
-            let staffs = [...new Set(psState.adminData.map(r => r["Staff Name"] || "").filter(n => String(n).trim() !== ""))].sort();
-            let html = `<option value="">- Pilih Staf -</option>`;
-            staffs.forEach(s => html += `<option value="${s}">${s}</option>`);
-            sel.innerHTML = html;
+            
+            try {
+                // 🌟 FIX KEBAL: Paksa sistem tarik 'fresh' dari database staf terus! 
+                // Tak payah tunggu boss buka tab System Setup lagi.
+                const snap = await getDocs(collection(db, "staff_list"));
+                let senaraiNamaPendek = [];
+                snap.forEach(doc => senaraiNamaPendek.push(doc.data().name));
+
+                // Susun A-Z supaya cantik
+                senaraiNamaPendek.sort((a, b) => a.localeCompare(b));
+
+                let html = `<option value="">- Pilih Staf -</option>`;
+                senaraiNamaPendek.forEach(s => html += `<option value="${s}">${s}</option>`);
+
+                sel.innerHTML = html;
+            } catch(e) {
+                console.error("Gagal load senarai staf: ", e);
+                sel.innerHTML = `<option value="">- Ralat Tarik Data -</option>`;
+            }
         };
 
         window.copyPSCollection = function(isAdmin) {
             let dataToProcess = [];
             let staffName = currentUser;
+            let excelFullName = ""; // 🌟 NEW: Back-up untuk tarik data lama
 
             if (isAdmin) {
                 staffName = document.getElementById('copy-ps-staff').value;
                 if(!staffName) { alert("Sila pilih staf dari dropdown dulu boss!"); return; }
-                dataToProcess = psState.adminData.filter(r => (r["Staff Name"] || "") === staffName);
+                
+                // Cari nama penuh Excel dalam senarai System Setup
+                if (typeof senaraiStafAdmin !== 'undefined') {
+                    let stafObj = senaraiStafAdmin.find(s => s.name === staffName);
+                    if (stafObj && stafObj.fullName) excelFullName = stafObj.fullName;
+                }
+
+                // 🌟 FIX: Tapis data dengan mencari Nama Sistem ATAU Nama Excel
+                dataToProcess = psState.adminData.filter(r => {
+                    let dbName = r["Staff Name"] || "";
+                    return dbName === staffName || (excelFullName !== "" && dbName === excelFullName);
+                });
             } else {
                 dataToProcess = psState.data;
             }
@@ -4473,7 +5293,7 @@
                 return;
             }
 
-            // 🌟 UPDATE 1: Susun data ikut Latest Balance (Paling Tinggi ke Rendah / Descending)
+            // Susun data ikut Latest Balance (Paling Tinggi ke Rendah / Descending)
             validData.sort((a, b) => {
                 let balA = parseFloat(String(a["Latest Balance"] || "0").replace(/,/g, '')) || 0;
                 let balB = parseFloat(String(b["Latest Balance"] || "0").replace(/,/g, '')) || 0;
@@ -4488,13 +5308,11 @@
                 let studentName = r["Student Name"] || r["Name"] || "-";
                 let efo = r["EFO"] || "-";
                 
-                // 🌟 UPDATE 2: Tarik data Referral
                 let referral = r["Referral"] || "";
                 if (referral && !uniqueReferrals.includes(referral)) {
-                    uniqueReferrals.push(referral); // Simpan dalam list untuk diletak kat header atas
+                    uniqueReferrals.push(referral); 
                 }
                 
-                // 🌟 FIX: Ajar sistem baca "Phone" kalau "Phone Number" takde
                 let phone = r["Phone Number"] || r["Phone"] || r["Contact"] || "";
                 phone = phone.replace(/[^0-9]/g, '');
                 if(phone.startsWith('60')) phone = phone.substring(2);
@@ -4505,14 +5323,10 @@
 
                 let linkCRM = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(studentName)}`;
 
-                // Masukkan juga Referral kat dalam setiap list student supaya lebih jelas
                 listText += `Name: ${studentName}\nReferral: ${referral || "-"}\nEFO: ${efo}\nPhone Number: wa.me/60${phone}\nLatest Balance: RM${bal.toFixed(2)}\nCRM : ${linkCRM}\n\n`;
             });
 
-            // Cantumkan semua nama referral kat header atas (kalau ada banyak, dia akan dipisahkan dengan koma)
             let refHeader = uniqueReferrals.length > 0 ? uniqueReferrals.join(", ") : "Tiada Data Referral";
-
-            // Format akhir untuk di-paste di WhatsApp
             let finalTxt = `*Collection Status Request*\nQǐng bāngmáng kàn kàn\nPlease help Xièxiè SFOs 🫶\n\n_*[${refHeader}]*_\nTotal : *RM ${totalBal.toFixed(2)}*\n---------------------------\n\n${listText.trim()}`;
 
             navigator.clipboard.writeText(finalTxt).then(() => {
@@ -4911,8 +5725,8 @@
 
         window.setCRMMobileFilter = function(type, isAdmin) {
             window.crmMobileFilterState = type;
-            // Update warna bubble pills
-            ['All', 'TOFU', 'Nurturing'].forEach(f => {
+            // Masukkan Preloved dalam array warna butang
+            ['All', 'TOFU', 'Nurturing', 'Preloved'].forEach(f => {
                 let btn = document.getElementById(`m-filter-${f}-${isAdmin}`);
                 if(btn) {
                     if(f === type) {
@@ -4992,9 +5806,13 @@
                 let name = String(row["NAME"] || "").toLowerCase();
                 let contact = String(row["CONTACT"] || "").toLowerCase();
                 let status = String(row["STATUS"] || "").toLowerCase().trim();
+                
                 if(searchText && !name.includes(searchText) && !contact.includes(searchText)) return false;
                 if(window.crmMobileFilterState === 'TOFU' && !["-", "in progress", "new", ""].includes(status)) return false;
                 if(window.crmMobileFilterState === 'Nurturing' && status !== "nurturing") return false;
+                // 🌟 LOGIK FILTER BUBBLE PRELOVED
+                if(window.crmMobileFilterState === 'Preloved' && status !== "preloved leads by bl hadi") return false;
+                
                 return true;
             }).map(row => {
                 return { 
@@ -5022,7 +5840,6 @@
             });
 
             // 5. Render HTML
-            // 5. Render HTML
             let html = "";
             filtered.slice(0, 100).forEach(item => {
                 let row = item.row;
@@ -5032,7 +5849,6 @@
                 let fuDate = window.formatDateToDDMMYYYY ? window.formatDateToDDMMYYYY(row["FOLLOW UP (DATE)"]) : row["FOLLOW UP (DATE)"] || "-";
                 let staffBadge = isAdmin ? `<div class="bg-[#bb86fc] text-black px-1 rounded text-[8px] font-bold mt-1.5 text-center truncate w-[50px] shadow-sm">${row["Staff Name"] || "Unknown"}</div>` : "";
                 
-                // Ambil Lead ID untuk dipaparkan
                 let leadIdDisp = row["Lead ID"] || "-";
 
                 let rawPhone = row["CONTACT"] || row["contact"] || "-";
@@ -5044,6 +5860,36 @@
                     if(cp) {
                         waBtnHtml = `<a href="https://wa.me/60${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow inline-flex" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
                     }
+                }
+
+                // =====================================
+                // 🌟 MAGIK UI PRELOVED LEADS BERMULA DI SINI
+                // =====================================
+                let isPreloved = String(status).toLowerCase() === "preloved leads by bl hadi".toLowerCase();
+                let hist = String(row["HISTORY FU"] || "");
+                let isDone = hist.includes("Action: Done CS");
+                let isInv = hist.includes("Action: Invalid Number");
+
+                let prelovedUI = "";
+                if (isPreloved) {
+                    prelovedUI = `
+                    <div class="mt-2 flex justify-between items-center bg-[#111] border ${isInv ? 'border-[#ff5252]' : 'border-[#00e676]'} p-2 rounded-lg ${isDone||isInv ? 'opacity-60' : ''}">
+                        <div class="flex items-center gap-2">
+                            <label class="cursor-pointer relative flex items-center h-full">
+                                <input type="checkbox" onchange="window.handlePrelovedAction('${row.docId}', this.checked ? 'DONE' : 'UNDO', ${isAdmin})" class="w-5 h-5 accent-[#00e676] cursor-pointer shadow" ${isDone ? 'checked' : ''} ${isInv ? 'disabled' : ''}>
+                            </label>
+                            <span class="text-xs font-bold text-[#00e676] ${isDone ? 'line-through' : ''}">Done CS</span>
+                        </div>
+                        
+                        ${isInv ? `
+                            <div class="flex items-center gap-1">
+                                <span class="text-[10px] bg-[#ff5252] text-white px-2 py-1 rounded font-bold border border-red-800">INVALID NUM</span>
+                                <button onclick="window.handlePrelovedAction('${row.docId}', 'UNDO', ${isAdmin})" class="text-[10px] bg-[#555] hover:bg-[#777] text-white px-2 py-1 rounded font-bold shadow transition cursor-pointer">♻️ Undo</button>
+                            </div>
+                        ` : `
+                            <button onclick="window.handlePrelovedAction('${row.docId}', 'INVALID', ${isAdmin})" class="text-[10px] bg-[#ff5252] hover:bg-red-600 text-white px-2 py-1 rounded font-bold shadow transition ${isDone ? 'hidden' : ''}">❌ INVALID</button>
+                        `}
+                    </div>`;
                 }
 
                 html += `
@@ -5059,12 +5905,16 @@
                         </div>
                         <div class="flex items-center gap-2 mb-1">
                             <span class="bg-[#333] text-[#ffeb3b] px-1 rounded text-[10px] font-bold border border-[#444]">${leadIdDisp}</span>
-                            <span class="text-blue-400 text-xs font-bold">[${status}]</span>
+                            <span class="text-blue-400 text-xs font-bold truncate max-w-[120px] inline-block align-bottom" title="${status}">[${status}]</span>
                         </div>
                         <div class="text-gray-300 text-xs truncate mb-1.5 flex items-center gap-1">
                              ${waBtnHtml}
                         </div>
                         <div class="text-[#ff9800] text-xs font-bold truncate">🎯 ${row["TO FU"] || "-"}</div>
+                        
+                        <!-- PANGGIL UI PRELOVED LEADS -->
+                        ${prelovedUI}
+                        
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-6">
                         <button onclick="window.openCRMModal(${isAdmin}, ${actualIdx})" class="w-6 h-6 rounded bg-[#0072ff] text-white flex items-center justify-center text-[10px]">✏️</button>
@@ -5072,6 +5922,95 @@
                 </div>`;
             });
             listContainer.innerHTML = html || `<div class="text-center p-10 text-gray-500">Tiada hasil padanan.</div>`;
+        };
+        
+        // ==========================================
+        // 🌟 QUICK ACTION: PRELOVED LEADS (MOBILE VIEW) - 4 in 1 Update
+        // ==========================================
+        window.handlePrelovedAction = async function(docId, actionType, isAdmin) {
+            let stateArr = isAdmin ? crmState.adminData : crmState.data;
+            let leadIdx = stateArr.findIndex(r => r.docId === docId);
+            if (leadIdx === -1) return;
+            
+            let lead = stateArr[leadIdx];
+            let currentHistory = String(lead["HISTORY FU"] || "");
+            
+            // Simpan memori lama untuk proses UNDO
+            let oldHistory = lead["HISTORY FU"];
+            let oldToFu = lead["TO FU"];
+            let oldFuDate = lead["FOLLOW UP (DATE)"];
+            let oldFuTime = lead["FOLLOW UP (TIME)"];
+            
+            // Dapatkan tarikh dan masa semasa
+            let now = new Date();
+            let dd = String(now.getDate()).padStart(2, '0');
+            let mm = String(now.getMonth() + 1).padStart(2, '0');
+            let yyyy = now.getFullYear();
+            
+            // Format Tarikh Malaysia (DD/MM/YYYY) untuk Database
+            let dateStr = `${dd}/${mm}/${yyyy}`; 
+            // Format 12-Jam untuk History Teks
+            let timeStrHistory = now.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+            // Format 24-Jam untuk Input Time (HH:mm)
+            let timeStrInput = `${String(now.getHours()).padStart(2, '0')}:${String(now.getMinutes()).padStart(2, '0')}`; 
+            
+            let newHistory = currentHistory;
+            let newToFu = oldToFu;
+            let newFuDate = oldFuDate;
+            let newFuTime = oldFuTime;
+            
+            // Logik letak ayat dan update semua kolum
+            if (actionType === 'DONE') {
+                let appendStr = `[${dateStr} ${timeStrHistory}] Action: Done CS`;
+                newHistory = currentHistory ? (appendStr + "\n" + currentHistory) : appendStr;
+                newToFu = "Done CS";
+                newFuDate = dateStr;
+                newFuTime = timeStrInput;
+            } else if (actionType === 'INVALID') {
+                let appendStr = `[${dateStr} ${timeStrHistory}] Action: Invalid Number`;
+                newHistory = currentHistory ? (appendStr + "\n" + currentHistory) : appendStr;
+                newToFu = "Invalid Number";
+                newFuDate = dateStr;
+                newFuTime = timeStrInput;
+            } else if (actionType === 'UNDO') {
+                // Logik memadam/kembalikan ayat automatik tadi
+                let lines = currentHistory.split('\n');
+                let filteredLines = lines.filter(line => !line.includes("Action: Done CS") && !line.includes("Action: Invalid Number"));
+                newHistory = filteredLines.join('\n');
+                
+                // Padam balik data TO FU dan tarikh
+                newToFu = "";
+                newFuDate = "";
+                newFuTime = "";
+            }
+
+            // 1. Update memori UI supaya nampak sepantas kilat
+            stateArr[leadIdx]["HISTORY FU"] = newHistory;
+            stateArr[leadIdx]["TO FU"] = newToFu;
+            stateArr[leadIdx]["FOLLOW UP (DATE)"] = newFuDate;
+            stateArr[leadIdx]["FOLLOW UP (TIME)"] = newFuTime;
+            window.renderCRMMobileList(isAdmin);
+
+            // Objek untuk dihantar ke Firebase
+            let updateObj = {
+                "HISTORY FU": newHistory,
+                "TO FU": newToFu,
+                "FOLLOW UP (DATE)": newFuDate,
+                "FOLLOW UP (TIME)": newFuTime
+            };
+
+            try {
+                // 2. Tembak Firebase di belakang tabir (Jimat kuota Read)
+                await updateDoc(doc(db, "crm_leads", docId), updateObj);
+            } catch (e) {
+                // Revert balik kalau internet sangkut
+                stateArr[leadIdx]["HISTORY FU"] = oldHistory;
+                stateArr[leadIdx]["TO FU"] = oldToFu;
+                stateArr[leadIdx]["FOLLOW UP (DATE)"] = oldFuDate;
+                stateArr[leadIdx]["FOLLOW UP (TIME)"] = oldFuTime;
+                window.renderCRMMobileList(isAdmin);
+                alert("Gagal update rekod: " + e.message);
+            }
         };
         
         // 🌟 Hook Auto-Refresh (Supaya mobile view pun update bila data di-edit)
@@ -5759,6 +6698,539 @@
                 // iPhone akan ingat ni adalah 'website' baru dan terpaksa buang memori lama.
                 let cleanUrl = window.location.protocol + "//" + window.location.host + window.location.pathname;
                 window.location.href = cleanUrl + '?v=' + new Date().getTime();
+            }
+        };
+
+        // ==========================================
+        // 🎓 MODUL PS ENROLL
+        // ==========================================
+        let enrollState = { data: [], adminData: [] };
+        let teamEnrollPage = 1, adminEnrollPage = 1, enrollRowsPerPage = 50;
+        let adminEnrollFilters = {}, teamEnrollFilters = {};
+        let adminEnrollSortCol = "Invoice Date", adminEnrollSortAsc = false;
+        let teamEnrollSortCol = "Invoice Date", teamEnrollSortAsc = false;
+
+        const enrollColumns = [
+            { key: 'Invoice Number', label: 'Invoice No', color: '#ffeb3b' },
+            { key: 'Inviter', label: 'Inviter (Staff)', color: '#bb86fc' },
+            { key: 'Student Name', label: 'Student Name', color: '#00c6ff' },
+            { key: 'Phone', label: 'Phone' },
+            { key: 'TO FU', label: 'Action (TO FU)', color: '#00e676' },
+            { key: 'FU Date', label: 'FU Date' },
+            { key: 'FU Time', label: 'FU Time' },
+            { key: 'History FU', label: 'History FU' },
+            { key: 'Class Progress', label: 'Class Progress', color: '#ffeb3b' },
+            { key: 'Type', label: 'Type' },
+            { key: 'Inviter Nick Name', label: 'Inviter Nick Name' },
+            { key: 'Inviter ID', label: 'Inviter ID' },
+            { key: 'EFO Info', label: 'EFO Info' },
+            { key: 'Ic Number', label: 'IC Number' },
+            { key: 'Invoice Date', label: 'Invoice Date' },
+            { key: 'Collection Status', label: 'Collection Status' },
+            { key: 'Invoice Item', label: 'Invoice Item' },
+            { key: 'Invoice Amount', label: 'Invoice Amount' },
+            { key: 'Payment Amount', label: 'Payment Amount' },
+            { key: 'Sales Amount', label: 'Sales Amount' },
+            { key: 'Latest Balance', label: 'Latest Balance', color: '#ff5252' },
+            { key: 'Ref1', label: 'Ref1' },
+            { key: 'Ref2', label: 'Ref2' }
+        ];
+
+        window.generateEnrollHeader = function(isAdmin) {
+          let fSort = isAdmin ? 'sortAdminEnroll' : 'sortTeamEnroll';
+          let currSortCol = isAdmin ? adminEnrollSortCol : teamEnrollSortCol;
+          let currSortAsc = isAdmin ? adminEnrollSortAsc : teamEnrollSortAsc;
+          function getIcon(colKey) { return currSortCol === colKey ? (currSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕'; }
+
+          let html = `<tr>
+              <th class="sticky-col" style="z-index: 30; top: 0; left: 0; width: 45px; min-width: 45px; padding: 5px; text-align:center;">Edit</th>`;
+              
+          enrollColumns.forEach(col => {
+              let colSty = col.color ? `color:${col.color};` : "";
+              html += `<th style="${colSty} position: sticky; top: 0; background-color: #1e1e1e; padding: 5px; min-width: 140px; z-index: 20;">
+                  <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${col.key}')">${getIcon(col.key)}</span></div>
+              </th>`;
+          });
+          return html + `</tr>`;
+        };
+
+        window.sortTeamEnroll = function(col) { teamEnrollSortAsc = teamEnrollSortCol === col ? !teamEnrollSortAsc : true; teamEnrollSortCol = col; window.renderEnrollTable(); };
+        window.sortAdminEnroll = function(col) { adminEnrollSortAsc = adminEnrollSortCol === col ? !adminEnrollSortAsc : true; adminEnrollSortCol = col; window.renderAdminEnrollTable(); };
+
+        // --- TARIK DATA ---
+        window.loadEnrollData = async function(forceRefresh = false) {
+            document.getElementById('team-enroll-head').innerHTML = window.generateEnrollHeader(false);
+            if (!forceRefresh && enrollState.data.length > 0) { window.renderEnrollTable(); return; }
+            document.getElementById('enroll-table-body').innerHTML = `<tr><td colspan="30" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data...</td></tr>`;
+            try {
+                const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Staff Name", "==", currentUser));
+                const snap = await getDocs(q);
+                enrollState.data = []; snap.forEach(doc => enrollState.data.push({ docId: doc.id, ...doc.data() }));
+                teamEnrollPage = 1; window.renderEnrollTable();
+            } catch(e) { alert("Gagal tarik: " + e.message); }
+        };
+
+        window.loadAdminEnrollData = async function(forceRefresh = false) {
+            document.getElementById('admin-enroll-head').innerHTML = window.generateEnrollHeader(true);
+            if (!forceRefresh && enrollState.adminData.length > 0) { window.renderAdminEnrollTable(); return; }
+            document.getElementById('admin-enroll-table-body').innerHTML = `<tr><td colspan="30" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data Admin...</td></tr>`;
+            try {
+                const snap = await getDocs(collection(db, "ps_enroll"));
+                enrollState.adminData = []; snap.forEach(doc => enrollState.adminData.push({ docId: doc.id, ...doc.data() }));
+                adminEnrollPage = 1; window.renderAdminEnrollTable();
+            } catch(e) { alert("Gagal tarik Admin: " + e.message); }
+        };
+
+        // --- LUKIS TABLE DESKTOP ---
+        function _renderEnrollTableGeneric(isAdmin) {
+            let stateData = isAdmin ? enrollState.adminData : enrollState.data;
+            let sortCol = isAdmin ? adminEnrollSortCol : teamEnrollSortCol;
+            let sortAsc = isAdmin ? adminEnrollSortAsc : teamEnrollSortAsc;
+            let page = isAdmin ? adminEnrollPage : teamEnrollPage;
+            let tbodyId = isAdmin ? 'admin-enroll-table-body' : 'enroll-table-body';
+            let infoId = isAdmin ? 'admin-enroll-page-info' : 'team-enroll-page-info';
+
+            let filtered = window.applySortAndFilter ? window.applySortAndFilter(stateData, {}, sortCol, sortAsc) : stateData;
+            let tbody = document.getElementById(tbodyId); tbody.innerHTML = "";
+
+            if(filtered.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="30" class="text-center p-5 text-gray-500">Tiada rekod PS Enroll.</td></tr>`;
+                document.getElementById(infoId).innerText = "Page 1 of 1"; return;
+            }
+
+            let totalPages = Math.ceil(filtered.length / enrollRowsPerPage);
+            if(page > totalPages) page = totalPages; if(page < 1) page = 1;
+            if(isAdmin) adminEnrollPage = page; else teamEnrollPage = page;
+            document.getElementById(infoId).innerText = `Page ${page} of ${totalPages}`;
+            
+            let startIdx = (page - 1) * enrollRowsPerPage; 
+            let pageData = filtered.slice(startIdx, startIdx + enrollRowsPerPage);
+            
+            pageData.forEach((row) => {
+                let actualIdx = stateData.indexOf(row);
+                let tr = document.createElement('tr');
+                let html = `<td class="sticky-col" style="left:0; width: 45px; border-right: 2px solid #444; text-align:center;">
+                                <button onclick="window.openEnrollModal(${isAdmin}, ${actualIdx})" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white p-1 rounded shadow cursor-pointer text-xs">✏️</button>
+                            </td>`;
+                
+                enrollColumns.forEach(col => {
+                    let val = row[col.key] || "-";
+                    let cSty = col.color ? `color:${col.color}; font-weight:bold;` : "";
+                    if (col.key === 'Phone' && val !== "-") {
+                        let phone = val.replace(/[^0-9]/g, '');
+                        if(phone.startsWith('60')) phone = phone.substring(2);
+                        if(phone.startsWith('0')) phone = phone.substring(1);
+                        html += `<td style="${cSty}"><a href="https://wa.me/60${phone}" target="_blank" class="bg-[#25D366] text-white px-1.5 py-1 rounded text-[11px] no-underline font-bold shadow transition">💬 ${val}</a></td>`;
+                    } else {
+                        html += `<td style="${cSty}"><div class="scroll-cell">${val}</div></td>`;
+                    }
+                });
+                tr.innerHTML = html; tbody.appendChild(tr);
+            });
+            if(isAdmin) document.getElementById('admin-enroll-head').innerHTML = window.generateEnrollHeader(true);
+            else document.getElementById('team-enroll-head').innerHTML = window.generateEnrollHeader(false);
+        }
+        window.renderEnrollTable = function() { _renderEnrollTableGeneric(false); window.renderEnrollMobileList(false); };
+        window.renderAdminEnrollTable = function() { _renderEnrollTableGeneric(true); window.renderEnrollMobileList(true); };
+
+        window.prevEnrollTeam = function() { if(teamEnrollPage > 1) { teamEnrollPage--; window.renderEnrollTable(); } };
+        window.nextEnrollTeam = function() { teamEnrollPage++; window.renderEnrollTable(); };
+        window.prevEnrollAdmin = function() { if(adminEnrollPage > 1) { adminEnrollPage--; window.renderAdminEnrollTable(); } };
+        window.nextEnrollAdmin = function() { adminEnrollPage++; window.renderAdminEnrollTable(); };
+
+        // --- ENJIN MOBILE VIEW ---
+        window.toggleEnrollViewMode = function(mode, isAdmin) {
+            let deskWrap = document.getElementById(`enroll-desktop-wrapper-${isAdmin}`);
+            let mobWrap = document.getElementById(`enroll-mobile-wrapper-${isAdmin}`);
+            let btnDesk = document.getElementById(`btn-enroll-desktop-${isAdmin}`);
+            let btnMob = document.getElementById(`btn-enroll-mobile-${isAdmin}`);
+
+            if(mode === 'mobile') {
+                deskWrap.style.display = 'none'; mobWrap.style.display = 'block';
+                btnDesk.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555]";
+                btnMob.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-lg";
+            } else {
+                mobWrap.style.display = 'none'; deskWrap.style.display = 'block';
+                btnMob.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555]";
+                btnDesk.className = "px-4 py-1.5 rounded-full text-xs font-bold bg-[#0072ff] text-white shadow-lg";
+            }
+        };
+
+        window.renderEnrollMobileList = function(isAdmin) {
+            let listContainer = document.getElementById(`enroll-mobile-list-${isAdmin}`);
+            if(!listContainer) return;
+            let stateArr = isAdmin ? enrollState.adminData : enrollState.data;
+            let searchText = (document.getElementById(`enroll-mobile-search-${isAdmin}`)?.value || "").toLowerCase();
+
+            let mapped = stateArr.filter(row => {
+                let name = String(row["Student Name"] || "").toLowerCase();
+                let inv = String(row["Invoice Number"] || "").toLowerCase();
+                if(searchText && !name.includes(searchText) && !inv.includes(searchText)) return false;
+                return true;
+            });
+
+            let html = "";
+            mapped.slice(0, 100).forEach(row => {
+                let actualIdx = stateArr.indexOf(row);
+                let name = row["Student Name"] || "Unknown";
+                let tofu = row["TO FU"] || "-";
+                let crmLink = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(name)}`;
+
+                html += `
+                <div class="flex items-start p-3 border-b border-[#222] hover:bg-[#1a1a1a] transition relative pr-8">
+                    <div class="flex-1 min-w-0 pr-1">
+                        <div class="flex justify-between items-baseline mb-1">
+                            <h4 class="text-[#00c6ff] font-bold text-base m-0 truncate">${name}</h4>
+                            <span class="text-[#ffeb3b] text-[10px] font-bold bg-[#333] px-1 rounded">${row["Invoice Number"]||"-"}</span>
+                        </div>
+                        <a href="${crmLink}" target="_blank" class="bg-[#111] border border-[#00c6ff] text-[#00c6ff] px-2 py-1 rounded text-[10px] font-bold no-underline inline-block mb-2 shadow-sm hover:bg-[#00c6ff] hover:text-black transition">ℹ️ Info Student</a>
+                        <div class="text-[#00e676] text-xs font-bold truncate">🎯 TO FU: ${tofu}</div>
+                    </div>
+                    <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-3">
+                        <button onclick="window.openEnrollModal(${isAdmin}, ${actualIdx})" class="w-8 h-8 rounded-full bg-[#0072ff] text-white flex items-center justify-center text-[12px] shadow-lg">✏️</button>
+                    </div>
+                </div>`;
+            });
+            listContainer.innerHTML = html || `<div class="text-center p-10 text-gray-500">Tiada hasil padanan.</div>`;
+        };
+
+        // --- IMPORT EXCEL ---
+        window.prosesImportEnrollExcel = async function(inputId, statusId, btn) {
+            const fail = document.getElementById(inputId).files[0];
+            const status = document.getElementById(statusId);
+            if(!fail) { alert("Sila pilih fail Excel boss!"); return; }
+            
+            status.innerText = "⏳ Membaca Excel (Mencari Kolum di Baris 2)...";
+            btn.disabled = true;
+
+            const reader = new FileReader();
+            reader.onload = async function(e) {
+                try {
+                    const data = new Uint8Array(e.target.result);
+                    const workbook = XLSX.read(data, {type: 'array'});
+                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+
+                    let headerRowIndex = 1; // Row 2 di Excel (Index 1)
+                    let headers = rows[headerRowIndex];
+                    if(!headers || headers.length === 0) { alert("Header tak wujud di Baris 2!"); btn.disabled = false; return; }
+
+                    let idxInv = -1, idxStaff = -1;
+                    headers.forEach((h, c) => {
+                        let colName = String(h).trim().toLowerCase();
+                        if(colName === 'invoice number') idxInv = c;
+                        if(colName === 'inviter') idxStaff = c;
+                    });
+
+                    if(idxInv === -1) { alert("Kolum 'Invoice Number' tak jumpa!"); btn.disabled = false; return; }
+
+                    let validRows = [];
+                    for(let i = headerRowIndex + 1; i < rows.length; i++) {
+                        let rowArray = rows[i];
+                        let invNum = String(rowArray[idxInv] || "").trim();
+                        if(invNum) {
+                            let rowData = {};
+                            headers.forEach((h, c) => { rowData[h || `Col_${c}`] = String(rowArray[c] || "").trim(); });
+                            validRows.push({ inv: invNum, staffNameExcel: String(rowArray[idxStaff] || "").trim(), data: rowData });
+                        }
+                    }
+
+                    status.innerText = "⏳ Memadankan nama & menyemak rekod di Firebase...";
+                    
+                    let batch = writeBatch(db);
+                    let opCount = 0; let bAdded = 0; let bUpdated = 0;
+
+                    for(let row of validRows) {
+                        let rowData = row.data;
+                        let finalStaff = row.staffNameExcel;
+
+                        // Padankan nama panjang excel kepada nama sistem (pendek)
+                        if (typeof senaraiStafAdmin !== 'undefined' && finalStaff) {
+                            let fLow = finalStaff.toLowerCase();
+                            let matched = senaraiStafAdmin.find(s => String(s.fullName||"").toLowerCase() === fLow || String(s.name).toLowerCase() === fLow);
+                            if(matched) finalStaff = matched.name;
+                        }
+                        rowData["Staff Name"] = finalStaff;
+
+                        // Cari duplicate guna Invoice Number (Query)
+                        const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Invoice Number", "==", row.inv));
+                        const snap = await getDocs(q);
+
+                        if(!snap.empty) {
+                            // Update overwrite
+                            let oldDoc = snap.docs[0];
+                            let oldData = oldDoc.data();
+                            // Lindungi data manual kita
+                            rowData["TO FU"] = oldData["TO FU"] || "";
+                            rowData["FU Date"] = oldData["FU Date"] || "";
+                            rowData["FU Time"] = oldData["FU Time"] || "";
+                            rowData["Class Progress"] = oldData["Class Progress"] || "";
+                            rowData["History FU"] = oldData["History FU"] || "";
+                            rowData["Timestamp Masuk"] = oldData["Timestamp Masuk"] || new Date().toISOString();
+                            
+                            batch.update(doc(db, "ps_enroll", oldDoc.id), rowData);
+                            bUpdated++;
+                        } else {
+                            rowData["Timestamp Masuk"] = new Date().toISOString();
+                            let newRef = doc(collection(db, "ps_enroll"));
+                            batch.set(newRef, rowData);
+                            bAdded++;
+                        }
+                        opCount++;
+
+                        if(opCount >= 450) { await batch.commit(); batch = writeBatch(db); opCount = 0; }
+                    }
+                    if(opCount > 0) await batch.commit();
+
+                    // =========================================
+                    // 🌟 MAGIK CCTV LOG: Simpan Sejarah Upload Enroll
+                    // =========================================
+                    try {
+                        let senaraiStafUpload = [];
+                        // Kumpul semua nama staf dari fail Excel yang baru di-upload
+                        validRows.forEach(r => {
+                            let fStaff = r.staffNameExcel;
+                            if (typeof senaraiStafAdmin !== 'undefined' && fStaff) {
+                                let fLow = fStaff.toLowerCase();
+                                let matched = senaraiStafAdmin.find(s => String(s.fullName||"").toLowerCase() === fLow || String(s.name).toLowerCase() === fLow);
+                                if(matched) fStaff = matched.name;
+                            }
+                            if(fStaff && !senaraiStafUpload.includes(fStaff)) senaraiStafUpload.push(fStaff);
+                        });
+
+                        // Kalau takde nama staf, kita labelkan dia Admin
+                        if(senaraiStafUpload.length === 0) senaraiStafUpload.push("Admin (Pukal)");
+
+                        // Tembak log ke Firebase
+                        let logUpdates = {};
+                        senaraiStafUpload.forEach(s => {
+                            if (s.trim() !== "") logUpdates[s] = new Date().toISOString();
+                        });
+                        
+                        await setDoc(doc(db, "system_settings", "enroll_upload_logs"), logUpdates, { merge: true });
+                        
+                        // Segar semula jadual log kat skrin
+                        if (typeof window.renderEnrollUploadLogs === 'function') window.renderEnrollUploadLogs();
+                    } catch(logErr) { console.error("Gagal simpan log Enroll:", logErr); }
+                    // =========================================
+
+                    status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update.`;
+                    btn.disabled = false;
+                    window.loadAdminEnrollData(true);
+
+                } catch(err) { alert("Ralat: " + err.message); btn.disabled = false; }
+            };
+            reader.readAsArrayBuffer(fail);
+        };
+
+        // --- MODAL EDIT LOGIC ---
+        window.openEnrollModal = function(isAdmin, idx) {
+            let data = isAdmin ? enrollState.adminData[idx] : enrollState.data[idx];
+            if(!data) return;
+            
+            document.getElementById('enroll-docid').value = data.docId;
+            document.getElementById('enroll-inviter').value = data["Staff Name"] || data["Inviter"] || "";
+            document.getElementById('enroll-name').value = data["Student Name"] || "";
+            document.getElementById('enroll-tofu').value = data["TO FU"] || "";
+            document.getElementById('enroll-classprog').value = data["Class Progress"] || "";
+            document.getElementById('enroll-fudate').value = window.toInputDate(data["FU Date"]);
+            document.getElementById('enroll-futime').value = data["FU Time"] || "";
+            document.getElementById('enroll-history').value = data["History FU"] || "";
+
+            let crmLink = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(data["Student Name"] || "")}`;
+            document.getElementById('enroll-info-link').href = crmLink;
+
+            let otherDiv = document.getElementById('enroll-other-details');
+            otherDiv.innerHTML = "";
+            let excludeKeys = ["Staff Name", "Student Name", "TO FU", "Class Progress", "FU Date", "FU Time", "History FU", "docId", "Timestamp Masuk"];
+            
+            enrollColumns.forEach(col => {
+                if(!excludeKeys.includes(col.key) && data[col.key]) {
+                    otherDiv.innerHTML += `<div class="form-group-crm"><label>${col.label}</label><input type="text" value="${data[col.key]}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1"></div>`;
+                }
+            });
+            window.updateEnrollPreview();
+            document.getElementById('modal-enroll').style.display = 'flex';
+        };
+
+        window.closeEnrollModal = function() { document.getElementById('modal-enroll').style.display = 'none'; };
+
+        window.updateEnrollPreview = function() {
+            let action = document.getElementById('enroll-tofu').value || document.getElementById('enroll-classprog').value || "Update";
+            let d = document.getElementById('enroll-fudate').value; let t = document.getElementById('enroll-futime').value;
+            if(!d) d = new Date().toISOString().split('T')[0]; if(!t) t = "00:00";
+            document.getElementById('enroll-preview-fu').value = `[${d} ${t}] Action: ${action}`;
+        };
+
+        window.saveEnrollData = async function() {
+            let docId = document.getElementById('enroll-docid').value;
+            if(!docId) return;
+
+            let actionVal = document.getElementById('enroll-tofu').value.trim();
+            let previewTxt = document.getElementById('enroll-preview-fu').value.trim();
+            let currentHistory = document.getElementById('enroll-history').value.trim();
+            let isAutoAppend = document.getElementById('enroll-auto-append-history').checked;
+            
+            if (isAutoAppend && actionVal !== "" && !currentHistory.startsWith(previewTxt)) {
+                currentHistory = currentHistory ? (previewTxt + "\n" + currentHistory) : previewTxt;
+                document.getElementById('enroll-history').value = currentHistory;
+            }
+
+            let updateData = {
+                "TO FU": actionVal,
+                "Class Progress": document.getElementById('enroll-classprog').value,
+                "FU Date": window.toSheetDate(document.getElementById('enroll-fudate').value),
+                "FU Time": document.getElementById('enroll-futime').value,
+                "History FU": currentHistory
+            };
+
+            try {
+                await updateDoc(doc(db, "ps_enroll", docId), updateData);
+                let isAdmin = !document.getElementById('adm-view-enroll').classList.contains('hidden');
+                let stateArr = isAdmin ? enrollState.adminData : enrollState.data;
+                let rIdx = stateArr.findIndex(r => r.docId === docId);
+                if(rIdx > -1) stateArr[rIdx] = { ...stateArr[rIdx], ...updateData };
+                
+                window.closeEnrollModal();
+                if(isAdmin) window.renderAdminEnrollTable(); else window.renderEnrollTable();
+            } catch(e) { alert("Gagal update: " + e.message); }
+        };
+
+        // 🌟 FUNGSI BARU: Isi Dropdown Copy untuk Enroll
+        window.populateEnrollCopyDropdown = async function() {
+            let sel = document.getElementById('copy-enroll-staff');
+            if(!sel) return;
+            try {
+                const snap = await getDocs(collection(db, "staff_list"));
+                let html = `<option value="">- Pilih Staf -</option>`;
+                let staffs = [];
+                snap.forEach(doc => staffs.push(doc.data().name));
+                staffs.sort().forEach(s => html += `<option value="${s}">${s}</option>`);
+                sel.innerHTML = html;
+            } catch(e) { console.error(e); }
+        };
+
+        // 🌟 FUNGSI COPY ENROLL (VERSI KEBAL & FORMAT SFO BARU)
+        window.copyEnrollCollection = async function(isAdmin) {
+            let btn = isAdmin ? document.querySelector("button[onclick='window.copyEnrollCollection(true)']") : null;
+            let originalText = btn ? btn.innerText : "📋 Copy Text";
+            
+            let staffName = isAdmin ? document.getElementById('copy-enroll-staff').value : currentUser;
+            if(!staffName) { alert("Sila pilih staf dulu boss!"); return; }
+
+            if(btn) btn.innerText = "⏳ Semak Data...";
+
+            let excelFullName = "";
+            try {
+                const snap = await getDocs(collection(db, "staff_list"));
+                snap.forEach(doc => {
+                    let d = doc.data();
+                    if(d.name === staffName) excelFullName = d.fullName || "";
+                });
+            } catch(e) { console.error("Gagal semak mapping staf", e); }
+
+            let sNameLow = staffName.toLowerCase().trim();
+            let fNameLow = excelFullName.toLowerCase().trim();
+
+            let dataToProcess = enrollState.adminData.filter(r => {
+                let dbStaff = String(r["Staff Name"] || r["Inviter"] || "").toLowerCase().trim();
+                return dbStaff === sNameLow || (fNameLow !== "" && dbStaff === fNameLow);
+            });
+            
+            let validData = dataToProcess.filter(r => {
+                let cleanBal = String(r["Latest Balance"] || "0").replace(/[^0-9.-]/g, '');
+                let bal = parseFloat(cleanBal) || 0;
+                return bal > 0;
+            });
+
+            if(validData.length === 0) { 
+                alert(`Tiada rekod tunggakan (Balance > 0) untuk ${staffName}.`); 
+                if(btn) btn.innerText = originalText;
+                return; 
+            }
+
+            // 🎯 SUSUNAN (SORTING): Descending ikut Latest Balance (Paling tinggi duduk atas)
+            validData.sort((a, b) => {
+                let balA = parseFloat(String(a["Latest Balance"] || "0").replace(/[^0-9.-]/g, '')) || 0;
+                let balB = parseFloat(String(b["Latest Balance"] || "0").replace(/[^0-9.-]/g, '')) || 0;
+                return balB - balA;
+            });
+
+            let listText = ""; let totalBal = 0;
+            validData.forEach(r => {
+                let sName = r["Student Name"] || "-";
+                let efoInfo = r["EFO Info"] || "-";
+                
+                // Format Nombor Telefon supaya jadi link WhatsApp yang sah
+                let phone = String(r["Phone"] || "").replace(/[^0-9]/g, '');
+                if(phone.startsWith('60')) phone = phone.substring(2);
+                if(phone.startsWith('0')) phone = phone.substring(1);
+                let waLink = phone ? `wa.me/60${phone}` : "-";
+
+                let cleanBal = String(r["Latest Balance"] || "0").replace(/[^0-9.-]/g, '');
+                let bal = parseFloat(cleanBal) || 0;
+                totalBal += bal;
+                
+                let crmLink = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(sName)}`;
+                
+                // 📝 FORMAT LISTING BARU
+                listText += `Name: ${sName}\nEFO: ${efoInfo}\nPhone Number: ${waLink}\nLatest Balance : RM ${bal.toFixed(2)}\nCRM: ${crmLink}\n\n`;
+            });
+
+            // Guna Nama Penuh jika wujud, jika tak guna nama pendek
+            let displayName = excelFullName !== "" ? excelFullName : staffName;
+
+            // 📝 FORMAT HEADER UTAMA BARU
+            let finalTxt = `*Collection Status Request*\nQǐng bāngmáng kàn kàn\nPlease help Xièxiè SFOs 🫶\n\n_*[${displayName}]*_\nTotal : *RM ${totalBal.toFixed(2)}*\n---------------------------\n\n${listText.trim()}`;
+            
+            navigator.clipboard.writeText(finalTxt).then(() => {
+                alert(`✅ BOOM! Berjaya copy collection Enroll untuk ${staffName}.\nTotal: RM ${totalBal.toFixed(2)}`);
+                if(btn) btn.innerText = originalText;
+            }).catch(err => {
+                alert("Gagal copy: " + err);
+                if(btn) btn.innerText = originalText;
+            });
+        };
+
+        // 🌟 FUNGSI CCTV: Sejarah Upload Enroll (Versi Padu & Kemas)
+        window.renderEnrollUploadLogs = async function() {
+            let c = document.getElementById('enroll-upload-logs-container');
+            if(!c) return;
+            
+            // Letak loading state supaya nampak interaktif
+            c.innerHTML = "<div class='text-gray-500 text-xs mt-2'>⏳ Menarik log upload Enroll...</div>";
+            
+            try {
+                const snap = await getDoc(doc(db, "system_settings", "enroll_upload_logs"));
+                
+                // Semak kalau data wujud dan tak kosong
+                if(snap.exists() && Object.keys(snap.data()).length > 0) {
+                    let data = snap.data();
+                    let html = `<table class="w-full text-xs text-left border border-[#444] rounded mt-2">
+                        <tr class="bg-[#222] text-[#ff9800]"><th class="p-2 border-b border-[#444]">Nama Staf</th><th class="p-2 border-b border-[#444]">Upload Terakhir (PS Enroll)</th></tr>`;
+                    
+                    // Susun staf mengikut tarikh/masa upload TERBARU (Guna getTime supaya tepat)
+                    let staffs = Object.keys(data).filter(s => s.trim() !== "").sort((a, b) => {
+                        return new Date(data[b]).getTime() - new Date(data[a]).getTime(); 
+                    });
+
+                    staffs.forEach(s => {
+                        let d = new Date(data[s]);
+                        // Format comel: 09/04/2026, 12:30 PM
+                        let tStr = d.toLocaleDateString('en-GB') + ", " + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+                        
+                        html += `<tr><td class="p-2 border-b border-[#333] text-white font-bold">${s}</td><td class="p-2 border-b border-[#333] text-[#00e676]">${tStr}</td></tr>`;
+                    });
+                    
+                    html += `</table>`;
+                    c.innerHTML = html;
+                } else {
+                    // Kalau dalam Firebase langsung takde data lagi
+                    c.innerHTML = "<div class='text-gray-500 text-xs italic mt-2'>Belum ada rekod upload dicatat untuk PS Enroll.</div>";
+                }
+            } catch(e) {
+                // Tangkap error kalau internet problem
+                c.innerHTML = `<div class='text-red-500 text-xs mt-2'>Gagal tarik log Enroll: ${e.message}</div>`;
             }
         };
 
