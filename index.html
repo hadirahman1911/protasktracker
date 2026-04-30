@@ -828,7 +828,7 @@
                     <div class="form-group-crm"><label>Contact</label><input type="text" id="crm-contact"></div>
                     
                     <div class="form-group-crm"><label>Status</label>
-                        <select id="crm-status">
+                        <select id="crm-status" onchange="window.autoAppendStatusChange(this.value)">
                           <option value="">- Pilih Status -</option>
                           <option value="New">New</option>
                           <option value="In Progress">In Progress</option>
@@ -1529,7 +1529,7 @@
             });
             window.updateCRMBulkPanel();
         };
-
+        
         // Update paparan Panel Hijau kat atas tu
         window.updateCRMBulkPanel = function() {
             let panel = document.getElementById('crm-bulk-panel');
@@ -1613,7 +1613,7 @@
             document.getElementById('modal-crm-bulk').style.display = 'flex';
         };
 
-        // 🚀 SIMPAN DATA BULK EDIT CRM KE FIREBASE
+        // 🚀 SIMPAN DATA BULK EDIT CRM KE FIREBASE (DENGAN AUTO-HISTORY STATUS)
         window.saveCRMBulkData = async function() {
             if (window.selectedCRMRows.length === 0) return;
 
@@ -1639,33 +1639,51 @@
             if (newStaff) updateData["Staff Name"] = newStaff;
             if (newStatus) updateData["STATUS"] = newStatus;
             if (newTofu) updateData["TO FU"] = newTofu;
-            if (newFuDate) updateData["FOLLOW UP (DATE)"] = window.toSheetDate(newFuDate); // Format DD/MM/YYYY
+            if (newFuDate) updateData["FOLLOW UP (DATE)"] = window.toSheetDate(newFuDate); 
             if (newFuTime) updateData["FOLLOW UP (TIME)"] = newFuTime;
+
+            // 🌟 JANA AYAT HISTORY KALAU STATUS BERTUKAR (BULK MODE)
+            let statusAppendStr = "";
+            if (newStatus) {
+                let now = new Date();
+                let dd = String(now.getDate()).padStart(2, '0');
+                let mm = String(now.getMonth() + 1).padStart(2, '0');
+                let yyyy = now.getFullYear();
+                let timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+                statusAppendStr = `[${dd}/${mm}/${yyyy} ${timeStr}] Action: Change Status to ${newStatus}`;
+            }
 
             try {
                 // Tembak Firebase & Update Memori Serentak
                 for (let docId of window.selectedCRMRows) {
-                    await updateDoc(doc(db, "crm_leads", docId), updateData);
-                    
-                    // Kemaskini memori jadual (Admin)
+                    // 🌟 GABUNGKAN HISTORY LAMA DENGAN AYAT BARU UNTUK SETIAP LEAD (Jika ada)
                     let aIdx = crmState.adminData.findIndex(r => r.docId === docId);
-                    if(aIdx > -1) crmState.adminData[aIdx] = { ...crmState.adminData[aIdx], ...updateData };
-                    
-                    // Kemaskini memori jadual (Staff)
                     let sIdx = crmState.data.findIndex(r => r.docId === docId);
-                    if(sIdx > -1) crmState.data[sIdx] = { ...crmState.data[sIdx], ...updateData };
+                    let oldData = aIdx > -1 ? crmState.adminData[aIdx] : (sIdx > -1 ? crmState.data[sIdx] : null);
+                    
+                    let rowUpdateData = { ...updateData }; 
+                    
+                    if (newStatus && oldData) {
+                        let currentHist = oldData["HISTORY FU"] || "";
+                        // Tolak ayat baru naik ke baris paling atas!
+                        rowUpdateData["HISTORY FU"] = currentHist ? (statusAppendStr + "\n" + currentHist) : statusAppendStr;
+                    }
+
+                    await updateDoc(doc(db, "crm_leads", docId), rowUpdateData);
+                    
+                    // Kemaskini memori jadual
+                    if(aIdx > -1) crmState.adminData[aIdx] = { ...crmState.adminData[aIdx], ...rowUpdateData };
+                    if(sIdx > -1) crmState.data[sIdx] = { ...crmState.data[sIdx], ...rowUpdateData };
                 }
                 
                 alert(`✅ Berjaya kemaskini ${window.selectedCRMRows.length} leads secara pukal!`);
-                window.selectedCRMRows = []; // Reset memori selection
+                window.selectedCRMRows = []; 
                 
-                // Reset checkbox kat header table
                 let headerCb = document.querySelector('th.sticky-col input[type="checkbox"]');
                 if(headerCb) headerCb.checked = false;
 
                 document.getElementById('modal-crm-bulk').style.display = 'none';
                 
-                // Refresh table
                 let admView = document.getElementById('adm-view-crm');
                 let isAdmin = admView && !admView.classList.contains('hidden');
                 
@@ -4006,6 +4024,32 @@
           
           let modalCrm = document.getElementById('modal-crm');
           if(modalCrm) modalCrm.style.display = 'flex';
+        };
+
+        // ==========================================
+        // 🌟 AUTO-APPEND HISTORY BILA TUKAR STATUS (SINGLE EDIT)
+        // ==========================================
+        window.autoAppendStatusChange = function(newStatus) {
+            if (!newStatus) return;
+            let historyEl = document.getElementById('crm-history');
+            if (!historyEl) return;
+            
+            // Dapatkan waktu semasa
+            let now = new Date();
+            let dd = String(now.getDate()).padStart(2, '0');
+            let mm = String(now.getMonth() + 1).padStart(2, '0');
+            let yyyy = now.getFullYear();
+            let dateStr = `${dd}/${mm}/${yyyy}`;
+            let timeStr = now.toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+            
+            // Bina ayat magik
+            let appendText = `[${dateStr} ${timeStr}] Action: Change Status to ${newStatus}`;
+            let currentHistory = historyEl.value.trim();
+            
+            // Halang sistem tulis benda sama 2-3 kali kalau boss tak sengaja tertekan dropdown banyak kali
+            if (!currentHistory.includes(appendText)) {
+                historyEl.value = currentHistory ? (appendText + "\n" + currentHistory) : appendText;
+            }
         };
         
         // ==========================================
