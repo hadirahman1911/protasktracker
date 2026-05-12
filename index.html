@@ -3404,7 +3404,7 @@
                           let phone = val.replace(/[^0-9]/g, '');
                           if(phone.startsWith('60')) phone = phone.substring(2);
                           if(phone.startsWith('0')) phone = phone.substring(1);
-                          let waLink = phone ? `https://wa.me/60${phone}` : `#`;
+                          let waLink = phone ? `https://wa.me/${phone}` : `#`;
                           tdContent = `<a href="${waLink}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-1.5 py-1 rounded text-[11px] no-underline flex items-center gap-1 w-fit mt-1 mb-1 font-bold shadow transition">💬 ${val}</a>`;
                       } else {
                           tdContent = val;
@@ -4802,7 +4802,7 @@
                         let phone = val.replace(/[^0-9]/g, '');
                         if(phone.startsWith('60')) phone = phone.substring(2);
                         if(phone.startsWith('0')) phone = phone.substring(1);
-                        let waLink = phone ? `https://wa.me/60${phone}` : `#`;
+                        let waLink = phone ? `https://wa.me/${phone}` : `#`;
                         let waBtn = `<a href="${waLink}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-1.5 py-1 rounded text-[11px] no-underline flex items-center gap-1 w-fit mt-1 mb-1 font-bold shadow transition">💬 ${val}</a>`;
                         html += `<td style="${cSty} padding:5px;"><div class="scroll-cell ${wideClass}">${waBtn}</div></td>`;
                     } else {
@@ -5902,7 +5902,7 @@
                     if(cp.startsWith('60')) cp = cp.substring(2);
                     if(cp.startsWith('0')) cp = cp.substring(1);
                     if(cp) {
-                        waBtnHtml = `<a href="https://wa.me/60${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow inline-flex" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                        waBtnHtml = `<a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow inline-flex" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
                     }
                 }
 
@@ -6252,7 +6252,7 @@
                     if(cp.startsWith('60')) cp = cp.substring(2);
                     if(cp.startsWith('0')) cp = cp.substring(1);
                     if(cp) {
-                        waBtnHtml = `<a href="https://wa.me/60${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                        waBtnHtml = `<a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
                     }
                 }
 
@@ -6678,7 +6678,7 @@
                 let phone = String(row.Phone || "").replace(/[^0-9]/g, '');
                 if(phone.startsWith('60')) phone = phone.substring(2);
                 if(phone.startsWith('0')) phone = phone.substring(1);
-                let waLink = phone ? `https://wa.me/60${phone}` : `#`;
+                let waLink = phone ? `https://wa.me/${phone}` : `#`;
                 
                 html += `
                 <div class="${bgClass} p-4 rounded-xl border transition-all shadow-lg relative flex flex-col gap-2 opacity-${isDone||isInv ? '60' : '100'}">
@@ -6864,7 +6864,7 @@
                         let phone = val.replace(/[^0-9]/g, '');
                         if(phone.startsWith('60')) phone = phone.substring(2);
                         if(phone.startsWith('0')) phone = phone.substring(1);
-                        html += `<td style="${cSty}"><a href="https://wa.me/60${phone}" target="_blank" class="bg-[#25D366] text-white px-1.5 py-1 rounded text-[11px] no-underline font-bold shadow transition">💬 ${val}</a></td>`;
+                        html += `<td style="${cSty}"><a href="https://wa.me/${phone}" target="_blank" class="bg-[#25D366] text-white px-1.5 py-1 rounded text-[11px] no-underline font-bold shadow transition">💬 ${val}</a></td>`;
                     } else {
                         html += `<td style="${cSty}"><div class="scroll-cell">${val}</div></td>`;
                     }
@@ -7209,7 +7209,7 @@
                 let phone = String(r["Phone"] || "").replace(/[^0-9]/g, '');
                 if(phone.startsWith('60')) phone = phone.substring(2);
                 if(phone.startsWith('0')) phone = phone.substring(1);
-                let waLink = phone ? `wa.me/60${phone}` : "-";
+                let waLink = phone ? `wa.me/${phone}` : "-";
 
                 let cleanBal = String(r["Latest Balance"] || "0").replace(/[^0-9.-]/g, '');
                 let bal = parseFloat(cleanBal) || 0;
