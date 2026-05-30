@@ -264,6 +264,7 @@
                                 <button id="m-filter-TOFU-false" onclick="window.setCRMMobileFilter('TOFU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
                                 <button id="m-filter-Nurturing-false" onclick="window.setCRMMobileFilter('Nurturing', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Nurturing</button>
                                 <button id="m-filter-Preloved-false" onclick="window.setCRMMobileFilter('Preloved', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Preloved</button>
+                            <button id="m-filter-HuntCS-false" onclick="window.setCRMMobileFilter('HuntCS', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Hunt CS</button>
                             </div>
                         </div>
                         <div id="crm-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
@@ -413,6 +414,15 @@
         <div class="flex-1 overflow-y-auto p-6 relative">
             
             <div id="adm-view-perf" class="block">
+                <div class="flex flex-wrap gap-2 mb-4 items-center bg-[#1e1e1e] p-3 rounded-lg border border-[#333] shadow-sm">
+                    <span class="text-sm font-bold text-[#00c6ff] mr-1">Filter Pantas:</span>
+                    <button onclick="window.setAdminDate('yesterday')" class="px-3 py-1.5 bg-[#333] hover:bg-[#0072ff] hover:text-white text-gray-300 text-xs rounded font-bold transition shadow">Semalam</button>
+                    <button onclick="window.setAdminDate('7days')" class="px-3 py-1.5 bg-[#333] hover:bg-[#0072ff] hover:text-white text-gray-300 text-xs rounded font-bold transition shadow">7 Hari Lepas</button>
+                    <div class="border-l border-[#555] mx-1 h-5"></div>
+                    <span class="text-xs text-gray-400 font-bold">Bulan:</span>
+                    <input type="month" id="admin-month-picker" onchange="window.setAdminDate('month', this.value)" class="bg-[#111] text-white border border-[#555] p-1.5 rounded outline-none text-xs font-bold focus:border-[#00c6ff]">
+                </div>
+
                 <div id="admin-perf-container">
                     <div class="text-center py-20 text-gray-500">⏳ Sedang memuatkan data...</div>
                 </div>
@@ -450,6 +460,26 @@
                   
                         <span id="statusLeadsAdminTab" class="text-xs font-bold text-[#E91E63] ml-2"></span>
                         <button onclick="window.openAddCRMModal(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-auto md:ml-4 flex items-center gap-1">➕ Add Lead</button>
+                    </div>
+
+                    <div class="flex flex-col gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333]">
+                        <div class="flex flex-wrap items-center gap-2">
+                            <span class="text-[#00e676] font-bold text-sm w-full md:w-auto">🎯 Bulk Add Lead (Paste):</span>
+                            <select id="bulk-paste-staff-crm" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
+                                <option value="" disabled selected>- Pilih Staf -</option>
+                            </select>
+                            <select id="bulk-paste-status" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
+                                <option value="New">New</option>
+                                <option value="In Progress" selected>In Progress</option>
+                                <option value="Nurturing">Nurturing</option>
+                                <option value="Invite">Invite</option>
+                                <option value="Preloved Leads by BL Hadi">Preloved Leads</option>
+                                <option value="Hunt CS">Hunt CS</option>
+                            </select>
+                            <input type="text" id="bulk-paste-source" placeholder="Tulis Source..." class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
+                        </div>
+                        <textarea id="bulk-paste-data-crm" rows="4" placeholder="Format setiap baris: Nama, Phone, Source (Pilihan jika tak tulis di kotak atas)&#10;Contoh:&#10;Ali, 0123456789, FB Ads&#10;Abu, +60 19-876 5432" class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono leading-relaxed"></textarea>
+                        <button onclick="window.prosesBulkPasteCRM()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-xs shadow w-full md:w-auto self-end">📥 Simpan Leads</button>
                     </div>
 
                     <<!-- 🌟 PANEL BULK EDIT CRM (DIKEMASKINI) -->
@@ -498,6 +528,7 @@
                                 <button id="m-filter-TOFU-true" onclick="window.setCRMMobileFilter('TOFU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">TO FU</button>
                                 <button id="m-filter-Nurturing-true" onclick="window.setCRMMobileFilter('Nurturing', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Nurturing</button>
                                 <button id="m-filter-Preloved-true" onclick="window.setCRMMobileFilter('Preloved', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Preloved</button>
+                            <button id="m-filter-HuntCS-true" onclick="window.setCRMMobileFilter('HuntCS', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Hunt CS</button>
                             </div>
                         </div>
                         <div id="crm-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
@@ -827,7 +858,13 @@
                 
                 <div class="grid grid-cols-2 gap-3">
                     <div class="form-group-crm"><label>Name</label><input type="text" id="crm-name"></div>
-                    <div class="form-group-crm"><label>Contact</label><input type="text" id="crm-contact"></div>
+                    <div class="form-group-crm">
+                        <label>Contact</label>
+                        <div class="flex gap-1">
+                            <input type="text" id="crm-contact" class="flex-1 w-full bg-[#222] text-white p-2 rounded border border-[#444] outline-none focus:border-[#00c6ff]">
+                            <button onclick="window.bukaWA(document.getElementById('crm-contact').value)" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 rounded shadow font-bold text-sm">💬</button>
+                        </div>
+                    </div>
                     
                     <div class="form-group-crm"><label>Status</label>
                         <select id="crm-status" onchange="window.autoAppendStatusChange(this.value)">
@@ -837,6 +874,7 @@
                           <option value="Nurturing">Nurturing</option>
                           <option value="Invite">Invite</option>
                           <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
+                          <option value="Hunt CS">Hunt CS</option>
                         </select>
                     </div>
                     
@@ -954,6 +992,7 @@
                     <option value="Nurturing">Nurturing</option>
                     <option value="Invite">Invite</option>
                     <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
+                          <option value="Hunt CS">Hunt CS</option>
                   </select>
               </div>
               <div class="form-group-crm"><label>Source (Sumber)</label><input type="text" id="add-crm-source" placeholder="Cth: TikTok, WhatsApp"></div>
@@ -995,6 +1034,7 @@
                         <option value="Nurturing">Nurturing</option>
                         <option value="Invite">Invite</option>
                         <option value="Preloved Leads by BL Hadi">Preloved Leads by BL Hadi</option>
+                          <option value="Hunt CS">Hunt CS</option>
                     </select>
                 </div>
                 
@@ -1029,7 +1069,13 @@
             <div class="grid grid-cols-2 gap-3">
                 <div class="form-group-crm"><label>Referral</label><input type="text" id="ps-ref"></div>
                 <div class="form-group-crm"><label>Name</label><input type="text" id="ps-name"></div>
-                <div class="form-group-crm"><label>Phone</label><input type="text" id="ps-phone"></div>
+                <div class="form-group-crm">
+                    <label>Phone</label>
+                    <div class="flex gap-1">
+                        <input type="text" id="ps-phone" class="flex-1 w-full bg-[#222] text-white p-2 rounded border border-[#444] outline-none focus:border-[#00c6ff]">
+                        <button onclick="window.bukaWA(document.getElementById('ps-phone').value)" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 rounded shadow font-bold text-sm">💬</button>
+                    </div>
+                </div>
                 <div class="form-group-crm"><label class="text-[#ffeb3b]">Class Progress</label>
                     <select id="ps-classprog" class="border-[#ffeb3b] border bg-[#1a1a1a]" onchange="window.updatePSPreview()">
                         <option value="">- Pilih -</option>
@@ -1115,7 +1161,14 @@
             
             <div class="grid grid-cols-2 gap-3">
                 <div class="form-group-crm"><label>Inviter (Staff)</label><input type="text" id="enroll-inviter" readonly class="bg-[#111] text-gray-400"></div>
-                <div class="form-group-crm"><label>Student Name</label><input type="text" id="enroll-name" readonly class="bg-[#111] text-gray-400"></div>
+                <div class="form-group-crm"><label>Student Name</label><input type="text" id="enroll-name" readonly class="w-full bg-[#111] text-gray-400 p-2 rounded border border-[#444] outline-none"></div>
+                <div class="form-group-crm">
+                    <label>Phone</label>
+                    <div class="flex gap-1">
+                        <input type="text" id="enroll-phone" readonly class="flex-1 bg-[#111] text-gray-400 w-full p-2 rounded border border-[#444] outline-none">
+                        <button onclick="window.bukaWA(document.getElementById('enroll-phone').value)" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 rounded shadow font-bold text-sm">💬</button>
+                    </div>
+                </div>
                 
                 <div class="form-group-crm col-span-2">
                     <a href="#" id="enroll-info-link" target="_blank" class="bg-[#00c6ff] hover:bg-[#009ee0] text-black font-bold py-2 px-4 rounded-lg shadow block text-center no-underline">ℹ️ Info Student (Buka di CRM)</a>
@@ -1455,7 +1508,7 @@
         };
 
         // ==========================================
-        // 🌟 MODUL CROSSCHECK PHONE NUMBERS (SYSTEM SETUP)
+        // 🌟 MODUL CROSSCHECK PHONE NUMBERS (SYSTEM SETUP) - TURBO 3 IN 1
         // ==========================================
         window.runCrosscheck = async function() {
             let input = document.getElementById('crosscheck-input').value;
@@ -1463,7 +1516,7 @@
             
             if(!input.trim()) { alert("Sila paste nombor telefon dulu boss!"); return; }
             
-            resDiv.innerHTML = `<div class="text-[#ff9800] text-sm text-center mt-10 font-bold animate-pulse">⏳ Sedang pusing database...</div>`;
+            resDiv.innerHTML = `<div class="text-[#ff9800] text-sm text-center mt-10 font-bold animate-pulse">⏳ Pusing database (CRM, PS Master, PS Enroll)...</div>`;
             
             // Formula bersihkan nombor telefon sama macam enjin import
             const formatPhone60 = (p) => {
@@ -1479,40 +1532,74 @@
             let cleanInputNumbers = [...new Set(rawNumbers.map(n => formatPhone60(n)).filter(n => n !== ""))];
             
             try {
-                // Tarik semua database CRM untuk semakan
-                const snap = await getDocs(collection(db, "crm_leads"));
+                // Tarik semua database (3 Jadual Sekali Harung!)
+                const [snapCRM, snapPS, snapEnroll] = await Promise.all([
+                    getDocs(collection(db, "crm_leads")),
+                    getDocs(collection(db, "ps_students")),
+                    getDocs(collection(db, "ps_enroll"))
+                ]);
+                
                 let dbMap = {}; 
-                snap.forEach(doc => {
+                
+                // 1. Process CRM Leads
+                snapCRM.forEach(doc => {
                     let d = doc.data();
                     let cleanPhone = formatPhone60(d["CONTACT"] || d.contact);
-                    if(cleanPhone) dbMap[cleanPhone] = d;
+                    if(cleanPhone) dbMap[cleanPhone] = { source: 'CRM Master', staff: d["Staff Name"] || "-", status: d["STATUS"] || "-" };
+                });
+                
+                // 2. Process PS Master
+                snapPS.forEach(doc => {
+                    let d = doc.data();
+                    let cleanPhone = formatPhone60(d["Phone Number"] || d["Phone"] || d.phone || d.Contact || d.contact);
+                    if(cleanPhone) dbMap[cleanPhone] = { source: 'PS Master', staff: d["Lecturer"] || "-", status: d["Class Progress"] || "Active" };
+                });
+                
+                // 3. Process PS Enroll
+                snapEnroll.forEach(doc => {
+                    let d = doc.data();
+                    let cleanPhone = formatPhone60(d["Phone"]);
+                    if(cleanPhone) dbMap[cleanPhone] = { source: 'PS Enroll', staff: d["Staff Name"] || d["Inviter"] || "-", status: d["Class Progress"] || "-" };
                 });
                 
                 let wujud = [];
                 let takWujud = [];
+                let textTakWujud = [];
                 
                 // Semak satu-satu nombor dari senarai boss
                 cleanInputNumbers.forEach(num => {
                     if(dbMap[num]) {
-                        wujud.push({ phone: num, staff: dbMap[num]["Staff Name"] || "-", status: dbMap[num]["STATUS"] || "-" });
+                        wujud.push({ phone: num, source: dbMap[num].source, staff: dbMap[num].staff, status: dbMap[num].status });
                     } else {
                         takWujud.push(num);
+                        textTakWujud.push(num);
                     }
                 });
                 
                 // --- LUKIS KEPUTUSAN KAT SKRIN ---
-                let html = `<div class="mb-3 text-sm pb-2 border-b border-[#444]">
-                    <span class="text-[#00e676] font-bold">✅ Boleh Upload: ${takWujud.length}</span> <br> 
-                    <span class="text-red-400 font-bold">❌ Dah Wujud (Duplicate): ${wujud.length}</span>
+                // Butang Copy akan keluar kalau ada nombor yang tak wujud
+                let copyBtnHTML = takWujud.length > 0 ? `<button onclick="window.copyToClipboardCrosscheck('${textTakWujud.join('\\n')}')" class="ml-2 bg-[#00e676] hover:bg-[#00c853] text-black px-3 py-1 rounded shadow font-bold text-xs transition">📋 Copy Nombor Baru</button>` : '';
+
+                let html = `<div class="mb-3 text-sm pb-2 border-b border-[#444] flex flex-wrap justify-between items-end">
+                    <div>
+                        <span class="text-[#00e676] font-bold">✅ Boleh Upload: ${takWujud.length}</span> <br> 
+                        <span class="text-red-400 font-bold">❌ Dah Wujud: ${wujud.length}</span>
+                    </div>
+                    ${copyBtnHTML}
                 </div>`;
                 
                 if(wujud.length > 0) {
                     html += `<div class="text-red-400 font-bold text-xs mb-1">🚨 Dah ada dalam sistem:</div>`;
                     html += `<div class="max-h-40 overflow-y-auto mb-3 border border-red-900 rounded bg-[#1a0f0f] p-1">`;
                     wujud.forEach(w => {
+                        // Letak warna lain-lain untuk jadual yang berbeza supaya nampak padu
+                        let sourceColor = w.source === 'CRM Master' ? 'text-blue-400' : (w.source === 'PS Master' ? 'text-purple-400' : 'text-[#00c6ff]');
                         html += `<div class="text-[10px] text-gray-300 border-b border-[#333] p-1.5 flex justify-between items-center hover:bg-[#333]">
-                            <span class="font-bold">📞 ${w.phone}</span>
-                            <span class="text-[#ff9800] text-right bg-[#222] px-1.5 py-0.5 rounded">${w.staff} <br> <span class="text-gray-400 text-[8px]">${w.status}</span></span>
+                            <div>
+                                <span class="font-bold text-[11px]">📞 ${w.phone}</span><br>
+                                <span class="${sourceColor} font-bold text-[9px] bg-[#222] px-1 py-0.5 rounded mt-0.5 inline-block border border-[#333]">${w.source}</span>
+                            </div>
+                            <span class="text-[#ff9800] text-right bg-[#222] px-1.5 py-0.5 rounded border border-[#444]">${w.staff} <br> <span class="text-gray-400 text-[8px]">${w.status}</span></span>
                         </div>`;
                     });
                     html += `</div>`;
@@ -1530,8 +1617,27 @@
                 resDiv.innerHTML = html;
                 
             } catch(e) {
-                resDiv.innerHTML = `<div class="text-red-500 text-sm p-5">❌ Ralat: ${e.message}</div>`;
+                resDiv.innerHTML = `<div class="text-red-500 text-sm p-5">❌ Ralat Database: ${e.message}</div>`;
             }
+        };
+
+        // 🌟 FUNGSI COPY NOMBOR (Wajib ada kat bawah)
+        window.copyToClipboardCrosscheck = function(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                alert("✅ Nombor telefon (Boleh Upload) telah disalin!");
+            }).catch(err => {
+                let textArea = document.createElement("textarea");
+                textArea.value = text;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    alert("✅ Nombor telefon (Boleh Upload) telah disalin!");
+                } catch (err2) {
+                    alert("Gagal copy, boss kena copy manual.");
+                }
+                document.body.removeChild(textArea);
+            });
         };
 
         // ==========================================
@@ -1753,7 +1859,7 @@
             // 🌟 FIX BARU: Tarik senarai staf dari memori Admin (Sebab kotak login dah pindah)
             let selAdminTab = document.getElementById('csv-lead-staff-admintab');
             let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
-            
+
             if(selAdminTab || selAIAdmin) {
                 let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
                 if (typeof adminState !== 'undefined' && adminState.users) {
@@ -2935,7 +3041,8 @@
             let selLeadStaff = document.getElementById('csv-lead-staff');
             let selAdminTab = document.getElementById('csv-lead-staff-admintab'); 
             let selHuntAdmin = document.getElementById('hunt-admin-staff'); // 🌟 TANGKAP DROPDOWN HUNT
-            
+            let selBulkPaste = document.getElementById('bulk-paste-staff-crm'); // 🌟 TAMBAH INI
+
             if(c) c.innerHTML = "<div class='text-gray-500 text-center text-sm py-2'>Loading...</div>";
             
             try {
@@ -2971,7 +3078,7 @@
                 
                 let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
                 if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
-                
+                if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; // 🌟 TAMBAH INI
             } catch(e) { if(c) c.innerHTML = "<div class='text-red-500 text-sm'>Gagal muat senarai staf.</div>"; }
         };
 
@@ -3434,8 +3541,9 @@
             // 🌟 FIX KEBAL: Tarik senarai staf langsung dari Firebase staff_list
             let selAdminTab = document.getElementById('csv-lead-staff-admintab');
             let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
+            let selBulkPaste = document.getElementById('bulk-paste-staff-crm'); // 🌟 Pancing dropdown Bulk Paste!
             
-            if(selAdminTab || selAIAdmin) {
+            if(selAdminTab || selAIAdmin || selBulkPaste) {
                 try {
                     const snapStaf = await getDocs(collection(db, "staff_list"));
                     let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
@@ -3446,6 +3554,7 @@
                     
                     if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
                     if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
+                    if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; // 🌟 Isi senarai nama automatik di sini
                 } catch(e) { console.error("Gagal muat staf CRM:", e); }
             }
 
@@ -3466,6 +3575,124 @@
             } catch(e) { 
                 alert("Gagal tarik data CRM Admin: " + e.message); 
             }
+        };
+
+        // ==========================================
+        // 🌟 FUNGSI BULK ADD LEAD (PASTE) CRM MASTER
+        // ==========================================
+        window.prosesBulkPasteCRM = async function() {
+            let staffSel = document.getElementById('bulk-paste-staff-crm');
+            let staffName = staffSel ? staffSel.value : "";
+            let rawData = document.getElementById('bulk-paste-data-crm').value;
+            
+            // Tarik nilai Status dan Source dari kotak baru
+            let globalStatus = document.getElementById('bulk-paste-status').value;
+            let globalSource = document.getElementById('bulk-paste-source').value.trim();
+
+            if(!staffName) { alert("❌ Sila pilih staf yang akan terima lead ini!"); return; }
+            if(!rawData || rawData.trim() === "") { alert("❌ Sila paste data lead dulu boss!"); return; }
+
+            // 🌟 DAPATKAN TARIKH & MASA SEMASA (Untuk LEADS INBOUND)
+            let todayStr = new Date().toISOString().split('T')[0];
+            let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+
+            // Pecahkan teks mengikut baris (Enter)
+            let lines = rawData.split('\n');
+            let validLeads = [];
+
+            lines.forEach(line => {
+                let parts = line.split(',');
+                // Pastikan minima ada Nama dan Nombor Telefon
+                if(parts.length >= 2) {
+                    let name = parts[0].trim();
+                    let rawPhone = parts[1].trim();
+                    
+                    // Logik Source: Kalau kotak "Source" diisi, guna tu. Kalau tak, baca koma ke-3.
+                    let lineSource = parts.length > 2 ? parts[2].trim() : "";
+                    let finalSource = globalSource !== "" ? globalSource : (lineSource !== "" ? lineSource : "-");
+                    
+                    if(name && rawPhone) {
+                        // Formula bersihkan nombor fon dan selit 60
+                        let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
+                        if(cleanPhone.startsWith('0')) cleanPhone = '60' + cleanPhone.substring(1);
+                        
+                        validLeads.push({
+                            NAME: name,
+                            CONTACT: cleanPhone,
+                            SOURCE: finalSource,
+                            "Staff Name": staffName,
+                            STATUS: globalStatus,
+                            "Timestamp Masuk": new Date().toISOString(),
+                            "LEADS INBOUND": window.toSheetDate(todayStr), // 🌟 AUTO INJECT DATE
+                            "LEADS INBOUND TIME": timeStr // 🌟 AUTO INJECT TIME
+                        });
+                    }
+                }
+            });
+
+            if(validLeads.length === 0) {
+                alert("⚠️ Tiada data sah dijumpai. Pastikan format betul: Nama, Phone, Source\n\nCth: Ali, 0123456789, Tik Tok");
+                return;
+            }
+
+            if(!confirm(`Adakah anda pasti untuk menabur ${validLeads.length} leads baru kepada ${staffName}?`)) return;
+
+            let btn = document.querySelector('button[onclick="window.prosesBulkPasteCRM()"]');
+            if(btn) { btn.innerText = "⏳ Menyimpan..."; btn.disabled = true; }
+
+            try {
+                let batch = writeBatch(db);
+                let count = 0;
+                
+                // Cek Lead ID Max dari Firebase (untuk elak L1000 bertindih)
+                const sysRef = doc(db, "system_settings", "crm_counter");
+                const sysSnap = await getDoc(sysRef);
+                let currentMax = 1000;
+                if (sysSnap.exists()) currentMax = sysSnap.data().max_lead_id || 1000;
+
+                // 🌟 MAGIK TAMBAHAN: Auto-cek data jadual sedia ada kot-kot kaunter Firebase tertinggal
+                if (typeof crmState !== 'undefined' && crmState.adminData) {
+                    crmState.adminData.forEach(r => {
+                        let lid = r["Lead ID"];
+                        if (lid && lid.startsWith("L")) {
+                            let num = parseInt(lid.replace(/[^0-9]/g, ''));
+                            if (!isNaN(num) && num > currentMax) currentMax = num;
+                        }
+                    });
+                }
+
+                // Proses tembak Firebase 
+                for (let lead of validLeads) {
+                    currentMax++;
+                    lead["Lead ID"] = "L" + String(currentMax).padStart(5, '0');
+                    
+                    let newRef = doc(collection(db, "crm_leads"));
+                    batch.set(newRef, lead);
+                    count++;
+
+                    // Limit batch commit Firebase = 500, kita set 450 selamat sikit
+                    if (count >= 450) {
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        count = 0;
+                    }
+                }
+                
+                if (count > 0) await batch.commit();
+                
+                // Update counter nombor baru ke Firebase
+                await setDoc(sysRef, { max_lead_id: currentMax }, { merge: true });
+
+                alert(`✅ Padu! ${validLeads.length} leads telah berjaya dimasukkan!`);
+                document.getElementById('bulk-paste-data-crm').value = ""; // Cuci kotak teks
+                document.getElementById('bulk-paste-source').value = ""; // Cuci kotak source
+                
+                if(typeof window.loadAdminCRMData === 'function') window.loadAdminCRMData(true); // Segarkan jadual
+            } catch(e) {
+                alert("❌ Gagal simpan leads: " + e.message);
+            }
+            
+            if(btn) { btn.innerText = "📥 Simpan Leads"; btn.disabled = false; }
         };
         
         window.renderAdminCRMTable = function() {
@@ -5485,110 +5712,112 @@
         };
 
         window.saveNewCRMLead = async function() {
-            let isAdmin = document.getElementById('add-crm-is-admin').value === "true";
-            let staffName = "";
+    let isAdmin = document.getElementById('add-crm-is-admin').value === "true";
+    let staffName = "";
 
-            if(isAdmin) {
-                staffName = document.getElementById('add-crm-staff').value;
-                if(!staffName) { alert("Sila pilih staf yang akan pegang Lead ini!"); return; }
-            } else {
-                staffName = currentUser;
-                if(!staffName) { alert("Sila login semula."); return; }
-            }
+    if(isAdmin) {
+        staffName = document.getElementById('add-crm-staff').value;
+        if(!staffName) { alert("Sila pilih staf yang akan pegang Lead ini!"); return; }
+    } else {
+        staffName = currentUser;
+        if(!staffName) { alert("Sila login semula."); return; }
+    }
 
-            let name = document.getElementById('add-crm-name').value.trim();
-            let contactRaw = document.getElementById('add-crm-contact').value.trim();
+    let name = document.getElementById('add-crm-name').value.trim();
+    let contactRaw = document.getElementById('add-crm-contact').value.trim();
 
-            if(!name || !contactRaw) { alert("Nama dan Nombor Telefon WAJIB diisi boss!"); return; }
+    if(!name || !contactRaw) { alert("Nama dan Nombor Telefon WAJIB diisi boss!"); return; }
 
-            let btn = document.getElementById('btn-save-new-crm');
-            btn.innerText = "⏳ MENYEMAK DATA & SIMPAN..."; btn.disabled = true;
+    let btn = document.getElementById('btn-save-new-crm');
+    btn.innerText = "⏳ MENYEMAK DATA & SIMPAN..."; btn.disabled = true;
 
-            // 🌟 FORMAT PHONE (Wajib 60)
-            const formatPhone60 = (p) => {
-                let n = String(p).replace(/[^0-9]/g, '');
-                if (!n) return "";
-                if (n.startsWith('60')) return n;
-                if (n.startsWith('0')) return '60' + n.substring(1);
-                return '60' + n;
-            };
-            let cleanContact = formatPhone60(contactRaw);
+    // 🌟 FORMAT PHONE (Wajib 60)
+    const formatPhone60 = (p) => {
+        let n = String(p).replace(/[^0-9]/g, '');
+        if (!n) return "";
+        if (n.startsWith('60')) return n;
+        if (n.startsWith('0')) return '60' + n.substring(1);
+        return '60' + n;
+    };
+    let cleanContact = formatPhone60(contactRaw);
 
-            // 🌟 TARIK DATA (Cari LXXXXX terakhir & periksa kalau nombor telefon duplicate)
-            let maxLeadNumber = 0;
-            let isDuplicate = false;
-
-            try {
-                const snap = await getDocs(collection(db, "crm_leads"));
-                snap.forEach(d => {
-                    let data = d.data();
-                    let leadId = data["Lead ID"];
-                    
-                    // Tarik nombor Lead ID terbesar
-                    if (leadId && leadId.startsWith("L")) {
-                        let numStr = leadId.replace(/[^0-9]/g, '');
-                        let num = parseInt(numStr);
-                        if (!isNaN(num) && num > maxLeadNumber) maxLeadNumber = num;
-                    }
-                    
-                    // Semak Anti-Duplicate Phone
-                    let dbContact = formatPhone60(data["CONTACT"] || data.contact);
-                    if (dbContact === cleanContact) isDuplicate = true;
-                });
-
-                if(isDuplicate) {
-                    alert("⚠️ Nombor telefon ni DAH WUJUD dalam sistem! Sila guna fungsi Edit kat jadual, tak payah tambah baru.");
-                    btn.innerText = "💾 SIMPAN LEAD BARU"; btn.disabled = false;
-                    return;
-                }
-
-                // 🌟 JANA LEAD ID BARU (Auto Increment)
-                maxLeadNumber++;
-                let newLeadId = "L" + String(maxLeadNumber).padStart(5, '0');
-
-                // 🌟 TEMBAK KE FIREBASE
-                let todayStr = new Date().toISOString().split('T')[0];
-                let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" }); // Format 24-Jam HH:MM
-
-                let newData = {
-                    "Lead ID": newLeadId,
-                    "Staff Name": staffName,
-                    "NAME": name,
-                    "CONTACT": cleanContact,
-                    "STATUS": document.getElementById('add-crm-status').value,
-                    "SOURCE": document.getElementById('add-crm-source').value,
-                    "Timestamp Masuk": new Date().toISOString(),
-                    "LEADS INBOUND": window.toSheetDate(todayStr), // Tarikh Harini
-                    "LEADS INBOUND TIME": timeStr // Masa Harini
-                };
-
-                let docRef = await addDoc(collection(db, "crm_leads"), newData);
-
-                // 🌟 INJECT MEMORI (Zero Reads Update - Jadual terus keluar!)
-                newData.docId = docRef.id;
-
-                // 🛡️ MAGIK ANTI-CRASH: Pastikan memori crmState wujud sebelum inject!
-                if (typeof window.crmState === 'undefined') window.crmState = { data: [], adminData: [] };
-                if (!window.crmState.adminData) window.crmState.adminData = [];
-                if (!window.crmState.data) window.crmState.data = [];
-
-                if(isAdmin) {
-                    window.crmState.adminData.unshift(newData); // Masuk kat atas jadual
-                    if (typeof window.renderAdminCRMTable === 'function') window.renderAdminCRMTable();
-                } else {
-                    window.crmState.data.unshift(newData); // Masuk kat atas jadual
-                    if (typeof window.renderCRMTable === 'function') window.renderCRMTable();
-                }
-
-                alert(`✅ PUMPANG! Lead Baru berjaya ditambah!\n\nNombor Giliran Sistem: ${newLeadId}`);
-                document.getElementById('modal-add-crm').style.display = 'none';
-
-            } catch (e) {
-                alert("Gagal simpan: " + e.message);
-            }
-            
+    try {
+        // 🌟 1. SEMAK DUPLICATE SECARA PINTAS (Cari phone number tu je, jimat kuota!)
+        const qDup = fbQuery(collection(db, "crm_leads"), fbWhere("CONTACT", "==", cleanContact));
+        const dupSnap = await getDocs(qDup);
+        
+        if (!dupSnap.empty) {
+            alert("⚠️ Nombor telefon ni DAH WUJUD dalam sistem! Sila guna fungsi Edit kat jadual, tak payah tambah baru.");
             btn.innerText = "💾 SIMPAN LEAD BARU"; btn.disabled = false;
+            return;
+        }
+
+        // 🌟 2. TARIK LEAD ID DARI KAUNTER (Bukan scan semua rekod)
+        const sysRef = doc(db, "system_settings", "crm_counter");
+        const sysSnap = await getDoc(sysRef);
+        let currentMax = 1000;
+        if (sysSnap.exists()) currentMax = sysSnap.data().max_lead_id || 1000;
+
+        // Semak jadual sedia ada kot-kot kaunter tertinggal (Double Protection)
+        let stateArr = isAdmin ? (window.crmState?.adminData || []) : (window.crmState?.data || []);
+        stateArr.forEach(r => {
+            let lid = r["Lead ID"];
+            if (lid && lid.startsWith("L")) {
+                let num = parseInt(lid.replace(/[^0-9]/g, ''));
+                if (!isNaN(num) && num > currentMax) currentMax = num;
+            }
+        });
+
+        // 🌟 3. JANA LEAD ID BARU & GENAPKAN 5 DIGIT
+        currentMax++;
+        let newLeadId = "L" + String(currentMax).padStart(5, '0');
+
+        // 🌟 4. TEMBAK KE FIREBASE
+        let todayStr = new Date().toISOString().split('T')[0];
+        let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" }); // Format 24-Jam HH:MM
+
+        let newData = {
+            "Lead ID": newLeadId,
+            "Staff Name": staffName,
+            "NAME": name,
+            "CONTACT": cleanContact,
+            "STATUS": document.getElementById('add-crm-status').value,
+            "SOURCE": document.getElementById('add-crm-source').value,
+            "Timestamp Masuk": new Date().toISOString(),
+            "LEADS INBOUND": window.toSheetDate(todayStr), // Tarikh Harini
+            "LEADS INBOUND TIME": timeStr // Masa Harini
         };
+
+        let docRef = await addDoc(collection(db, "crm_leads"), newData);
+
+        // 🌟 5. UPDATE KAUNTER KE FIREBASE SUPAYA TAK BERTINDIH
+        await setDoc(sysRef, { max_lead_id: currentMax }, { merge: true });
+
+        // 🌟 6. INJECT MEMORI (Zero Reads Update - Jadual terus keluar!)
+        newData.docId = docRef.id;
+
+        // 🛡️ MAGIK ANTI-CRASH: Pastikan memori crmState wujud sebelum inject!
+        if (typeof window.crmState === 'undefined') window.crmState = { data: [], adminData: [] };
+        if (!window.crmState.adminData) window.crmState.adminData = [];
+        if (!window.crmState.data) window.crmState.data = [];
+
+        if(isAdmin) {
+            window.crmState.adminData.unshift(newData); // Masuk kat atas jadual
+            if (typeof window.renderAdminCRMTable === 'function') window.renderAdminCRMTable();
+        } else {
+            window.crmState.data.unshift(newData); // Masuk kat atas jadual
+            if (typeof window.renderCRMTable === 'function') window.renderCRMTable();
+        }
+
+        alert(`✅ PUMPANG! Lead Baru berjaya ditambah!\n\nNombor Giliran Sistem: ${newLeadId}`);
+        document.getElementById('modal-add-crm').style.display = 'none';
+
+    } catch (e) {
+        alert("Gagal simpan: " + e.message);
+    }
+    
+    btn.innerText = "💾 SIMPAN LEAD BARU"; btn.disabled = false;
+};
 
         // 🌟 MAGIK TAMPAL NAMA KE DALAM DROPDOWN SYSTEM SETUP
         window.updateSemuaDropdownStaf = function() {
@@ -5612,7 +5841,8 @@
                 'clone-ke',
                 'add-staff-dropdown', // letak ID dropdown "new staff" boss kat sini
                 'filter-staff',
-                'hunt-admin-staff'
+                'hunt-admin-staff',
+                'bulk-paste-staff-crm' // 🌟 Tambah ID ini di sini
             ];
 
             senaraiID.forEach(id => {
@@ -5762,7 +5992,7 @@
         window.setCRMMobileFilter = function(type, isAdmin) {
             window.crmMobileFilterState = type;
             // Masukkan Preloved dalam array warna butang
-            ['All', 'TOFU', 'Nurturing', 'Preloved'].forEach(f => {
+            ['All', 'TOFU', 'Nurturing', 'Preloved', 'HuntCS'].forEach(f => {
                 let btn = document.getElementById(`m-filter-${f}-${isAdmin}`);
                 if(btn) {
                     if(f === type) {
@@ -5848,6 +6078,7 @@
                 if(window.crmMobileFilterState === 'Nurturing' && status !== "nurturing") return false;
                 // 🌟 LOGIK FILTER BUBBLE PRELOVED
                 if(window.crmMobileFilterState === 'Preloved' && status !== "preloved leads by bl hadi") return false;
+                if(window.crmMobileFilterState === 'HuntCS' && status !== "hunt cs") return false;
                 
                 return true;
             }).map(row => {
@@ -5901,12 +6132,13 @@
                 // 🌟 MAGIK UI PRELOVED LEADS BERMULA DI SINI
                 // =====================================
                 let isPreloved = String(status).toLowerCase() === "preloved leads by bl hadi".toLowerCase();
+                let isHuntCS = String(status).toLowerCase() === "hunt cs".toLowerCase();
                 let hist = String(row["HISTORY FU"] || "");
                 let isDone = hist.includes("Action: Done CS");
                 let isInv = hist.includes("Action: Invalid Number");
 
                 let prelovedUI = "";
-                if (isPreloved) {
+                if (isPreloved || isHuntCS) {
                     prelovedUI = `
                     <div class="mt-2 flex justify-between items-center bg-[#111] border ${isInv ? 'border-[#ff5252]' : 'border-[#00e676]'} p-2 rounded-lg ${isDone||isInv ? 'opacity-60' : ''}">
                         <div class="flex items-center gap-2">
@@ -7101,7 +7333,8 @@
             document.getElementById('enroll-docid').value = data.docId;
             document.getElementById('enroll-inviter').value = data["Staff Name"] || data["Inviter"] || "";
             document.getElementById('enroll-name').value = data["Student Name"] || "";
-            document.getElementById('enroll-tofu').value = data["TO FU"] || "";
+            document.getElementById('enroll-phone').value = data["Phone"] || "";
+            ocument.getElementById('enroll-tofu').value = data["TO FU"] || "";
             document.getElementById('enroll-classprog').value = data["Class Progress"] || "";
             document.getElementById('enroll-fudate').value = window.toInputDate(data["FU Date"]);
             document.getElementById('enroll-futime').value = data["FU Time"] || "";
@@ -7513,6 +7746,65 @@
                 tarikDataDanBinaSistem(); 
             } else {
                 window.location.href = "login.html";
+            }
+        };
+
+        // ==========================================
+        // 🌟 BUKA WHATSAPP DARI MODAL
+        // ==========================================
+        window.bukaWA = function(phoneVal) {
+            if(!phoneVal || phoneVal === "-") return;
+            // Baca nombor buang simbol je, kod negara 65/62 selamat
+            let cp = String(phoneVal).replace(/[^0-9]/g, ''); 
+            // Kalau nombor orang Malaysia letak 0, tukar jadi 60
+            if(cp.startsWith('0')) cp = '60' + cp.substring(1);
+            if(cp) window.open(`https://wa.me/${cp}`, '_blank');
+        };
+
+        // ==========================================
+        // 🌟 QUICK FILTER DATE (ADMIN PERFORMANCE)
+        // ==========================================
+        window.setAdminDate = function(type, monthVal) {
+            let startEl = document.getElementById('admin-start');
+            let endEl = document.getElementById('admin-end');
+            if(!startEl || !endEl) return;
+            
+            let today = new Date();
+            let start, end;
+
+            if (type === 'yesterday') {
+                let yesterday = new Date(today);
+                yesterday.setDate(today.getDate() - 1);
+                start = yesterday;
+                end = yesterday;
+            } else if (type === '7days') {
+                let past = new Date(today);
+                past.setDate(today.getDate() - 7);
+                start = past;
+                end = today; 
+            } else if (type === 'month') {
+                if (!monthVal) return;
+                let parts = monthVal.split('-');
+                let y = parseInt(parts[0]);
+                let m = parseInt(parts[1]);
+                start = new Date(y, m - 1, 1);
+                end = new Date(y, m, 0); // Last day of the month
+            }
+
+            if (start && end) {
+                // Tukar date jadi format calendar HTML YYYY-MM-DD
+                const formatD = (d) => {
+                    let y = d.getFullYear();
+                    let m = String(d.getMonth() + 1).padStart(2, '0');
+                    let day = String(d.getDate()).padStart(2, '0');
+                    return `${y}-${m}-${day}`;
+                };
+                
+                startEl.value = formatD(start);
+                endEl.value = formatD(end);
+                
+                // Terus tembak load jadual automatik
+                window.terjahDataAdmin();
             }
         };
     </script>
