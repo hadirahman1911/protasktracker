@@ -409,6 +409,7 @@
             <button id="btn-adm-enroll" onclick="window.switchAdminTab('enroll')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📝 PS Enroll</button>
             <button id="btn-adm-logs" onclick="window.switchAdminTab('logs')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📋 Daily Logs</button>
             <button id="btn-adm-setup" onclick="window.switchAdminTab('setup')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🛠️ System Setup</button>
+            <button id="btn-adm-tgt" onclick="window.switchAdminTab('tgt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Edit Targets</button>
         </div>
 
         <div class="flex-1 overflow-y-auto p-6 relative">
@@ -416,6 +417,7 @@
             <div id="adm-view-perf" class="block">
                 <div class="flex flex-wrap gap-2 mb-4 items-center bg-[#1e1e1e] p-3 rounded-lg border border-[#333] shadow-sm">
                     <span class="text-sm font-bold text-[#00c6ff] mr-1">Filter Pantas:</span>
+                    <button onclick="window.setAdminDate('today')" class="px-3 py-1.5 bg-[#333] hover:bg-[#0072ff] hover:text-white text-gray-300 text-xs rounded font-bold transition shadow">Hari Ini</button>
                     <button onclick="window.setAdminDate('yesterday')" class="px-3 py-1.5 bg-[#333] hover:bg-[#0072ff] hover:text-white text-gray-300 text-xs rounded font-bold transition shadow">Semalam</button>
                     <button onclick="window.setAdminDate('7days')" class="px-3 py-1.5 bg-[#333] hover:bg-[#0072ff] hover:text-white text-gray-300 text-xs rounded font-bold transition shadow">7 Hari Lepas</button>
                     <div class="border-l border-[#555] mx-1 h-5"></div>
@@ -714,16 +716,6 @@
                     <button onclick="window.janaLeadIDLama(this)" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full shadow-lg transition">Jana Lead ID Sekarang 🚀</button>
                 </div>
 
-                <div class="bg-[#1e1e1e] p-6 rounded-xl border border-[#333] mt-6">
-                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-                        <h3 class="text-[#00c6ff] font-bold m-0">4. Edit Daily Targets Master</h3>
-                        <button onclick="window.saveAllTargets(this)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-6 rounded shadow transition">💾 SAVE ALL TARGETS</button>
-                    </div>
-                    <div id="target-editor-container" class="tbl-container">
-                        <div class="text-gray-500 italic p-4 text-center">Sila Load Data Admin (Tunggu sebentar) untuk papar jadual ini.</div>
-                    </div>
-                </div>
-
                 <div class="bg-[#1a1a1a] border border-[#333] rounded-xl p-5 mb-6 shadow-lg">
                     <h3 class="text-[#00e676] font-bold text-lg mb-3">🔍 Crosscheck Nombor Telefon (Semak Duplikasi)</h3>
                     <p class="text-gray-400 text-xs mb-3">Paste senarai nombor telefon dari Excel boss kat sini (satu nombor satu baris). Sistem akan tolong cari mana yang dah wujud dalam CRM.</p>
@@ -741,6 +733,18 @@
                 </div>
 
 
+            </div>
+
+            <div id="adm-view-tgt" class="hidden">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333]">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
+                        <h3 class="text-[#00c6ff] font-bold m-0 flex items-center gap-2">🎯 Edit Daily Targets Master</h3>
+                        <button onclick="window.saveAllTargets(this)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-6 rounded shadow transition">💾 SAVE ALL TARGETS</button>
+                    </div>
+                    <div id="target-editor-container" class="tbl-container" style="max-height: 75vh;">
+                        <div class="text-gray-500 italic p-4 text-center">Sila Load Data Admin (Tunggu sebentar) untuk papar jadual ini.</div>
+                    </div>
+                </div>
             </div>
 
             <div id="adm-view-hunt" class="hidden max-w-5xl mx-auto">
@@ -890,12 +894,25 @@
                         </select>
                     </div>
 
+                    <div class="form-group-crm col-span-2 bg-[#111] p-3 rounded-lg border border-[#333] mb-2">
+                        <div class="flex justify-between items-center mb-2 flex-wrap gap-2">
+                            <label class="text-[#bb86fc] font-bold text-xs">🔗 Status PS (Master & Enroll)</label>
+                            <div class="flex gap-1">
+                                <button type="button" id="btn-crm-autosync" onclick="window.autoSyncCRMLink()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-2 py-1 rounded text-[10px] shadow">🔄 Auto Sync</button>
+                                <button type="button" onclick="window.openManualSyncModal()" class="bg-[#ff9800] hover:bg-[#e68a00] text-black font-bold px-2 py-1 rounded text-[10px] shadow">🔎 Manual Sync</button>
+                            </div>
+                        </div>
+                        <div id="crm-link-ps-box" class="text-xs text-gray-400 mb-1">-</div>
+                        <div id="crm-link-enroll-box" class="text-xs text-gray-400">-</div>
+                        <div id="crm-fu-compare-box"></div>
+                    </div>
+
                     <div class="form-group-crm">
                         <label class="text-[#00e676] font-bold">TO FU (Action)</label>
                         <input type="text" id="crm-tofu" oninput="window.updatePreviewFU()" placeholder="Contoh: Call / WS..." class="w-full bg-[#222] text-white p-2 rounded border border-[#555] outline-none mt-1 focus:border-[#00e676]">
                     </div>
                     
-                    <div class="form-group-crm"><label>FU Date / Time</label>
+                    <div class="form-group-crm"><label class="flex items-center gap-2">FU Date / Time <button type="button" onclick="window.setCurrentDateTime('crm')" title="Set ke tarikh & masa sekarang" class="bg-[#444] hover:bg-[#00c6ff] hover:text-black text-gray-300 px-2 py-0.5 rounded text-[10px] font-bold">🕐 Now</button></label>
                         <div class="flex gap-1">
                           <input type="date" id="crm-fu-date" class="flex-2 cursor-pointer" onchange="window.updatePreviewFU()">
                           <input type="time" id="crm-fu-time" class="flex-1 cursor-pointer" onchange="window.updatePreviewFU()">
@@ -916,7 +933,7 @@
                         </label>
                         <div class="flex gap-2">
                           <input type="text" id="crm-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
-                          <button onclick="window.copyPreview()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm">Copy</button>
+                          <button onclick="window.appendPreviewToHistory('crm')" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm whitespace-nowrap">➕ Append</button>
                         </div>
                     </div>
 
@@ -1006,6 +1023,34 @@
         </div>
     </div>
 
+    <!-- 🌟 MODAL MANUAL SYNC (CRM <-> PS MASTER / PS ENROLL) -->
+    <div id="modal-crm-sync" class="modal-overlay" style="z-index: 10001;">
+        <div class="modal-box border-t-4 border-[#ff9800]">
+            <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
+                <h3 class="text-[#ff9800] m-0 font-bold text-xl">🔎 Manual Sync</h3>
+                <button onclick="window.closeManualSyncModal()" class="bg-transparent border-none text-[#aaa] text-2xl cursor-pointer hover:text-white">&times;</button>
+            </div>
+
+            <div class="mb-5">
+                <label class="text-[#64b5f6] font-bold text-sm">🎓 Cari PS Master (Nama / No Phone)</label>
+                <div class="flex gap-2 mt-1">
+                    <input type="text" id="sync-search-ps" placeholder="Cth: Ahmad / 0123456789" class="flex-1 bg-[#222] text-white p-2 rounded border border-[#444] outline-none focus:border-[#64b5f6]" onkeydown="if(event.key==='Enter') window.searchManualSync('ps')">
+                    <button onclick="window.searchManualSync('ps')" class="bg-[#3f51b5] hover:bg-[#303f9f] text-white font-bold px-4 rounded text-sm">Cari</button>
+                </div>
+                <div id="sync-results-ps" class="mt-2 max-h-40 overflow-y-auto"></div>
+            </div>
+
+            <div>
+                <label class="text-[#00c6ff] font-bold text-sm">📝 Cari PS Enroll (Nama / No Phone)</label>
+                <div class="flex gap-2 mt-1">
+                    <input type="text" id="sync-search-enroll" placeholder="Cth: Ahmad / 0123456789" class="flex-1 bg-[#222] text-white p-2 rounded border border-[#444] outline-none focus:border-[#00c6ff]" onkeydown="if(event.key==='Enter') window.searchManualSync('enroll')">
+                    <button onclick="window.searchManualSync('enroll')" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold px-4 rounded text-sm">Cari</button>
+                </div>
+                <div id="sync-results-enroll" class="mt-2 max-h-40 overflow-y-auto"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- 🌟 MODAL BULK EDIT CRM BARU -->
     <div id="modal-crm-bulk" class="modal-overlay" style="z-index: 9999;">
         <div class="modal-box border-t-4 border-[#00c6ff]">
@@ -1087,8 +1132,13 @@
                 <div class="form-group-crm"><label class="text-[#00e676]">★ TO FU (Action)</label>
                     <input type="text" id="ps-tofu" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Cth: Sembang Harga" oninput="window.updatePSPreview()">
                 </div>
-                <div class="hidden md:block"></div> <div class="form-group-crm"><label>FU Date</label><input type="date" id="ps-fudate" onchange="window.updatePSPreview()"></div>
-                <div class="form-group-crm"><label>FU Time</label><input type="time" id="ps-futime" onchange="window.updatePSPreview()"></div>
+                <div class="hidden md:block"></div> <div class="form-group-crm"><label class="flex items-center gap-2">FU Date / Time <button type="button" onclick="window.setCurrentDateTime('ps')" title="Set ke tarikh & masa sekarang" class="bg-[#444] hover:bg-[#00c6ff] hover:text-black text-gray-300 px-2 py-0.5 rounded text-[10px] font-bold">🕐 Now</button></label>
+                    <div class="flex gap-1">
+                        <input type="date" id="ps-fudate" onchange="window.updatePSPreview()" class="flex-1">
+                        <input type="time" id="ps-futime" onchange="window.updatePSPreview()" class="flex-1">
+                    </div>
+                </div>
+                <div class="hidden md:block"></div>
                 
                 <div class="form-group-crm col-span-2 mt-2">
                         <label class="text-[#00c6ff]">Preview History (Auto-generated)</label>
@@ -1098,7 +1148,7 @@
                         </label>
                         <div class="flex gap-2">
                           <input type="text" id="ps-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
-                          <button onclick="window.copyPSPreview()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm">Copy</button>
+                          <button onclick="window.appendPreviewToHistory('ps')" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm whitespace-nowrap">➕ Append</button>
                         </div>
                 </div>
 
@@ -1186,7 +1236,12 @@
                 </div>
                 
                 <div class="form-group-crm"><label>FU Date</label><input type="date" id="enroll-fudate" onchange="window.updateEnrollPreview()"></div>
-                <div class="form-group-crm"><label>FU Time</label><input type="time" id="enroll-futime" onchange="window.updateEnrollPreview()"></div>
+                <div class="form-group-crm"><label>FU Time</label>
+                    <div class="flex gap-1">
+                        <input type="time" id="enroll-futime" onchange="window.updateEnrollPreview()" class="flex-1">
+                        <button type="button" onclick="window.setCurrentDateTime('enroll')" title="Set ke tarikh & masa sekarang" class="bg-[#444] hover:bg-[#00c6ff] hover:text-black text-gray-300 px-2 rounded text-[10px] font-bold shrink-0">🕐 Now</button>
+                    </div>
+                </div>
                 
                 <div class="form-group-crm col-span-2 mt-2">
                     <label class="text-[#00c6ff]">Preview History (Auto-generated)</label>
@@ -1196,6 +1251,7 @@
                     </label>
                     <div class="flex gap-2">
                         <input type="text" id="enroll-preview-fu" readonly class="flex-1 bg-[#111] text-[#00c6ff] border border-dashed border-[#00c6ff] p-2 rounded outline-none font-bold text-xs md:text-sm">
+                        <button onclick="window.appendPreviewToHistory('enroll')" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-3 py-2 rounded transition text-xs md:text-sm whitespace-nowrap">➕ Append</button>
                     </div>
                 </div>
                 <div class="form-group-crm col-span-2">
@@ -1263,13 +1319,41 @@
             </div>
 
             <div class="mb-4">
-                <label class="block text-[#00e676] text-sm mb-2 font-bold">Senarai Task Baru (DMO):</label>
-                <div id="add-task-inputs-container" class="space-y-2 mb-3">
-                    </div>
-                <button onclick="window.tambahFieldTask()" class="text-sm text-[#00c6ff] hover:bg-[#222] px-3 py-1 rounded border border-[#00c6ff] transition">+ Tambah Ruangan Task</button>
+                <label class="block text-[#00e676] text-sm mb-2 font-bold">Senarai Task Baru (Paste pukal di sini, satu baris satu task):</label>
+                <textarea id="bulk-task-textarea" rows="8" class="w-full bg-[#2a2a2a] text-white border border-[#555] p-3 rounded-lg outline-none focus:border-[#00e676] font-mono text-sm leading-relaxed" placeholder="Cth:&#10;Buat 5 Video TikTok&#10;KOL FB Story&#10;KOL IG Selit"></textarea>
             </div>
 
             <button id="btn-save-bulk-task" onclick="window.simpanTaskBaruLump()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold w-full p-3 rounded-lg mt-2 text-base shadow-lg transition">🚀 SIMPAN SEMUA TASK BARU</button>
+        </div>
+    </div>
+
+    <!-- 🌟 MODAL DELETE TASK PUKAL -->
+    <div id="modal-delete-task-bulk" class="modal-overlay" style="z-index: 9999;">
+        <div class="modal-box border-t-4 border-red-500 w-[500px] max-w-[95%]">
+            <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
+                <h3 class="text-white m-0 font-bold text-xl">🗑️ Padam Task (Pukal)</h3>
+                <button onclick="document.getElementById('modal-delete-task-bulk').style.display='none'" class="bg-transparent border-none text-[#aaa] text-2xl cursor-pointer hover:text-white">&times;</button>
+            </div>
+            
+            <div class="mb-4">
+                <label class="block text-gray-400 text-sm mb-2 flex justify-between items-end">
+                    <span>Pilih Staf:</span>
+                    <button onclick="window.toggleSemuaPadamTaskStaff(this)" class="text-[#00c6ff] text-xs hover:underline font-bold transition">Tick Semua</button>
+                </label>
+                <div id="delete-task-staff-list" class="bg-[#111] border border-[#333] p-3 rounded h-32 overflow-y-auto grid grid-cols-2 gap-2 text-sm">
+                    </div>
+            </div>
+
+            <div class="mb-4">
+                <label class="block text-red-400 text-sm mb-2 flex justify-between items-end font-bold">
+                    <span>Pilih Task Untuk Dipadam:</span>
+                    <button onclick="window.toggleSemuaPadamTask(this)" class="text-[#00c6ff] text-xs hover:underline font-bold transition">Tick Semua Task</button>
+                </label>
+                <div id="delete-task-checkbox-list" class="bg-[#111] border border-[#333] p-3 rounded h-48 overflow-y-auto flex flex-col gap-2 text-sm">
+                    </div>
+            </div>
+
+            <button id="btn-delete-bulk-task" onclick="window.padamTaskLump()" class="bg-red-600 hover:bg-red-500 text-white font-bold w-full p-3 rounded-lg mt-2 text-base shadow-lg transition">🚀 PADAM SEMUA TASK INI</button>
         </div>
     </div>
 
@@ -1985,7 +2069,8 @@
                     }
                 });
 
-                let susunan = (typeof susunanMaster !== 'undefined') ? susunanMaster : [
+                const susunanMaster = [
+                    // --- TASK BIASA ---
                     "FB Story", "FB Selit", "FB Group Join", "FB Group Post", "FB Add Friends", 
                     "FB Chat Stranger", "FB Feed Post", "IG Story", "IG Selit", "IG Chat Stranger", 
                     "IG Feed Post", "Linkedin Connect", "Linkedin Chat Stranger", "Linkedin Post", 
@@ -1993,7 +2078,17 @@
                     "Threads Selit", "Threads Post", "Threads Chat Stranger", "WS Group Join", 
                     "WS Group Post", "WS Chat Stranger", "FFC Chat Stranger", "Hunt Numbers to CS", 
                     "Reply PS", "FU PS tak berjaya invite", "Share Value to Leads", "FU PS Absent/Half", 
-                    "FU PS Attend >> Class", "FU PS attend and Enroll", "Reschedule"
+                    "FU PS Attend >> Class", "FU PS attend and Enroll", "Reschedule",
+                    
+                    // --- TASK KOL ---
+                    "KOL FB Story", "KOL FB Selit", "KOL FB Group Join", "KOL FB Group Post", "KOL FB Add Friends", 
+                    "KOL FB Chat Stranger", "KOL FB Feed Post", "KOL IG Story", "KOL IG Selit", "KOL IG Chat Stranger", 
+                    "KOL IG Feed Post", "KOL Linkedin Connect", "KOL Linkedin Chat Stranger", "KOL Linkedin Post", 
+                    "KOL Tiktok Story", "KOL Tiktok Selit", "KOL Tiktok Chat Stranger", "KOL Tiktok Post", 
+                    "KOL Threads Selit", "KOL Threads Post", "KOL Threads Chat Stranger", "KOL WS Group Join", 
+                    "KOL WS Group Post", "KOL WS Chat Stranger", "KOL FFC Chat Stranger", "KOL Hunt Numbers to CS", 
+                    "KOL Reply PS", "KOL FU PS tak berjaya invite", "KOL Share Value to Leads", "KOL FU PS Absent/Half", 
+                    "KOL FU PS Attend >> Class", "KOL FU PS attend and Enroll", "KOL Reschedule"
                 ];
 
                 taskListUnik.sort((a, b) => {
@@ -2506,7 +2601,7 @@
 
         // Gantikan Suis Admin sedia ada supaya dia "On" kan CCTV ni bila buka tab Setup!
         window.switchAdminTab = function(tab) {
-            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt', 'enroll'].forEach(t => {
+            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt', 'enroll', 'tgt'].forEach(t => {
                 let btn = document.getElementById(`btn-adm-${t}`);
                 let view = document.getElementById(`adm-view-${t}`);
                 
@@ -2540,31 +2635,36 @@
                 window.renderPSUploadLogs(); 
             }
             if(tab === 'setup') window.renderUrusStaf(); 
+            if(tab === 'tgt') window.loadTargetDataOnly();
             if(tab === 'hunt') {
                 window.loadAdminHuntData();
                 window.renderUrusStaf(); 
             }
             if(tab === 'enroll') {
                 window.loadAdminEnrollData();
-                window.populateEnrollCopyDropdown(); // 🌟 Tambah ni
-                window.renderEnrollUploadLogs();     // 🌟 Tambah ni
+                window.populateEnrollCopyDropdown();
+                window.renderEnrollUploadLogs();
             }
         };
 
 
 
         // FUNGSI BUTANG GO (ADMIN)
+        // FUNGSI BUTANG GO (ADMIN)
         window.terjahDataAdmin = function() {
             // Semak tab apa yang boss tengah bukak sekarang kat skrin
             let isLogs = !document.getElementById('adm-view-logs').classList.contains('hidden');
             let isCrm = !document.getElementById('adm-view-crm').classList.contains('hidden');
             let isSetup = !document.getElementById('adm-view-setup').classList.contains('hidden');
+            let isTgt = !document.getElementById('adm-view-tgt').classList.contains('hidden');
 
             // Tembak data ikut tab yang aktif
             if (isLogs) {
                 window.loadAdminLogsData();
             } else if (isCrm) {
                 window.loadAdminCRMData();
+            } else if (isTgt) {
+                window.loadTargetDataOnly(true); // Guna enjin express
             } else if (!isSetup) {
                 // Untuk tab Performance & Schedule (Panggil fungsi induk)
                 window.loadAdminData();
@@ -2588,7 +2688,14 @@
 
             // 1. Tarik Users & Susun A-Z (Ascending)
             let usersSnap = await getDocs(collection(db, "staff_list"));
-            let users = []; usersSnap.forEach(doc => users.push(doc.data().name));
+            let users = []; 
+            usersSnap.forEach(doc => {
+                let data = doc.data();
+                // 🌟 Tapis staff yang dah resign (isHidden)
+                if(data.isHidden !== true) { 
+                    users.push(data.name);
+                }
+            });
             users.sort((a, b) => a.localeCompare(b)); // Kod ajaib susun A-Z
 
             // 2. Tarik Targets
@@ -2610,15 +2717,26 @@
             // SUSUNAN MASTER TASK
             // =====================================
             const susunanMaster = [
-                "FB Story", "FB Selit", "FB Group Join", "FB Group Post", "FB Add Friends", 
-                "FB Chat Stranger", "FB Feed Post", "IG Story", "IG Selit", "IG Chat Stranger", 
-                "IG Feed Post", "Linkedin Connect", "Linkedin Chat Stranger", "Linkedin Post", 
-                "Tiktok Story", "Tiktok Selit", "Tiktok Chat Stranger", "Tiktok Post", 
-                "Threads Selit", "Threads Post", "Threads Chat Stranger", "WS Group Join", 
-                "WS Group Post", "WS Chat Stranger", "FFC Chat Stranger", "Hunt Numbers to CS", 
-                "Reply PS", "FU PS tak berjaya invite", "Share Value to Leads", "FU PS Absent/Half", 
-                "FU PS Attend >> Class", "FU PS attend and Enroll", "Reshedule"
-            ];
+                    // --- TASK BIASA ---
+                    "FB Story", "FB Selit", "FB Group Join", "FB Group Post", "FB Add Friends", 
+                    "FB Chat Stranger", "FB Feed Post", "IG Story", "IG Selit", "IG Chat Stranger", 
+                    "IG Feed Post", "Linkedin Connect", "Linkedin Chat Stranger", "Linkedin Post", 
+                    "Tiktok Story", "Tiktok Selit", "Tiktok Chat Stranger", "Tiktok Post", 
+                    "Threads Selit", "Threads Post", "Threads Chat Stranger", "WS Group Join", 
+                    "WS Group Post", "WS Chat Stranger", "FFC Chat Stranger", "Hunt Numbers to CS", 
+                    "Reply PS", "FU PS tak berjaya invite", "Share Value to Leads", "FU PS Absent/Half", 
+                    "FU PS Attend >> Class", "FU PS attend and Enroll", "Reschedule",
+                    
+                    // --- TASK KOL ---
+                    "KOL FB Story", "KOL FB Selit", "KOL FB Group Join", "KOL FB Group Post", "KOL FB Add Friends", 
+                    "KOL FB Chat Stranger", "KOL FB Feed Post", "KOL IG Story", "KOL IG Selit", "KOL IG Chat Stranger", 
+                    "KOL IG Feed Post", "KOL Linkedin Connect", "KOL Linkedin Chat Stranger", "KOL Linkedin Post", 
+                    "KOL Tiktok Story", "KOL Tiktok Selit", "KOL Tiktok Chat Stranger", "KOL Tiktok Post", 
+                    "KOL Threads Selit", "KOL Threads Post", "KOL Threads Chat Stranger", "KOL WS Group Join", 
+                    "KOL WS Group Post", "KOL WS Chat Stranger", "KOL FFC Chat Stranger", "KOL Hunt Numbers to CS", 
+                    "KOL Reply PS", "KOL FU PS tak berjaya invite", "KOL Share Value to Leads", "KOL FU PS Absent/Half", 
+                    "KOL FU PS Attend >> Class", "KOL FU PS attend and Enroll", "KOL Reschedule"
+                ];
             
             uniqueTasks.sort((a, b) => {
                 let idxA = susunanMaster.indexOf(a);
@@ -2820,22 +2938,42 @@
             if(gDaily) gDaily.innerText = window.fixF((parseFloat(gDaily.innerText) || 0) + (daily - oldDaily));
         };
 
-        // 2. FILTER TOTAL (Boleh taip "total" untuk tengok grand total sahaja)
+        // ==========================================
+        // 🌟 LOGIK FILTER TARGET EDITOR (GAYA CRM)
+        // ==========================================
+        window.tgtFilters = { staff: [], task: [] };
+
         window.filterTargetEditor = function() {
-            let fStaff = document.getElementById('flt-tgt-staff').value.toLowerCase();
-            let fTask = document.getElementById('flt-tgt-task').value.toLowerCase();
+            let selectedStaffs = window.tgtFilters.staff || [];
+            let selectedTasks = window.tgtFilters.task || [];
+            
+            // Tangkap nilai dari kotak cari pantas
+            let fStaff = document.getElementById('flt-tgt-staff').value.toLowerCase().trim();
+            let fTask = document.getElementById('flt-tgt-task').value.toLowerCase().trim();
             
             document.querySelectorAll('.tgt-row').forEach(tr => {
-                let s = tr.getAttribute('data-staff').toLowerCase();
-                let t = tr.getAttribute('data-task').toLowerCase();
+                let s = tr.getAttribute('data-staff');
+                let t = tr.getAttribute('data-task');
                 
-                let matchStaff = s.includes(fStaff);
-                let matchTask = t.includes(fTask);
+                let matchStaff = true;
+                let matchTask = true;
                 
-                if (fTask === 'total') {
-                    matchTask = (t === 'total'); // Jika taip total, tunjuk grand total sahaja
-                } else if (t === 'total') {
-                    matchTask = (fTask === ""); // Tunjuk grand total by default jika search kosong
+                // Tapis ikut Checkbox Dropdown
+                if (selectedStaffs.length > 0 && !selectedStaffs.includes(s)) matchStaff = false;
+                if (selectedTasks.length > 0 && !selectedTasks.includes(t)) matchTask = false;
+
+                // Tapis ikut Kotak Search
+                if (fStaff && !s.toLowerCase().includes(fStaff)) matchStaff = false;
+                if (fTask) {
+                    if (fTask === 'total') {
+                        if (t.toLowerCase() !== 'total') matchTask = false;
+                    } else if (t.toLowerCase() === 'total') {
+                        matchTask = false; // Sembunyi row TOTAL kalau cari nama task lain
+                    } else if (!t.toLowerCase().includes(fTask)) {
+                        matchTask = false;
+                    }
+                } else if (t.toLowerCase() === 'total' && selectedTasks.length > 0 && !selectedTasks.includes('TOTAL')) {
+                    matchTask = false;
                 }
 
                 if (matchStaff && matchTask) tr.style.display = "";
@@ -2843,7 +2981,173 @@
             });
         };
 
-        // 3. RENDER EDITOR (Masukkan kotak input untuk PT & Butang Bulk Edit)
+        window.toggleTgtFilterMenu = function(colKey, btnElement) {
+            let menuId = `tgt-filter-menu-${colKey}`;
+            let menu = document.getElementById(menuId);
+            let isHidden = menu.classList.contains('hidden');
+            
+            document.querySelectorAll('[id^="tgt-filter-menu-"]').forEach(el => el.classList.add('hidden'));
+
+            if(isHidden) {
+                menu.classList.remove('hidden');
+
+                let selectedArr = window.tgtFilters[colKey] || [];
+                let uniques = [];
+                if (colKey === 'staff') uniques = [...adminState.users];
+                if (colKey === 'task') { uniques = [...adminState.tasks]; uniques.push("TOTAL"); }
+                uniques.sort();
+
+                let isAllChecked = (selectedArr.length > 0 && selectedArr.length === uniques.length) ? "checked" : "";
+
+                let html = `
+                <div class="mb-2 pb-2 border-b border-[#555] flex flex-col gap-2 sticky top-0 bg-[#2a2a2a] z-10">
+                    <div class="flex justify-between">
+                        <button onclick="window.clearTgtFilter('${colKey}')" class="text-[#ff5252] hover:text-red-400 font-bold px-2 py-1 rounded hover:bg-[#ff525220] transition">Clear</button>
+                        <button onclick="window.applyTgtFilter('${colKey}')" class="text-[#00e676] hover:text-green-400 font-bold px-2 py-1 rounded hover:bg-[#00e67620] transition">Apply</button>
+                    </div>
+                    <input type="text" placeholder="Search Filter..." oninput="window.searchTgtFilterOptions(this, '${colKey}')" class="w-full bg-[#111] text-white p-1.5 rounded border border-[#555] outline-none text-xs focus:border-[#00e676]" onclick="event.stopPropagation()">
+                    <label class="flex items-start gap-2 mt-1 cursor-pointer p-1.5 rounded bg-[#222] hover:bg-[#333] transition border border-[#00c6ff] shadow-[0_0_5px_rgba(0,198,255,0.3)]">
+                        <input type="checkbox" onchange="window.toggleTgtSelectAll(this, '${colKey}')" class="mt-0.5 accent-[#00c6ff]" ${isAllChecked}> 
+                        <span class="break-words w-full text-[#00c6ff] font-bold">Select All</span>
+                    </label>
+                </div>
+                <div class="chk-container max-h-40 overflow-y-auto">`; 
+                
+                uniques.forEach(val => {
+                    let checked = selectedArr.includes(val) ? "checked" : "";
+                    html += `<label class="flex items-start gap-2 mb-1.5 cursor-pointer hover:bg-[#444] p-1.5 rounded transition filter-item">
+                        <input type="checkbox" class="tgt-filter-cb-${colKey} mt-0.5 accent-[#00e676]" value="${val}" ${checked}> 
+                        <span class="break-words w-full text-gray-200">${val}</span>
+                    </label>`;
+                });
+                
+                html += `</div>`;
+                menu.innerHTML = html;
+                setTimeout(() => { let searchBox = menu.querySelector('input[type="text"]'); if(searchBox) searchBox.focus(); }, 50);
+            }
+        };
+
+        window.toggleTgtSelectAll = function(selectAllCb, colKey) {
+            let checkboxes = document.querySelectorAll(`.tgt-filter-cb-${colKey}`);
+            checkboxes.forEach(cb => { let lbl = cb.closest('label'); if(lbl.style.display !== "none") cb.checked = selectAllCb.checked; });
+        };
+
+        window.applyTgtFilter = function(colKey) {
+            let checkboxes = document.querySelectorAll(`.tgt-filter-cb-${colKey}:checked`);
+            window.tgtFilters[colKey] = Array.from(checkboxes).map(cb => cb.value);
+            document.getElementById(`tgt-filter-menu-${colKey}`).classList.add('hidden');
+            window.filterTargetEditor();
+            
+            let btn = document.getElementById(`btn-tgt-filter-${colKey}`);
+            if (window.tgtFilters[colKey].length > 0) {
+                btn.innerHTML = `<span class="text-[#00e676] font-bold">${window.tgtFilters[colKey].length} Selected</span> <span class="text-[8px] ml-1">▼</span>`;
+                btn.className = "w-full bg-[#1a3a2a] border-[#00e676] text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition mt-1";
+            } else {
+                btn.innerHTML = `All <span class="text-[8px] ml-1">▼</span>`;
+                btn.className = "w-full bg-[#111] border-[#555] text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition mt-1";
+            }
+        };
+
+        window.clearTgtFilter = function(colKey) {
+            window.tgtFilters[colKey] = [];
+            document.getElementById(`tgt-filter-menu-${colKey}`).classList.add('hidden');
+            window.filterTargetEditor();
+            
+            let btn = document.getElementById(`btn-tgt-filter-${colKey}`);
+            btn.innerHTML = `All <span class="text-[8px] ml-1">▼</span>`;
+            btn.className = "w-full bg-[#111] border-[#555] text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition mt-1";
+        };
+
+        window.searchTgtFilterOptions = function(inputElem, colKey) {
+            let txt = inputElem.value.toLowerCase();
+            document.querySelectorAll(`#tgt-filter-menu-${colKey} label.filter-item`).forEach(lbl => {
+                lbl.style.display = lbl.querySelector('span').innerText.toLowerCase().includes(txt) ? "flex" : "none";
+            });
+        };
+        
+        // ==========================================
+        // 🌟 ENJIN EXPRESS KHAS UNTUK TARGET EDITOR
+        // ==========================================
+        window.loadTargetDataOnly = async function(force = false) {
+            let c = document.getElementById('target-editor-container');
+            
+            // Kalau data dah ada dan bukan paksa refresh, terus lukis
+            if(!force && typeof adminState !== 'undefined' && adminState.users && adminState.users.length > 0) {
+                window.renderTargetEditor();
+                return;
+            }
+
+            if(c) c.innerHTML = "<div class='text-center py-20 text-[#00c6ff] font-bold'>⏳ Membaca pangkalan data Targets...</div>";
+            
+            try {
+                // 1. Tarik Users
+                let usersSnap = await getDocs(collection(db, "staff_list"));
+                let users = []; 
+                usersSnap.forEach(doc => {
+                    let data = doc.data();
+                    // 🌟 Tapis staff yang dah resign (isHidden)
+                    if(data.isHidden !== true) { 
+                        users.push(data.name);
+                    }
+                });
+                users.sort((a, b) => a.localeCompare(b));
+
+                // 2. Tarik Targets
+                let tgtSnap = await getDocs(collection(db, "dmo_targets"));
+                let targets = {}; let uniqueTasks = [];
+                tgtSnap.forEach(doc => {
+                    let d = doc.data(); let staff = d["Staff Name"]; let task = d["Task (DMO)"];
+                    if(!staff || !task) return;
+                    if(!targets[staff]) targets[staff] = {};
+                    if(!uniqueTasks.includes(task)) uniqueTasks.push(task);
+                    
+                    let pt = parseFloat(d["Point"]) || 0; 
+                    let dt = parseInt(d["Daily Target"]) || 0;
+                    targets[staff][task] = { daily: dt, point: pt, docId: doc.id, baseDailyTarget: dt, ...d };
+                });
+
+                const susunanMaster = [
+                    // --- TASK BIASA ---
+                    "FB Story", "FB Selit", "FB Group Join", "FB Group Post", "FB Add Friends", 
+                    "FB Chat Stranger", "FB Feed Post", "IG Story", "IG Selit", "IG Chat Stranger", 
+                    "IG Feed Post", "Linkedin Connect", "Linkedin Chat Stranger", "Linkedin Post", 
+                    "Tiktok Story", "Tiktok Selit", "Tiktok Chat Stranger", "Tiktok Post", 
+                    "Threads Selit", "Threads Post", "Threads Chat Stranger", "WS Group Join", 
+                    "WS Group Post", "WS Chat Stranger", "FFC Chat Stranger", "Hunt Numbers to CS", 
+                    "Reply PS", "FU PS tak berjaya invite", "Share Value to Leads", "FU PS Absent/Half", 
+                    "FU PS Attend >> Class", "FU PS attend and Enroll", "Reschedule",
+                    
+                    // --- TASK KOL ---
+                    "KOL FB Story", "KOL FB Selit", "KOL FB Group Join", "KOL FB Group Post", "KOL FB Add Friends", 
+                    "KOL FB Chat Stranger", "KOL FB Feed Post", "KOL IG Story", "KOL IG Selit", "KOL IG Chat Stranger", 
+                    "KOL IG Feed Post", "KOL Linkedin Connect", "KOL Linkedin Chat Stranger", "KOL Linkedin Post", 
+                    "KOL Tiktok Story", "KOL Tiktok Selit", "KOL Tiktok Chat Stranger", "KOL Tiktok Post", 
+                    "KOL Threads Selit", "KOL Threads Post", "KOL Threads Chat Stranger", "KOL WS Group Join", 
+                    "KOL WS Group Post", "KOL WS Chat Stranger", "KOL FFC Chat Stranger", "KOL Hunt Numbers to CS", 
+                    "KOL Reply PS", "KOL FU PS tak berjaya invite", "KOL Share Value to Leads", "KOL FU PS Absent/Half", 
+                    "KOL FU PS Attend >> Class", "KOL FU PS attend and Enroll", "KOL Reschedule"
+                ];
+                
+                uniqueTasks.sort((a, b) => {
+                    let idxA = susunanMaster.indexOf(a);
+                    let idxB = susunanMaster.indexOf(b);
+                    if(idxA === -1) idxA = 999;
+                    if(idxB === -1) idxB = 999;
+                    return idxA - idxB;
+                });
+
+                // Update state
+                if (typeof adminState === 'undefined') window.adminState = { users: [], tasks: [], targets: {}, logs: {}, pointsData: { earned: {}, target: {} } };
+                adminState.users = users;
+                adminState.tasks = uniqueTasks;
+                adminState.targets = targets;
+
+                window.renderTargetEditor();
+            } catch (e) {
+                if(c) c.innerHTML = `<div class='text-center py-20 text-red-500 font-bold'>❌ Gagal: ${e.message}</div>`;
+            }
+        };
+
         window.renderTargetEditor = function() {
             let c = document.getElementById('target-editor-container');
             if(!adminState.users || adminState.users.length === 0) {
@@ -2854,9 +3158,8 @@
             let hR2 = ["2:00 PM","3:00 PM","4:00 PM","5:00 PM", "6:00 PM"];
             let hR3 = ["7:00 PM","8:00 PM","9:00 PM","10:00 PM", "11:00 PM"];
 
-            // Butang Bulk Edit kat atas table
             let html = `
-                <div class="mb-4 flex gap-2">
+                <div class="mb-4 flex flex-wrap gap-2">
                     <button onclick="window.openBulkEdit()" class="bg-purple-600 hover:bg-purple-500
                         text-white px-4 py-2 rounded font-bold
                         shadow-lg flex items-center gap-2">
@@ -2866,17 +3169,37 @@
                         class="bg-[#00e676] hover:bg-[#00c853]
                         text-black px-4 py-2 rounded font-bold
                         shadow-lg flex items-center gap-2 ml-2">
-                        <span>➕</span> TAMBAH TASK BARU
+                        <span>➕</span> TAMBAH TASK PUKAL
+                    </button>
+                    <button onclick="window.openPadamTaskModal()"
+                        class="bg-red-600 hover:bg-red-500
+                        text-white px-4 py-2 rounded font-bold
+                        shadow-lg flex items-center gap-2 ml-2">
+                        <span>🗑️</span> PADAM TASK PUKAL
                     </button>
                 </div>
                 <table class="admin-table text-xs" style="min-width: 1900px;">
                 <thead>
                     <tr>
-                        <th style="position:sticky; left:0; z-index:8; min-width:120px; background:#111; vertical-align:top;">
-                            STAFF<br><input type="text" id="flt-tgt-staff" onkeyup="window.filterTargetEditor()" placeholder="Cari..." class="w-full text-black px-1 py-1 mt-2 rounded border border-[#555] outline-none">
+                        <th style="position:sticky; left:0; z-index:8; min-width:120px; background:#111; vertical-align:top; overflow:visible;">
+                            <div class="th-content">STAFF</div>
+                            <input type="text" id="flt-tgt-staff" oninput="window.filterTargetEditor()" placeholder="🔍 Cari..." class="w-full text-[#00c6ff] px-1.5 py-1.5 mt-1 bg-[#1a1a1a] rounded border border-[#00c6ff] outline-none text-[10px] shadow-inner mb-1.5">
+                            <div class="text-left relative">
+                                <button id="btn-tgt-filter-staff" onclick="window.toggleTgtFilterMenu('staff', this)" class="w-full bg-[#111] border-[#555] text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                                    All <span class="text-[8px] ml-1">▼</span>
+                                </button>
+                                <div id="tgt-filter-menu-staff" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999; padding:8px;"></div>
+                            </div>
                         </th>
-                        <th style="position:sticky; left:120px; z-index:8; min-width:180px; background:#111; vertical-align:top;">
-                            TASK<br><input type="text" id="flt-tgt-task" onkeyup="window.filterTargetEditor()" placeholder="Taip 'total'..." class="w-full text-black px-1 py-1 mt-2 rounded border border-[#555] outline-none">
+                        <th style="position:sticky; left:120px; z-index:8; min-width:180px; background:#111; vertical-align:top; overflow:visible;">
+                            <div class="th-content">TASK</div>
+                            <input type="text" id="flt-tgt-task" oninput="window.filterTargetEditor()" placeholder="🔍 Cari / 'total'" class="w-full text-[#00c6ff] px-1.5 py-1.5 mt-1 bg-[#1a1a1a] rounded border border-[#00c6ff] outline-none text-[10px] shadow-inner mb-1.5">
+                            <div class="text-left relative">
+                                <button id="btn-tgt-filter-task" onclick="window.toggleTgtFilterMenu('task', this)" class="w-full bg-[#111] border-[#555] text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                                    All <span class="text-[8px] ml-1">▼</span>
+                                </button>
+                                <div id="tgt-filter-menu-task" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999; padding:8px;"></div>
+                            </div>
                         </th>
                         <th style="position:sticky; left:300px; z-index:8; min-width:60px; background:#111; border-right:2px solid #555; vertical-align:top; text-align:center;">
                             PT (Point)
@@ -2965,6 +3288,7 @@
             });
             html += `</tbody></table>`;
             c.innerHTML = html;
+            window.filterTargetEditor(); // Aplikasikan filter selepas jadual dilukis
         };
 
         // 4. SAVE TARGETS (Kini simpan Point sekali jika ada perubahan)
@@ -3021,7 +3345,7 @@
                     await setDoc(doc(db, "dmo_targets", u.id), u.data, { merge: true });
                 }
                 alert(`✅ Berjaya kemaskini ${updates.length} row (termasuk Point)!`);
-                window.loadAdminData(); 
+                window.loadTargetDataOnly(true); // Pakai refresh pantas 🚀
             } catch(e) {
                 alert("Ralat menyimpan: " + e.message);
             }
@@ -3040,32 +3364,47 @@
             let selKe = document.getElementById('clone-ke');
             let selLeadStaff = document.getElementById('csv-lead-staff');
             let selAdminTab = document.getElementById('csv-lead-staff-admintab'); 
-            let selHuntAdmin = document.getElementById('hunt-admin-staff'); // 🌟 TANGKAP DROPDOWN HUNT
-            let selBulkPaste = document.getElementById('bulk-paste-staff-crm'); // 🌟 TAMBAH INI
+            let selHuntAdmin = document.getElementById('hunt-admin-staff'); 
+            let selBulkPaste = document.getElementById('bulk-paste-staff-crm'); 
 
             if(c) c.innerHTML = "<div class='text-gray-500 text-center text-sm py-2'>Loading...</div>";
             
             try {
                 const snap = await getDocs(collection(db, "staff_list"));
                 senaraiStafAdmin = [];
-                snap.forEach(doc => senaraiStafAdmin.push({ id: doc.id, name: doc.data().name, fullName: doc.data().fullName || "" }));
+                snap.forEach(doc => senaraiStafAdmin.push({ 
+                    id: doc.id, 
+                    name: doc.data().name, 
+                    fullName: doc.data().fullName || "",
+                    isHidden: doc.data().isHidden || false // 🌟 Tarik memori isHidden
+                }));
                 senaraiStafAdmin.sort((a, b) => a.name.localeCompare(b.name));
 
                 let htmlList = ""; 
                 let htmlOpt = `<option value="" disabled selected>- Pilih Staf -</option>`;
                 
                 senaraiStafAdmin.forEach(s => {
+                    let checkedHide = s.isHidden ? "checked" : ""; // 🌟 Set tick kalau dah disembunyikan
+                    
                     htmlList += `
                     <div id="row-staff-${s.id}" class="flex justify-between items-center bg-[#222] p-2 rounded border border-[#333]">
                         <div class="flex flex-col ml-2">
                             <span class="staff-name-text text-white text-sm font-bold">${s.name}</span>
-                            <span class="staff-full-text text-gray-500 text-[10px]">Excel: ${s.fullName || "-"}</span>
+                            <span class="staff-full-text text-gray-500 text-[10px] mb-1">Excel: ${s.fullName || "-"}</span>
+                            
+                            <!-- 🌟 CHECKBOX HIDE BARU -->
+                            <label class="flex items-center gap-1 cursor-pointer">
+                                <input type="checkbox" onchange="window.toggleHideStaff('${s.id}', this.checked)" ${checkedHide} class="w-3 h-3 accent-red-500 cursor-pointer">
+                                <span class="text-[10px] text-red-400 font-bold">Hide dari KPI/Jadual</span>
+                            </label>
                         </div>
-                        <div class="flex gap-1">
+                        <div class="flex gap-1 h-fit">
                             <button onclick="window.siapEditStaf('${s.id}', '${s.name}', '${s.fullName || ""}')" class="text-[#00c6ff] hover:text-white text-sm font-bold px-3 py-1 bg-[#1a1a1a] rounded border border-[#00c6ff]">Edit</button>
                             <button onclick="window.buangStaf('${s.id}', '${s.name}')" class="text-red-500 hover:text-red-400 text-sm font-bold px-3 py-1 bg-[#1a1a1a] rounded border border-red-900">Padam</button>
                         </div>
                     </div>`;
+                    
+                    // 🌟 Nota: Nama yang di-"hide" tetap akan masuk dalam dropdown CRM supaya senang nak assign lead
                     htmlOpt += `<option value="${s.name}">${s.name}</option>`;
                 });
                 
@@ -3074,12 +3413,22 @@
                 if(selKe) selKe.innerHTML = htmlOpt;
                 if(selLeadStaff) selLeadStaff.innerHTML = htmlOpt;
                 if(selAdminTab) selAdminTab.innerHTML = htmlOpt;
-                if(selHuntAdmin) selHuntAdmin.innerHTML = htmlOpt; // 🌟 PANCUT NAMA KE HUNT CS
+                if(selHuntAdmin) selHuntAdmin.innerHTML = htmlOpt; 
                 
                 let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
                 if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
-                if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; // 🌟 TAMBAH INI
+                if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; 
             } catch(e) { if(c) c.innerHTML = "<div class='text-red-500 text-sm'>Gagal muat senarai staf.</div>"; }
+        };
+
+        // 🌟 FUNGSI BARU UNTUK HANTAR STATUS HIDE KE FIREBASE
+        window.toggleHideStaff = async function(id, isHidden) {
+            try {
+                await updateDoc(doc(db, "staff_list", id), { isHidden: isHidden });
+                // Tak letak alert supaya tak mengganggu bila boss tengah laju tick
+            } catch(e) {
+                alert("Gagal kemaskini status hide: " + e.message);
+            }
         };
 
         window.tambahStaf = async function() {
@@ -3896,6 +4245,54 @@
             return str;
         };
 
+        // ==========================================
+        // 🌟 NORMALIZE NO PHONE -> FORMAT 60XXXXXXXXX
+        // (Buang semua simbol/space, pastikan kod negara 60)
+        // ==========================================
+        window.normalizePhone60 = function(p) {
+            let n = String(p || "").replace(/[^0-9]/g, '');
+            if (!n) return "";
+            if (n.startsWith('60')) return n;
+            if (n.startsWith('0')) return '60' + n.substring(1);
+            return '60' + n;
+        };
+
+        // ==========================================
+        // 🌟 CLEAN PHONE DIGITS -> buang semua simbol/space SAHAJA
+        // (TAK paksa kod negara 60, selamat untuk no bukan Malaysia)
+        // ==========================================
+        window.cleanPhoneDigits = function(p) {
+            return String(p || "").replace(/[^0-9]/g, '');
+        };
+
+        // ==========================================
+        // 🌟 PHONES MATCH -> banding 2 no phone dengan flexible
+        // (TAK strict 60, support no bukan Malaysia jugak)
+        // Logik:
+        //   1. Sama terus selepas buang simbol -> match
+        //   2. Buang leading '0' (trunk code) kat kedua-dua -> match
+        //   3. Banding suffix (9 digit terakhir) -> match
+        //      (handle beza kod negara 60/62/65/dll di hadapan)
+        // ==========================================
+        window.phonesMatch = function(a, b) {
+            let da = window.cleanPhoneDigits(a);
+            let db = window.cleanPhoneDigits(b);
+            if (!da || !db) return false;
+            if (da === db) return true;
+
+            // Buang leading zero (0123... vs 123...)
+            let na = da.replace(/^0+/, '');
+            let nb = db.replace(/^0+/, '');
+            if (na && nb && na === nb) return true;
+
+            // Banding suffix - selamat untuk beza kod negara (60/62/65/dll)
+            let minLen = Math.min(na.length, nb.length);
+            if (minLen < 7) return false; // terlalu pendek, risiko match silap
+
+            let suffixLen = Math.min(minLen, 9);
+            return na.slice(-suffixLen) === nb.slice(-suffixLen);
+        };
+
         // --- PREVIEW HISTORY AUTO-GENERATE (VERSI KEBAL) ---
         window.updatePreviewFU = function() {
             // 1. Cari elemen dengan berhati-hati
@@ -3930,6 +4327,66 @@
             } else {
                 console.warn("Kotak preview tak jumpa kat HTML boss.");
             }
+        };
+
+        // ==========================================
+        // 🕐 SET CURRENT DATE/TIME -> isi FU Date/Time dengan tarikh & masa sekarang
+        // Untuk CRM (crm-fu-date/time), PS (ps-fudate/futime), Enroll (enroll-fudate/futime)
+        // ==========================================
+        window.setCurrentDateTime = function(prefix) {
+            let dateId, timeId, previewFn;
+            if(prefix === 'crm') { dateId = 'crm-fu-date'; timeId = 'crm-fu-time'; previewFn = window.updatePreviewFU; }
+            else if(prefix === 'ps') { dateId = 'ps-fudate'; timeId = 'ps-futime'; previewFn = window.updatePSPreview; }
+            else if(prefix === 'enroll') { dateId = 'enroll-fudate'; timeId = 'enroll-futime'; previewFn = window.updateEnrollPreview; }
+            else return;
+
+            let dEl = document.getElementById(dateId);
+            let tEl = document.getElementById(timeId);
+            if(!dEl && !tEl) return;
+
+            let now = new Date();
+            let dateStr = now.toISOString().split('T')[0];
+            let hh = String(now.getHours()).padStart(2, '0');
+            let mm = String(now.getMinutes()).padStart(2, '0');
+            let timeStr = `${hh}:${mm}`;
+
+            if(dEl) dEl.value = dateStr;
+            if(tEl) tEl.value = timeStr;
+
+            if(typeof previewFn === 'function') previewFn();
+            if(prefix === 'crm' && typeof window.renderFUComparisonBox === 'function') window.renderFUComparisonBox();
+        };
+
+        // ==========================================
+        // ➕ APPEND PREVIEW -> tambah Preview History terus ke ruangan History FU
+        // (gantikan butang Copy - elak staf terlupa paste)
+        // Untuk CRM (crm-preview-fu -> crm-history), PS (ps-preview-fu -> ps-rem2),
+        // Enroll (enroll-preview-fu -> enroll-history)
+        // ==========================================
+        window.appendPreviewToHistory = function(prefix) {
+            let previewId, historyId;
+            if(prefix === 'crm') { previewId = 'crm-preview-fu'; historyId = 'crm-history'; }
+            else if(prefix === 'ps') { previewId = 'ps-preview-fu'; historyId = 'ps-rem2'; }
+            else if(prefix === 'enroll') { previewId = 'enroll-preview-fu'; historyId = 'enroll-history'; }
+            else return;
+
+            let previewEl = document.getElementById(previewId);
+            let historyEl = document.getElementById(historyId);
+            if(!previewEl || !historyEl) return;
+
+            let previewTxt = previewEl.value.trim();
+            if(!previewTxt) return;
+
+            let currentHistory = historyEl.value.trim();
+
+            // Halang duplicate kalau entry yang sama dah ada
+            if(currentHistory.includes(previewTxt)) {
+                // Dah ada - silent, takde alert
+                return;
+            }
+
+            historyEl.value = currentHistory ? (previewTxt + "\n" + currentHistory) : previewTxt;
+            // Silent append - takde alert, terus masuk History FU
         };
 
         // ==========================================
@@ -4129,6 +4586,17 @@
           let data = isAdmin ? crmState.adminData[idx] : crmState.data[idx];
           if(!data) return;
           
+          // 🌟 SIMPAN CONTEXT SEMASA (untuk Auto Sync / Manual Sync / Unlink)
+          window._crmModalCtx = {
+              docId: data.docId,
+              isAdmin: isAdmin,
+              // 🛡️ Backup link asal (sebelum Auto/Manual Sync) - untuk Revert kalau silap
+              _syncBackup: {
+                  ps: data["Linked PS DocID"] || "",
+                  enroll: data["Linked Enroll DocID"] || ""
+              }
+          };
+          
           // 🛡️ HELPER FUNCTION: Elak CRASH kalau kotak tak wujud kat HTML
           const setSafeVal = (id, val) => {
               let el = document.getElementById(id);
@@ -4238,8 +4706,546 @@
 
           if (typeof window.updatePreviewFU === 'function') window.updatePreviewFU(); 
           
+          // 🌟 PAPAR STATUS LINKED PS MASTER / PS ENROLL
+          window.renderCRMLinkedSection(data);
+          
           let modalCrm = document.getElementById('modal-crm');
           if(modalCrm) modalCrm.style.display = 'flex';
+        };
+
+        // ==========================================
+        // 🌟🔗 GABUNG MODAL: CRM <-> PS MASTER & PS ENROLL
+        // ==========================================
+
+        // Cari index sesuatu docId dalam array state (psState / enrollState)
+        window._findIdxByDocId = function(arr, docId) {
+            if(!arr) return -1;
+            return arr.findIndex(r => r.docId === docId);
+        };
+
+        // Cari rekod (PS Master / PS Enroll) ikut docId dalam mana-mana state array (admin/team)
+        window._findRecordByDocId = function(stateObj, isAdmin, docId) {
+            if(!stateObj || !docId) return null;
+            let primaryArr = isAdmin ? stateObj.adminData : stateObj.data;
+            let otherArr = isAdmin ? stateObj.data : stateObj.adminData;
+            let idx = window._findIdxByDocId(primaryArr, docId);
+            if(idx > -1) return primaryArr[idx];
+            idx = window._findIdxByDocId(otherArr, docId);
+            if(idx > -1) return otherArr[idx];
+            return null;
+        };
+
+        // Papar kedua-dua box (PS Master & PS Enroll) berdasarkan link tersimpan
+        window.renderCRMLinkedSection = async function(data) {
+            await window.renderLinkedBox('ps', data["Linked PS DocID"] || "");
+            await window.renderLinkedBox('enroll', data["Linked Enroll DocID"] || "");
+            window.renderFUComparisonBox();
+        };
+
+        // ==========================================
+        // 📂 DETAIL LANJUT (Dropdown) - papar SEMUA data PS Master / PS Enroll
+        // terus dalam kotak link CRM, tak payah bukak modal lagi
+        // ==========================================
+        window._buildLinkDetailsHtml = function(type, record) {
+            let columns = type === 'ps' ? psColumns : enrollColumns;
+
+            // Field yang sudah dipaparkan kat ringkasan atas, jangan ulang kat sini
+            let excludeKeys = type === 'ps'
+                ? ["Student Name", "Name", "Phone Number", "Phone", "Contact", "Class Progress", "TO FU", "FU Date", "FU Time", "docId"]
+                : ["Student Name", "Phone", "Class Progress", "TO FU", "FU Date", "FU Time", "docId"];
+
+            let rows = "";
+            columns.forEach(col => {
+                if(excludeKeys.includes(col.key)) return;
+                let val = record[col.key];
+                if(val === undefined || val === null || val === "-" || String(val).trim() === "") return;
+                let colSty = col.color ? `color:${col.color};` : "";
+                rows += `<div class="bg-[#111] rounded px-2 py-1">
+                    <div class="text-[9px] text-gray-500 uppercase tracking-wide">${col.label}</div>
+                    <div class="text-[11px] text-gray-200 break-words" style="${colSty}">${val}</div>
+                </div>`;
+            });
+
+            if(!rows) return `<div class="text-gray-500 text-[10px] italic p-2">Tiada detail lanjut untuk rekod ini.</div>`;
+            return `<div class="grid grid-cols-2 sm:grid-cols-3 gap-1.5 mt-2 p-2 bg-[#151515] rounded border border-[#333]">${rows}</div>`;
+        };
+
+        // Toggle buka/tutup "Detail Lanjut" dalam kotak link CRM
+        window.toggleCRMLinkDetails = function(type) {
+            let detailsId = type === 'ps' ? 'crm-link-ps-details' : 'crm-link-enroll-details';
+            let btnId = type === 'ps' ? 'crm-link-ps-toggle-btn' : 'crm-link-enroll-toggle-btn';
+            let detailsEl = document.getElementById(detailsId);
+            let btnEl = document.getElementById(btnId);
+            if(!detailsEl) return;
+
+            let isHidden = detailsEl.classList.contains('hidden');
+            if(isHidden) {
+                detailsEl.classList.remove('hidden');
+                if(btnEl) btnEl.innerText = '🔼 Tutup Detail';
+            } else {
+                detailsEl.classList.add('hidden');
+                if(btnEl) btnEl.innerText = '🔽 Detail Lanjut';
+            }
+        };
+
+        // Papar SATU box (PS Master atau PS Enroll) berdasarkan docId yang di-link
+        window.renderLinkedBox = async function(type, docId) {
+            let boxId = type === 'ps' ? 'crm-link-ps-box' : 'crm-link-enroll-box';
+            let box = document.getElementById(boxId);
+            if(!box) return;
+
+            let label = type === 'ps' ? '🎓 PS Master' : '📝 PS Enroll';
+
+            // 🛡️ Sediakan butang Revert kalau link semasa berbeza dari link asal (sebelum Auto/Manual Sync)
+            let ctxForRevert = window._crmModalCtx;
+            let backupVal = (ctxForRevert && ctxForRevert._syncBackup) ? (ctxForRevert._syncBackup[type] || "") : undefined;
+            let canRevert = backupVal !== undefined && backupVal !== (docId || "");
+            let revertBtnHtml = canRevert
+                ? `<button type="button" onclick="window.revertCRMSync('${type}')" class="bg-[#ff5252] hover:bg-[#ff8a80] text-black px-2 py-0.5 rounded text-[10px]" title="Revert ke link asal (sebelum sync)">↩️ Revert</button>`
+                : "";
+
+            if(!docId) {
+                box.innerHTML = `<div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333]"><span class="text-gray-400">${label}:</span> <div class="flex items-center gap-2"><span class="text-red-400 font-bold text-[10px]">❌ Belum Sync</span>${revertBtnHtml}</div></div>`;
+                return;
+            }
+
+            box.innerHTML = `<div class="bg-[#1a1a1a] p-2 rounded border border-[#333] text-gray-500 animate-pulse">⏳ Memuat ${label}...</div>`;
+
+            let ctx = window._crmModalCtx || { isAdmin: true };
+            let stateObj = type === 'ps' ? psState : enrollState;
+            let primaryArr = ctx.isAdmin ? stateObj.adminData : stateObj.data;
+            let otherArr = ctx.isAdmin ? stateObj.data : stateObj.adminData;
+
+            let record = null, idx = -1, useAdminFlag = ctx.isAdmin;
+
+            idx = window._findIdxByDocId(primaryArr, docId);
+            if(idx > -1) { record = primaryArr[idx]; }
+            else {
+                let idx2 = window._findIdxByDocId(otherArr, docId);
+                if(idx2 > -1) { record = otherArr[idx2]; idx = idx2; useAdminFlag = !ctx.isAdmin; }
+            }
+
+            if(!record) {
+                try {
+                    let collName = type === 'ps' ? 'ps_students' : 'ps_enroll';
+                    let snap = await getDoc(doc(db, collName, docId));
+                    if(snap.exists()) {
+                        record = { docId: snap.id, ...snap.data() };
+                        primaryArr.push(record);
+                        idx = primaryArr.length - 1;
+                        useAdminFlag = ctx.isAdmin;
+                    }
+                } catch(e) { console.warn("Gagal fetch linked record:", e); }
+            }
+
+            if(!record) {
+                box.innerHTML = `<div class="bg-[#1a1a1a] p-2 rounded border border-red-900 text-red-400 text-[10px] flex justify-between items-center gap-2"><span>⚠️ ${label}: Rekod tak jumpa (mungkin sudah dipadam). <button onclick="window.unlinkCRMRecord('${type}')" class="underline ml-1">Unlink</button></span>${revertBtnHtml}</div>`;
+                return;
+            }
+
+            let name = record["Student Name"] || record["Name"] || "-";
+            let progress = record["Class Progress"] || "-";
+            let tofu = record["TO FU"] || "-";
+            let fuDate = record["FU Date"] || "";
+            let fuTime = record["FU Time"] || "";
+            let fuStr = fuDate ? `${fuDate}${fuTime ? ' ' + fuTime : ''}` : "-";
+
+            let openFn = type === 'ps' ? `window.openPSModal(${useAdminFlag}, ${idx})` : `window.openEnrollModal(${useAdminFlag}, ${idx})`;
+            let detailsId = type === 'ps' ? 'crm-link-ps-details' : 'crm-link-enroll-details';
+            let toggleBtnId = type === 'ps' ? 'crm-link-ps-toggle-btn' : 'crm-link-enroll-toggle-btn';
+            let detailsHtml = window._buildLinkDetailsHtml(type, record);
+
+            box.innerHTML = `<div class="bg-[#1a1a1a] p-2 rounded border border-[#333] mb-1">
+                <div class="flex justify-between items-center gap-2">
+                    <span class="text-[#00c6ff] font-bold text-[11px] truncate">${label}: ${name}</span>
+                    <div class="flex gap-1 shrink-0">
+                        <button type="button" onclick="${openFn}" class="bg-[#3f51b5] hover:bg-[#303f9f] text-white px-2 py-0.5 rounded text-[10px]">✏️ Buka</button>
+                        ${revertBtnHtml}
+                        <button type="button" onclick="window.unlinkCRMRecord('${type}')" class="bg-[#444] hover:bg-[#666] text-gray-300 px-2 py-0.5 rounded text-[10px]" title="Unlink">🔓</button>
+                    </div>
+                </div>
+                <div class="text-[10px] text-gray-400 mt-1 flex justify-between items-center gap-2">
+                    <span>📊 Progress: <span class="text-[#ffeb3b] font-bold">${progress}</span> | 🎯 ${tofu} | 📅 ${fuStr}</span>
+                    <button type="button" id="${toggleBtnId}" onclick="window.toggleCRMLinkDetails('${type}')" class="bg-[#222] hover:bg-[#333] text-[#00c6ff] px-2 py-0.5 rounded text-[10px] shrink-0">🔽 Detail Lanjut</button>
+                </div>
+                <div id="${detailsId}" class="hidden">${detailsHtml}</div>
+            </div>`;
+        };
+
+        // 🔄 AUTO SYNC: padankan ikut no phone (lepas trim symbol & space)
+        window.autoSyncCRMLink = async function() {
+            let ctx = window._crmModalCtx;
+            if(!ctx) return;
+
+            let btn = document.getElementById('btn-crm-autosync');
+            let originalTxt = btn ? btn.innerText : "";
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Mencari..."; }
+
+            let targetPhoneRaw = document.getElementById('crm-contact').value;
+            let targetPhoneDigits = window.cleanPhoneDigits(targetPhoneRaw);
+
+            if(!targetPhoneDigits || targetPhoneDigits.length < 5) {
+                alert("⚠️ No phone CRM kosong/tidak sah. Sila isi dahulu sebelum Auto Sync.");
+                if(btn) { btn.disabled = false; btn.innerText = originalTxt; }
+                return;
+            }
+
+            try {
+                let foundPS = null, foundEnroll = null;
+
+                const snapPS = await getDocs(collection(db, "ps_students"));
+                snapPS.forEach(d => {
+                    if(foundPS) return;
+                    let rec = { docId: d.id, ...d.data() };
+                    let phone = rec["Phone Number"] || rec["Phone"] || rec["Contact"] || rec.contact;
+                    if(window.phonesMatch(phone, targetPhoneRaw)) foundPS = rec;
+                });
+
+                const snapEnroll = await getDocs(collection(db, "ps_enroll"));
+                snapEnroll.forEach(d => {
+                    if(foundEnroll) return;
+                    let rec = { docId: d.id, ...d.data() };
+                    let phone = rec["Phone"];
+                    if(window.phonesMatch(phone, targetPhoneRaw)) foundEnroll = rec;
+                });
+
+                if(!foundPS && !foundEnroll) {
+                    alert("❌ Tiada match dijumpai berdasarkan no phone ini di PS Master / PS Enroll.\n\nCuba guna 🔎 Manual Sync untuk cari ikut nama.");
+                } else {
+                    let updates = {};
+                    if(foundPS) updates["Linked PS DocID"] = foundPS.docId;
+                    if(foundEnroll) updates["Linked Enroll DocID"] = foundEnroll.docId;
+
+                    await updateDoc(doc(db, "crm_leads", ctx.docId), updates);
+
+                    // Kemaskini memori (Zero Reads)
+                    let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+                    let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+                    if(rowIndex > -1) stateArr[rowIndex] = { ...stateArr[rowIndex], ...updates };
+
+                    // Cache rekod yang dijumpai supaya "Buka" boleh terus jumpa
+                    if(foundPS) {
+                        let arr = ctx.isAdmin ? psState.adminData : psState.data;
+                        if(window._findIdxByDocId(arr, foundPS.docId) === -1) arr.push(foundPS);
+                    }
+                    if(foundEnroll) {
+                        let arr = ctx.isAdmin ? enrollState.adminData : enrollState.data;
+                        if(window._findIdxByDocId(arr, foundEnroll.docId) === -1) arr.push(foundEnroll);
+                    }
+
+                    await window.renderCRMLinkedSection(rowIndex > -1 ? stateArr[rowIndex] : updates);
+
+                    let msg = [];
+                    if(foundPS) msg.push("PS Master (" + (foundPS["Student Name"] || foundPS["Name"] || "-") + ")");
+                    if(foundEnroll) msg.push("PS Enroll (" + (foundEnroll["Student Name"] || "-") + ")");
+                    alert("✅ Auto Sync berjaya!\nLinked: " + msg.join(" | "));
+                }
+            } catch(e) {
+                alert("Gagal Auto Sync: " + e.message);
+            }
+
+            if(btn) { btn.disabled = false; btn.innerText = originalTxt; }
+        };
+
+        // 🔎 MANUAL SYNC: bukak popup cari nama/phone
+        window.openManualSyncModal = function() {
+            document.getElementById('sync-search-ps').value = "";
+            document.getElementById('sync-search-enroll').value = "";
+            document.getElementById('sync-results-ps').innerHTML = "";
+            document.getElementById('sync-results-enroll').innerHTML = "";
+            document.getElementById('modal-crm-sync').style.display = 'flex';
+        };
+
+        window.closeManualSyncModal = function() {
+            document.getElementById('modal-crm-sync').style.display = 'none';
+        };
+
+        window.searchManualSync = async function(type) {
+            let inputId = type === 'ps' ? 'sync-search-ps' : 'sync-search-enroll';
+            let resultsId = type === 'ps' ? 'sync-results-ps' : 'sync-results-enroll';
+            let resDiv = document.getElementById(resultsId);
+            let qRaw = document.getElementById(inputId).value.trim();
+            let q = qRaw.toLowerCase();
+
+            if(!q) { resDiv.innerHTML = `<div class="text-gray-500 text-xs p-2">Sila masukkan nama atau no phone.</div>`; return; }
+
+            resDiv.innerHTML = `<div class="text-[#ff9800] text-xs p-2 animate-pulse">⏳ Mencari...</div>`;
+
+            let qPhoneDigits = window.cleanPhoneDigits(qRaw);
+
+            try {
+                let collName = type === 'ps' ? 'ps_students' : 'ps_enroll';
+                const snap = await getDocs(collection(db, collName));
+                let results = [];
+                snap.forEach(d => {
+                    let rec = { docId: d.id, ...d.data() };
+                    let name = (rec["Student Name"] || rec["Name"] || "").toLowerCase();
+                    let phoneRaw = type === 'ps' ? (rec["Phone Number"] || rec["Phone"] || rec["Contact"]) : rec["Phone"];
+                    let phoneDigits = window.cleanPhoneDigits(phoneRaw);
+
+                    let matchName = name.includes(q);
+                    let matchPhone = qPhoneDigits.length >= 5 && phoneDigits && (phoneDigits.includes(qPhoneDigits) || window.phonesMatch(phoneRaw, qRaw));
+
+                    if(matchName || matchPhone) results.push(rec);
+                });
+
+                if(results.length === 0) {
+                    resDiv.innerHTML = `<div class="text-gray-500 text-xs p-2">Tiada hasil dijumpai.</div>`;
+                    return;
+                }
+
+                results = results.slice(0, 20);
+
+                let html = "";
+                results.forEach(rec => {
+                    let name = rec["Student Name"] || rec["Name"] || "-";
+                    let phoneDisp = type === 'ps' ? (rec["Phone Number"] || rec["Phone"] || rec["Contact"] || "-") : (rec["Phone"] || "-");
+                    let progress = rec["Class Progress"] || "-";
+                    html += `<div class="flex justify-between items-center bg-[#1a1a1a] p-2 rounded border border-[#333] mb-1 text-xs gap-2">
+                        <div class="truncate">
+                            <span class="text-white font-bold">${name}</span><br>
+                            <span class="text-gray-400">📞 ${phoneDisp} | 📊 ${progress}</span>
+                        </div>
+                        <button type="button" onclick="window.selectManualSyncResult('${type}', '${rec.docId}')" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold px-2 py-1 rounded text-[10px] shrink-0">Pilih</button>
+                    </div>`;
+                });
+                resDiv.innerHTML = html;
+            } catch(e) {
+                resDiv.innerHTML = `<div class="text-red-400 text-xs p-2">Error: ${e.message}</div>`;
+            }
+        };
+
+        window.selectManualSyncResult = async function(type, docId) {
+            let ctx = window._crmModalCtx;
+            if(!ctx) return;
+
+            let field = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
+
+            try {
+                await updateDoc(doc(db, "crm_leads", ctx.docId), { [field]: docId });
+
+                let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+                let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+                if(rowIndex > -1) stateArr[rowIndex][field] = docId;
+
+                // Cache rekod yang dipilih
+                let collName = type === 'ps' ? 'ps_students' : 'ps_enroll';
+                let snap = await getDoc(doc(db, collName, docId));
+                if(snap.exists()) {
+                    let rec = { docId: snap.id, ...snap.data() };
+                    let arr = type === 'ps' ? (ctx.isAdmin ? psState.adminData : psState.data) : (ctx.isAdmin ? enrollState.adminData : enrollState.data);
+                    if(window._findIdxByDocId(arr, docId) === -1) arr.push(rec);
+                }
+
+                await window.renderLinkedBox(type, docId);
+                window.renderFUComparisonBox();
+                window.closeManualSyncModal();
+            } catch(e) {
+                alert("Gagal sync: " + e.message);
+            }
+        };
+
+        // 🔓 UNLINK
+        window.unlinkCRMRecord = async function(type) {
+            let ctx = window._crmModalCtx;
+            if(!ctx) return;
+            if(!confirm("Unlink rekod ini dari CRM?")) return;
+
+            let field = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
+            try {
+                await updateDoc(doc(db, "crm_leads", ctx.docId), { [field]: "" });
+
+                let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+                let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+                if(rowIndex > -1) stateArr[rowIndex][field] = "";
+
+                await window.renderLinkedBox(type, "");
+                window.renderFUComparisonBox();
+            } catch(e) {
+                alert("Gagal unlink: " + e.message);
+            }
+        };
+
+        // ==========================================
+        // ↩️ REVERT SYNC: kembalikan link ke keadaan ASAL
+        // (sebelum Auto Sync / Manual Sync dibuat dalam modal ini)
+        // Safety-net kalau sync ter-link salah rekod - takut rosak data
+        // ==========================================
+        window.revertCRMSync = async function(type) {
+            let ctx = window._crmModalCtx;
+            if(!ctx || !ctx._syncBackup) return;
+
+            let label = type === 'ps' ? 'PS Master' : 'PS Enroll';
+            let field = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
+            let backupVal = ctx._syncBackup[type] || "";
+
+            if(!confirm(`↩️ Revert link ${label} kembali ke keadaan ASAL (sebelum sync tadi)?\n\nLink semasa akan ditukar balik.`)) return;
+
+            try {
+                await updateDoc(doc(db, "crm_leads", ctx.docId), { [field]: backupVal });
+
+                // Kemaskini memori (Zero Reads)
+                let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+                let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+                if(rowIndex > -1) stateArr[rowIndex][field] = backupVal;
+
+                await window.renderLinkedBox(type, backupVal);
+                window.renderFUComparisonBox();
+                alert(`✅ Revert berjaya. Link ${label} dah dikembalikan seperti asal.`);
+            } catch(e) {
+                alert("Gagal revert: " + e.message);
+            }
+        };
+
+        // ==========================================
+        // 📊 BANDING TO FU / FU DATE & TIME
+        // (CRM Master vs PS Master vs PS Enroll - data orang yang sama
+        // tapi mungkin lain sebab update asing-asing sebelum ni)
+        // ==========================================
+        window.renderFUComparisonBox = function() {
+            let box = document.getElementById('crm-fu-compare-box');
+            if(!box) return;
+
+            let ctx = window._crmModalCtx;
+            if(!ctx) { box.innerHTML = ""; return; }
+
+            // Ambil data CRM terus dari form semasa (live, termasuk yang baru edit)
+            let crmTofuEl = document.getElementById('crm-tofu');
+            let crmDateEl = document.getElementById('crm-fu-date');
+            let crmTimeEl = document.getElementById('crm-fu-time');
+            let crmTofu = crmTofuEl ? (crmTofuEl.value || "-") : "-";
+            let crmDate = crmDateEl ? crmDateEl.value : "";
+            let crmTime = crmTimeEl ? crmTimeEl.value : "";
+            let crmFU = crmDate ? `${crmDate}${crmTime ? ' ' + crmTime : ''}` : "-";
+
+            // Cari Linked PS DocID / Linked Enroll DocID terkini dari memori
+            let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+            let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+            let crmData = rowIndex > -1 ? stateArr[rowIndex] : {};
+
+            let psDocId = crmData["Linked PS DocID"] || "";
+            let enrollDocId = crmData["Linked Enroll DocID"] || "";
+
+            let psRec = psDocId ? window._findRecordByDocId(psState, ctx.isAdmin, psDocId) : null;
+            let enrollRec = enrollDocId ? window._findRecordByDocId(enrollState, ctx.isAdmin, enrollDocId) : null;
+
+            let rows = [{ label: '📋 CRM Master', tofu: crmTofu || '-', fu: crmFU, source: null }];
+
+            // History FU CRM semasa (live dari textarea form)
+            let crmHistEl = document.getElementById('crm-history');
+            rows[0].hist = crmHistEl ? (crmHistEl.value || "") : "";
+
+            if(psRec) {
+                let pTofu = psRec["TO FU"] || "-";
+                let pDate = psRec["FU Date"] || ""; let pTime = psRec["FU Time"] || "";
+                let pHist = psRec["Remark 2"] || "";
+                rows.push({ label: '🎓 PS Master', tofu: pTofu, fu: pDate ? `${pDate}${pTime ? ' ' + pTime : ''}` : "-", hist: pHist, source: 'ps' });
+            }
+            if(enrollRec) {
+                let eTofu = enrollRec["TO FU"] || "-";
+                let eDate = enrollRec["FU Date"] || ""; let eTime = enrollRec["FU Time"] || "";
+                let eHist = enrollRec["History FU"] || "";
+                rows.push({ label: '📝 PS Enroll', tofu: eTofu, fu: eDate ? `${eDate}${eTime ? ' ' + eTime : ''}` : "-", hist: eHist, source: 'enroll' });
+            }
+
+            if(rows.length <= 1) {
+                box.innerHTML = "";
+                return;
+            }
+
+            // Semak kalau semua sumber sama (TO FU & FU Date/Time)
+            let allSame = rows.every(r => r.tofu === rows[0].tofu && r.fu === rows[0].fu);
+
+            let html = `<div class="mt-2 p-2 bg-[#151515] rounded border ${allSame ? 'border-[#333]' : 'border-[#ff9800]'}">
+                <div class="text-[10px] font-bold mb-1 ${allSame ? 'text-gray-400' : 'text-[#ff9800]'}">${allSame ? '✅ TO FU & FU Date/Time SAMA untuk semua sumber' : '⚠️ TO FU / FU Date/Time TAK SAMA antara CRM, PS Master & PS Enroll'}</div>
+                <div class="grid grid-cols-1 gap-1">`;
+
+            rows.forEach(r => {
+                // Ambil baris pertama History FU sumber tu untuk preview ringkas
+                let histPreview = (r.hist || "").split("\n")[0].trim();
+                let histLineCount = (r.hist || "").split("\n").filter(l => l.trim() !== "").length;
+                let histLabel = histPreview ? `${histPreview}${histLineCount > 1 ? ` <span class="text-gray-500">(+${histLineCount - 1} lagi)</span>` : ''}` : '<span class="text-gray-500">- Tiada History -</span>';
+
+                html += `<div class="flex flex-col gap-1 bg-[#1a1a1a] p-1.5 rounded text-[10px]">
+                    <div class="flex justify-between items-center gap-2">
+                        <div class="truncate"><span class="font-bold text-[#00c6ff]">${r.label}:</span> <span class="text-[#00e676]">${r.tofu}</span> | 📅 ${r.fu}</div>
+                        ${r.source ? `<button type="button" onclick="window.pullFUFromSource('${r.source}')" class="bg-[#3f51b5] hover:bg-[#303f9f] text-white px-2 py-0.5 rounded text-[10px] shrink-0">📥 Guna ini</button>` : ''}
+                    </div>
+                    <div class="flex justify-between items-center gap-2 border-t border-[#333] pt-1">
+                        <div class="truncate text-gray-300"><span class="font-bold text-gray-500">History FU:</span> ${histLabel}</div>
+                        ${r.source ? `<button type="button" onclick="window.appendHistoryFromSource('${r.source}')" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-2 py-0.5 rounded text-[10px] shrink-0">➕ Append</button>` : ''}
+                    </div>
+                </div>`;
+            });
+
+            html += `</div>
+                <div class="text-[9px] text-gray-500 mt-1">💡 "Guna ini" tarik TO FU & FU Date/Time dari sumber tu ke form CRM ni (tak auto-save, sila semak & tekan Save). "Append" tambah terus History FU sumber tu ke dalam History FU CRM (tak perlu Save, terus masuk).</div>
+            </div>`;
+
+            box.innerHTML = html;
+        };
+
+        // ➕ Append History FU dari PS Master / PS Enroll terus ke History FU CRM (silent, tanpa alert)
+        window.appendHistoryFromSource = function(source) {
+            let ctx = window._crmModalCtx;
+            if(!ctx) return;
+
+            let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+            let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+            let crmData = rowIndex > -1 ? stateArr[rowIndex] : {};
+
+            let docId = source === 'ps' ? (crmData["Linked PS DocID"] || "") : (crmData["Linked Enroll DocID"] || "");
+            if(!docId) return;
+
+            let stateObj = source === 'ps' ? psState : enrollState;
+            let rec = window._findRecordByDocId(stateObj, ctx.isAdmin, docId);
+            if(!rec) return;
+
+            let srcHist = (source === 'ps' ? (rec["Remark 2"] || "") : (rec["History FU"] || "")).trim();
+            if(!srcHist) return;
+
+            let historyEl = document.getElementById('crm-history');
+            if(!historyEl) return;
+
+            let currentHistory = historyEl.value.trim();
+            if(currentHistory.includes(srcHist)) return; // Dah ada - silent, takde alert
+
+            historyEl.value = currentHistory ? (srcHist + "\n" + currentHistory) : srcHist;
+            // Silent append - takde alert, terus masuk History FU
+        };
+
+        // 📥 Tarik TO FU & FU Date/Time dari PS Master / PS Enroll ke form CRM
+        window.pullFUFromSource = function(source) {
+            let ctx = window._crmModalCtx;
+            if(!ctx) return;
+
+            let stateArr = ctx.isAdmin ? crmState.adminData : crmState.data;
+            let rowIndex = stateArr.findIndex(r => r.docId === ctx.docId);
+            let crmData = rowIndex > -1 ? stateArr[rowIndex] : {};
+
+            let docId = source === 'ps' ? (crmData["Linked PS DocID"] || "") : (crmData["Linked Enroll DocID"] || "");
+            if(!docId) return;
+
+            let stateObj = source === 'ps' ? psState : enrollState;
+            let rec = window._findRecordByDocId(stateObj, ctx.isAdmin, docId);
+            if(!rec) { alert("⚠️ Rekod sumber tak jumpa."); return; }
+
+            let label = source === 'ps' ? 'PS Master' : 'PS Enroll';
+            let tofu = rec["TO FU"] || "";
+            let fuDate = window.toInputDate(rec["FU Date"]);
+            let fuTime = rec["FU Time"] || "";
+
+            if(!confirm(`Tarik TO FU & FU Date/Time dari ${label} ke form CRM ini?\n\nTO FU: ${tofu || '-'}\nFU Date/Time: ${fuDate || '-'} ${fuTime || ''}\n\n(Nilai semasa dalam form CRM akan ditimpa - tekan Save untuk simpan)`)) return;
+
+            let tofuEl = document.getElementById('crm-tofu');
+            let dateEl = document.getElementById('crm-fu-date');
+            let timeEl = document.getElementById('crm-fu-time');
+            if(tofuEl) tofuEl.value = tofu;
+            if(dateEl) dateEl.value = fuDate;
+            if(timeEl) timeEl.value = fuTime;
+
+            if(typeof window.updatePreviewFU === 'function') window.updatePreviewFU();
+            window.renderFUComparisonBox();
         };
 
         // ==========================================
@@ -5855,7 +6861,7 @@
         window.updateSemuaDropdownStaf();
 
         // ==========================================
-        // FUNGSI TAMBAH TASK BARU (VERSI POP-UP PUKAL)
+        // FUNGSI TAMBAH TASK BARU (VERSI POP-UP PUKAL - TEXTAREA)
         // ==========================================
         
         window.openTambahTaskModal = function() {
@@ -5872,10 +6878,8 @@
                 sList.innerHTML = "<span class='text-red-500'>Sila Load Data Admin (Tunggu sebentar) kat atas dulu boss.</span>";
             }
 
-            // 2. Reset ruangan task kepada 3 kotak kosong by default
-            let tContainer = document.getElementById('add-task-inputs-container');
-            tContainer.innerHTML = "";
-            for(let i=0; i<3; i++) { window.tambahFieldTask(); }
+            // 2. Kosongkan textarea
+            document.getElementById('bulk-task-textarea').value = "";
 
             // Buka Modal
             document.getElementById('modal-add-task-bulk').style.display = 'flex';
@@ -5883,45 +6887,24 @@
 
         // Fungsi Suis Tick/Untick Semua Staf
         window.toggleSemuaTaskStaff = function(btn) {
-            // Semak butang tengah tulis apa
             let nakTick = btn.innerText === "Tick Semua";
-            
-            // Pusing semua checkbox dan ikut arahan
-            document.querySelectorAll('.add-task-staff-cb').forEach(c => {
-                c.checked = nakTick;
-            });
-            
-            // Tukar nama dan warna butang
+            document.querySelectorAll('.add-task-staff-cb').forEach(c => { c.checked = nakTick; });
             if (nakTick) {
-                btn.innerText = "Untick Semua";
-                btn.style.color = "#ff5252"; // Tukar jadi merah
+                btn.innerText = "Untick Semua"; btn.style.color = "#ff5252"; 
             } else {
-                btn.innerText = "Tick Semua";
-                btn.style.color = "#00c6ff"; // Patah balik biru
+                btn.innerText = "Tick Semua"; btn.style.color = "#00c6ff"; 
             }
         };
 
-        // Fungsi butang "+ Tambah Ruangan Task"
-        window.tambahFieldTask = function() {
-            let tContainer = document.getElementById('add-task-inputs-container');
-            let div = document.createElement('div');
-            div.className = "flex gap-2";
-            div.innerHTML = `
-                <input type="text" placeholder="Cth: Buat 5 Video TikTok" class="add-task-input w-full bg-[#2a2a2a] text-white border border-[#555] p-2 rounded outline-none focus:border-[#00e676]">
-                <button onclick="this.parentElement.remove()" class="bg-red-600 hover:bg-red-500 text-white px-3 rounded font-bold" title="Padam baris ini">X</button>
-            `;
-            tContainer.appendChild(div);
-        };
-
-        // Enjin tembak data ke Firebase
+        // Enjin tembak data ke Firebase (Dari TextArea)
         window.simpanTaskBaruLump = async function() {
             let checkedStaffs = Array.from(document.querySelectorAll('.add-task-staff-cb:checked')).map(cb => cb.value);
-            let taskInputs = document.querySelectorAll('.add-task-input');
+            let rawTasks = document.getElementById('bulk-task-textarea').value;
             
-            // Tapis input yang tak kosong je
+            // Tapis input yang tak kosong je mengikut baris (Enter)
             let validTasks = [];
-            taskInputs.forEach(inp => {
-                if(inp.value.trim() !== "") validTasks.push(inp.value.trim());
+            rawTasks.split('\n').forEach(line => {
+                if(line.trim() !== "") validTasks.push(line.trim());
             });
 
             if(checkedStaffs.length === 0) { alert("Sila tick sekurang-kurangnya seorang staf!"); return; }
@@ -5935,14 +6918,14 @@
             try {
                 // Loop semua staf yang kena tick
                 for (let staff of checkedStaffs) {
-                    // Loop semua task yang diisi
+                    // Loop semua task yang diisi dalam textarea
                     for (let taskName of validTasks) {
                         await addDoc(collection(db, "dmo_targets"), {
                             "Staff Name": staff,
                             "Task (DMO)": taskName,
                             "Activity": "Custom Task",
                             "Daily Target": 0,
-                            "Point": 1, // Default 1 point
+                            "Point": 0, // 🌟 Default 0 Point untuk elak salah kira
                             "Total Round 1": 0,
                             "Total Round 2": 0,
                             "Total Round 3": 0
@@ -5953,9 +6936,10 @@
                 
                 alert(`✅ PUMPANG! Berjaya simpan ${validTasks.length} task baru untuk ${checkedStaffs.length} orang staf.\n(Jumlah rekod dicipta: ${berjayaCount})`);
                 document.getElementById('modal-add-task-bulk').style.display = 'none';
+                document.getElementById('bulk-task-textarea').value = ""; // Cuci textarea
                 
                 // Refresh jadual untuk tunjuk baris baru
-                window.loadAdminData(); 
+                window.loadTargetDataOnly(true); 
 
             } catch(e) {
                 alert("Gagal simpan task: " + e.message);
@@ -5964,6 +6948,122 @@
             btn.innerText = "🚀 SIMPAN SEMUA TASK BARU"; btn.disabled = false;
         };
 
+        // ==========================================
+        // FUNGSI PADAM TASK (VERSI POP-UP PUKAL - CHECKBOX)
+        // ==========================================
+        window.openPadamTaskModal = function() {
+            // 1. Tarik List Staf
+            let sList = document.getElementById('delete-task-staff-list');
+            sList.innerHTML = "";
+            if (typeof adminState !== 'undefined' && adminState.users) {
+                adminState.users.forEach(u => {
+                    sList.innerHTML += `<label class="flex items-center gap-2 cursor-pointer text-gray-200 hover:text-white">
+                        <input type="checkbox" value="${u}" class="delete-task-staff-cb accent-red-500 w-4 h-4"> ${u}
+                    </label>`;
+                });
+            } else {
+                sList.innerHTML = "<span class='text-red-500'>Sila Load Data Admin (Tunggu sebentar) kat atas dulu boss.</span>";
+            }
+
+            // 2. Tarik List Semua Task (Auto sedut dari memori)
+            let tList = document.getElementById('delete-task-checkbox-list');
+            tList.innerHTML = "";
+            if (typeof adminState !== 'undefined' && adminState.tasks && adminState.tasks.length > 0) {
+                adminState.tasks.forEach(t => {
+                    tList.innerHTML += `<label class="flex items-start gap-2 cursor-pointer text-gray-200 hover:text-white bg-[#222] p-2 rounded border border-[#333] hover:border-red-500 transition">
+                        <input type="checkbox" value="${t}" class="delete-task-item-cb accent-red-500 w-4 h-4 mt-0.5"> 
+                        <span class="leading-tight">${t}</span>
+                    </label>`;
+                });
+            } else {
+                tList.innerHTML = "<span class='text-gray-500 italic'>Tiada task dijumpai dalam jadual.</span>";
+            }
+
+            document.getElementById('modal-delete-task-bulk').style.display = 'flex';
+        };
+
+        // Suis Tick/Untick Staf
+        window.toggleSemuaPadamTaskStaff = function(btn) {
+            let nakTick = btn.innerText === "Tick Semua";
+            document.querySelectorAll('.delete-task-staff-cb').forEach(c => { c.checked = nakTick; });
+            if (nakTick) { btn.innerText = "Untick Semua"; btn.style.color = "#ff5252"; } 
+            else { btn.innerText = "Tick Semua"; btn.style.color = "#00c6ff"; }
+        };
+
+        // Suis Tick/Untick Task
+        window.toggleSemuaPadamTask = function(btn) {
+            let nakTick = btn.innerText === "Tick Semua Task";
+            document.querySelectorAll('.delete-task-item-cb').forEach(c => { c.checked = nakTick; });
+            if (nakTick) { btn.innerText = "Untick Semua Task"; btn.style.color = "#ff5252"; } 
+            else { btn.innerText = "Tick Semua Task"; btn.style.color = "#00c6ff"; }
+        };
+
+        // Enjin Padam Ke Firebase
+        window.padamTaskLump = async function() {
+            // Tangkap nilai checkbox yang user tick
+            let checkedStaffs = Array.from(document.querySelectorAll('.delete-task-staff-cb:checked')).map(cb => cb.value);
+            let validTasks = Array.from(document.querySelectorAll('.delete-task-item-cb:checked')).map(cb => cb.value);
+
+            if(checkedStaffs.length === 0) { alert("Sila tick sekurang-kurangnya seorang staf!"); return; }
+            if(validTasks.length === 0) { alert("Sila tick sekurang-kurangnya satu task yang nak dipadam!"); return; }
+
+            if(!confirm(`Sahkan memadam ${validTasks.length} task untuk ${checkedStaffs.length} staf?`)) return;
+
+            let btn = document.getElementById('btn-delete-bulk-task');
+            btn.innerText = "⏳ SEDANG MEMADAM DATA..."; btn.disabled = true;
+
+            let berjayaCount = 0;
+            let batch = writeBatch(db);
+            let operationCount = 0;
+
+            try {
+                // Loop semua staf yang kena tick
+                for (let u of checkedStaffs) {
+                    for (let t of validTasks) {
+                        let docId = null;
+                        
+                        // Cara Jimat Kuota: Ambil Document ID terus dari memori jadual
+                        if(adminState.targets[u] && adminState.targets[u][t] && adminState.targets[u][t].docId) {
+                            docId = adminState.targets[u][t].docId;
+                        }
+                        
+                        // Backup Plan: Kalau task tiada dalam memori, query Firebase
+                        if(!docId) {
+                            const q = fbQuery(collection(db, "dmo_targets"), fbWhere("Staff Name", "==", u), fbWhere("Task (DMO)", "==", t));
+                            const snap = await getDocs(q);
+                            if(!snap.empty) { docId = snap.docs[0].id; }
+                        }
+
+                        if(docId) {
+                            batch.delete(doc(db, "dmo_targets", docId));
+                            berjayaCount++;
+                            operationCount++;
+                            
+                            if(operationCount >= 450) {
+                                await batch.commit();
+                                batch = writeBatch(db);
+                                operationCount = 0;
+                            }
+                        }
+                    }
+                }
+                
+                // Flush balance lori
+                if(operationCount > 0) { await batch.commit(); }
+                
+                alert(`✅ PUMPANG! Berjaya padam task untuk ${checkedStaffs.length} orang staf.\n(Jumlah rekod dihapuskan: ${berjayaCount})`);
+                document.getElementById('modal-delete-task-bulk').style.display = 'none';
+                
+                // Refresh jadual untuk buang baris
+                window.loadTargetDataOnly(true); 
+
+            } catch(e) {
+                alert("Gagal padam task: " + e.message);
+            }
+            
+            btn.innerText = "🚀 PADAM SEMUA TASK INI"; btn.disabled = false;
+        };
+        
         // ==========================================
         // 🌟 ENJIN MOBILE VIEW CRM (GAYA WHATSAPP)
         // ==========================================
@@ -7334,7 +8434,7 @@
             document.getElementById('enroll-inviter').value = data["Staff Name"] || data["Inviter"] || "";
             document.getElementById('enroll-name').value = data["Student Name"] || "";
             document.getElementById('enroll-phone').value = data["Phone"] || "";
-            ocument.getElementById('enroll-tofu').value = data["TO FU"] || "";
+            document.getElementById('enroll-tofu').value = data["TO FU"] || "";
             document.getElementById('enroll-classprog').value = data["Class Progress"] || "";
             document.getElementById('enroll-fudate').value = window.toInputDate(data["FU Date"]);
             document.getElementById('enroll-futime').value = data["FU Time"] || "";
@@ -7772,7 +8872,10 @@
             let today = new Date();
             let start, end;
 
-            if (type === 'yesterday') {
+            if (type === 'today') {
+                start = today;
+                end = today;
+            } else if (type === 'yesterday') {
                 let yesterday = new Date(today);
                 yesterday.setDate(today.getDate() - 1);
                 start = yesterday;
