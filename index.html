@@ -295,14 +295,6 @@
                         <button onclick="window.openPSBulkEdit(false)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-1.5 px-4 rounded text-xs shadow">🛠️ Bulk Edit</button>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
-                        <span class="text-[#ffeb3b] font-bold text-xs min-w-[120px]">⚡ Quick Bulk (Ikut Filter):</span>
-                        <button onclick="window.psQuickBulkByFilter('Absent', false)" class="bg-[#800000] hover:bg-[#a00000] text-white font-bold py-1.5 px-3 rounded text-xs shadow">FU Absent</button>
-                        <button onclick="window.psQuickBulkByFilter('Half', false)" class="bg-[#d4af37] hover:bg-[#c4a030] text-black font-bold py-1.5 px-3 rounded text-xs shadow">FU Half</button>
-                        <button onclick="window.psQuickBulkByFilter('AttendTakEnroll', false)" class="bg-[#00a859] hover:bg-[#009650] text-white font-bold py-1.5 px-3 rounded text-xs shadow">FU Attend x Enroll</button>
-                        <button onclick="window.openPSReplaceTofu(false)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-3 rounded text-xs shadow">⚙️ Bulk Edit (Filter / Select All)</button>
-                        <span class="text-[10px] text-gray-400">(Tak payah tick checkbox - terus apply ikut semua rekod yg match status ni)</span>
-                    </div>
                 </div>  
 
                 <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
@@ -312,10 +304,11 @@
                             <button data-col-vis-btn onclick="window.toggleColVisPanel('ps', false)" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-[#9c27b0] border border-[#9c27b0] hover:bg-[#2a1a3a] transition">👁️ Kolum</button>
                             <div id="col-vis-panel-ps-false" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#1e1e1e] border border-[#555] rounded-lg shadow-2xl p-3 z-[9999] text-left"></div>
                         </div>
+                    <button onclick="window.openPSBulkEdit(false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
                 </div>
 
                 <div id="ps-desktop-wrapper-false">
-                    <div class="flex gap-2 mb-2 mt-2">
+                    <div class="flex gap-2 mb-2 mt-2 items-center">
                         <button id="d-ps-filter-All-false" onclick="window.setPSDesktopFilter('All', false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                         <button id="d-ps-filter-Absent-false" onclick="window.setPSDesktopFilter('Absent', false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                         <button id="d-ps-filter-Half-false" onclick="window.setPSDesktopFilter('Half', false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
@@ -338,11 +331,22 @@
                         <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
                             <button id="m-ps-sort-false" onclick="window.togglePSMobileSort('CLASS', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Class Date <span id="m-ps-sort-icon-false">↕️</span></button>
                             <button id="m-ps-sort-fu-false" onclick="window.togglePSMobileSort('FU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-false">↕️</span></button>
+                            <button id="m-ps-class-filter-false" onclick="window.toggleFilterMenu('Class', false, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
                             <button id="m-ps-filter-All-false" onclick="window.setPSMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                             <button id="m-ps-filter-Absent-false" onclick="window.setPSMobileFilter('Absent', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                             <button id="m-ps-filter-Half-false" onclick="window.setPSMobileFilter('Half', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
                             <button id="m-ps-filter-AttendTakEnroll-false" onclick="window.setPSMobileFilter('AttendTakEnroll', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Attend Tak Enroll</button>
                         </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-2">
+                                <span id="ps-mob-cb-count-false" class="hidden text-xs font-bold text-purple-400 bg-[#2a1a3a] border border-purple-600 px-2.5 py-1 rounded-full">0 dipilih</span>
+                                <button id="ps-mob-deselect-false" onclick="window.psMobileDeselectAll(false)" class="hidden text-xs font-bold text-gray-300 bg-[#222] border border-[#555] hover:bg-[#333] px-2.5 py-1 rounded-full transition">✕ Nyahpilih</button>
+                            </div>
+                            <button onclick="window.openPSBulkEdit(false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
+                        </div>
+                    </div>
+                    <div class="fixed z-[99999]">
+                        <div id="m-filter-menu-Class-false" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
                     </div>
                     <div id="ps-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                 </div>
@@ -368,6 +372,7 @@
                         <button onclick="window.loadEnrollData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1 px-3 rounded text-xs ml-auto">🔄 Refresh</button>
                     </h3>
                     <button onclick="window.openEnrollBulkEdit(false)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-1.5 px-4 rounded text-xs shadow ml-auto">🛠️ Bulk Edit</button>
+                    <button onclick="window.bulkAutoCreateCRM('enroll', false)" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-2">🔄 Bulk Auto-Create CRM</button>
                 </div>  
 
                 <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
@@ -579,14 +584,7 @@
                         <button onclick="window.openPSBulkEdit(true)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded text-sm shadow ml-2">🛠️ Bulk Edit</button>
                     </div>
 
-                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
-                        <span class="text-[#ffeb3b] font-bold text-xs min-w-[150px]">⚡ Quick Bulk (Ikut Filter):</span>
-                        <button onclick="window.psQuickBulkByFilter('Absent', true)" class="bg-[#800000] hover:bg-[#a00000] text-white font-bold py-1.5 px-3 rounded text-xs shadow">FU Absent</button>
-                        <button onclick="window.psQuickBulkByFilter('Half', true)" class="bg-[#d4af37] hover:bg-[#c4a030] text-black font-bold py-1.5 px-3 rounded text-xs shadow">FU Half</button>
-                        <button onclick="window.psQuickBulkByFilter('AttendTakEnroll', true)" class="bg-[#00a859] hover:bg-[#009650] text-white font-bold py-1.5 px-3 rounded text-xs shadow">FU Attend x Enroll</button>
-                        <button onclick="window.openPSReplaceTofu(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-3 rounded text-xs shadow">⚙️ Bulk Edit (Filter / Select All)</button>
-                        <span class="text-[10px] text-gray-400">(Tak payah tick checkbox - terus apply ikut semua rekod yg match status ni)</span>
-                    </div>
+
 
                     <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
                         <span class="text-[#bb86fc] font-bold text-sm min-w-[150px]">📥 Import PS (Excel):</span>
@@ -607,10 +605,11 @@
                             <button data-col-vis-btn onclick="window.toggleColVisPanel('ps', true)" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-[#9c27b0] border border-[#9c27b0] hover:bg-[#2a1a3a] transition">👁️ Kolum</button>
                             <div id="col-vis-panel-ps-true" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#1e1e1e] border border-[#555] rounded-lg shadow-2xl p-3 z-[9999] text-left"></div>
                         </div>
+                        <button onclick="window.openPSBulkEdit(true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
                     </div>
 
                     <div id="ps-desktop-wrapper-true">
-                        <div class="flex gap-2 mb-2 mt-2">
+                        <div class="flex gap-2 mb-2 mt-2 items-center">
                             <button id="d-ps-filter-All-true" onclick="window.setPSDesktopFilter('All', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                             <button id="d-ps-filter-Absent-true" onclick="window.setPSDesktopFilter('Absent', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                             <button id="d-ps-filter-Half-true" onclick="window.setPSDesktopFilter('Half', true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
@@ -635,11 +634,24 @@
                             <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
                                 <button id="m-ps-sort-true" onclick="window.togglePSMobileSort('CLASS', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Class Date <span id="m-ps-sort-icon-true">↕️</span></button>
                                 <button id="m-ps-sort-fu-true" onclick="window.togglePSMobileSort('FU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-true">↕️</span></button>
+                                <button id="m-ps-class-filter-true" onclick="window.toggleFilterMenu('Class', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
+                                <button id="m-ps-staff-filter-true" onclick="window.toggleFilterMenu('Staff Name', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Nama Staff ▼</button>
                                 <button id="m-ps-filter-All-true" onclick="window.setPSMobileFilter('All', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                                 <button id="m-ps-filter-Absent-true" onclick="window.setPSMobileFilter('Absent', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                                 <button id="m-ps-filter-Half-true" onclick="window.setPSMobileFilter('Half', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
                                 <button id="m-ps-filter-AttendTakEnroll-true" onclick="window.setPSMobileFilter('AttendTakEnroll', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Attend Tak Enroll</button>
                             </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center gap-2">
+                                    <span id="ps-mob-cb-count-true" class="hidden text-xs font-bold text-purple-400 bg-[#2a1a3a] border border-purple-600 px-2.5 py-1 rounded-full">0 dipilih</span>
+                                    <button id="ps-mob-deselect-true" onclick="window.psMobileDeselectAll(true)" class="hidden text-xs font-bold text-gray-300 bg-[#222] border border-[#555] hover:bg-[#333] px-2.5 py-1 rounded-full transition">✕ Nyahpilih</button>
+                                </div>
+                                <button onclick="window.openPSBulkEdit(true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
+                            </div>
+                        </div>
+                        <div class="fixed z-[99999]">
+                            <div id="m-filter-menu-Class-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
+                            <div id="m-filter-menu-Staff Name-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
                         </div>
                         <div id="ps-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                     </div>
@@ -745,7 +757,33 @@
                         <span class="text-white font-bold self-center hidden md:block">👉</span>
                         <input type="text" id="rename-new" placeholder="Nama Betul (Cth: SN ABL Ilyana)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
                     </div>
-                    <button onclick="window.gantiNamaLogs(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded w-full mt-3 shadow-lg transition">Tukar Nama Sekarang</button>
+                    <button onclick="window.gantiNamaLogs(this)" class="bg-yellow-600 hover:bg-yellow-500 text-white font-bold py-2 px-4 rounded w-full mt-3 shadow-lg transition">Tukar Nama Sekarang (Daily Logs)</button>
+                </div>
+
+                <div class="bg-green-900/20 p-6 rounded-xl border border-green-600 mt-4">
+                    <h3 class="text-green-400 font-bold mb-2 m-0">🔄 AUTO-STANDARDIZE: Staff Name PS Master</h3>
+                    <p class="text-xs text-gray-400 mb-3">Scan <b>semua rekod</b> ps_students dan tukar <b>nama penuh</b> kepada <b>nama sistem (pendek)</b> ikut mapping dalam Urus Staf. Guna sekali je untuk standardize semua staf.</p>
+                    <button onclick="window.standardizeStaffNamePS(this)" class="bg-green-700 hover:bg-green-600 text-white font-bold py-2 px-4 rounded w-full shadow-lg transition">🔄 Standardize Semua Staff Name Sekarang</button>
+                    <div id="std-ps-log" class="mt-3 text-xs text-gray-400 hidden"></div>
+                </div>
+
+                <div class="bg-blue-900/20 p-6 rounded-xl border border-blue-400 mt-4">
+                    <h3 class="text-blue-300 font-bold mb-2 m-0">🔄 AUTO-STANDARDIZE: Staff Name CRM Master</h3>
+                    <p class="text-xs text-gray-400 mb-3">Sama seperti PS Master - scan semua rekod <b>crm_leads</b> dan tukar nama penuh kepada nama sistem pendek.</p>
+                    <button onclick="window.standardizeStaffNameCRM(this)" class="bg-blue-700 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded w-full shadow-lg transition">🔄 Standardize Semua Staff Name CRM Sekarang</button>
+                    <div id="std-crm-log" class="mt-3 text-xs text-gray-400 hidden"></div>
+                </div>
+
+                <div class="bg-yellow-900/20 p-6 rounded-xl border border-yellow-600 mt-4">
+                    <h3 class="text-yellow-400 font-bold mb-2 m-0">🛠️ KECEMASAN: Ganti Staff Name dalam PS Master</h3>
+                    <p class="text-xs text-gray-400 mb-3">Guna tool ini untuk betulkan field <b>Staff Name</b> dalam <b>ps_students</b> secara pukal. Contoh: tukar <span class="text-yellow-300">"Atie"</span> kepada <span class="text-yellow-300">"SITI NUR HASYYATI BINTI RUZELAN"</span>.</p>
+                    <div class="flex flex-col md:flex-row gap-2">
+                        <input type="text" id="ps-rename-old" placeholder="Staff Name Salah (Cth: Atie)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
+                        <span class="text-white font-bold self-center hidden md:block">👉</span>
+                        <input type="text" id="ps-rename-new" placeholder="Staff Name Betul (Cth: SITI NUR HASYYATI BINTI RUZELAN)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
+                    </div>
+                    <button onclick="window.gantiNamaPS(this)" class="bg-yellow-700 hover:bg-yellow-600 text-white font-bold py-2 px-4 rounded w-full mt-3 shadow-lg transition">Tukar Nama Sekarang (PS Master) 🔁</button>
+                    <div id="ps-rename-log" class="mt-3 text-xs text-gray-400 hidden"></div>
                 </div>
 
                 <div class="bg-blue-900/20 p-6 rounded-xl border border-blue-500 mt-4">
@@ -839,6 +877,7 @@
                         </select>
                         <button onclick="window.copyEnrollCollection(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-sm shadow">📋 Copy Text</button>
                         <button onclick="window.openEnrollBulkEdit(true)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded text-sm shadow ml-2">🛠️ Bulk Edit</button>
+                        <button onclick="window.bulkAutoCreateCRM('enroll', true)" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 px-4 rounded text-sm shadow ml-2">🔄 Bulk Auto-Create CRM</button>
                     </div>
 
                     <div class="mb-4 bg-[#111] p-3 rounded-lg border border-[#333]">
@@ -894,8 +933,9 @@
     <div id="modal-crm" class="modal-overlay" style="z-index: 9999;">
         <div class="modal-box w-[95%] max-w-6xl border-t-4 border-[#0072ff] p-0 overflow-hidden flex flex-col md:flex-row h-[90vh]">
             
-            <div class="h-1/2 md:h-full w-full md:w-1/2 p-4 md:p-5 overflow-y-auto bg-[#222]">
-                <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
+            <div class="h-1/2 md:h-full w-full md:w-1/2 bg-[#222] flex flex-col relative">
+                <div class="flex-1 overflow-y-auto p-4 md:p-5 pb-24">
+                    <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
                     <h3 class="text-white m-0 font-bold text-lg md:text-xl">✏️ Edit Lead</h3>
                     <button onclick="window.closeCRMModal()" class="md:hidden bg-transparent border-none text-[#aaa] text-3xl cursor-pointer hover:text-white leading-none">&times;</button>
                 </div>
@@ -953,34 +993,9 @@
                     <div id="crm-ps-section" class="form-group-crm col-span-2 bg-[#15202b] p-3 rounded-lg border border-[#3f51b5] mb-2" style="display:none;">
                         <input type="hidden" id="crmps-docid">
                         <label class="text-[#64b5f6] font-bold text-xs block mb-2">🎓 PS Master Details</label>
-                        <div class="grid grid-cols-2 gap-3">
-                            <div class="form-group-crm"><label>Referral</label><input type="text" id="crmps-ref"></div>
-                            <div class="form-group-crm"><label>Name</label><input type="text" id="crmps-name"></div>
-                            <div class="form-group-crm">
-                                <label>Phone</label>
-                                <div class="flex gap-1">
-                                    <input type="text" id="crmps-phone" class="flex-1 w-full bg-[#222] text-white p-2 rounded border border-[#444] outline-none focus:border-[#00c6ff]">
-                                    <button type="button" onclick="window.bukaWA(document.getElementById('crmps-phone').value)" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-3 rounded shadow font-bold text-sm">💬</button>
-                                </div>
-                            </div>
-                            <div class="form-group-crm"><label class="text-[#ffeb3b]">Class Progress</label>
-                                <select id="crmps-classprog" class="border-[#ffeb3b] border bg-[#1a1a1a]">
-                                    <option value="">- Pilih -</option>
-                                    <option value="CIC1">CIC1</option><option value="CIC2">CIC2</option><option value="CIC3">CIC3</option><option value="CIC4">CIC4</option>
-                                    <option value="A1">A1</option><option value="A2">A2</option><option value="A3">A3</option><option value="A4">A4</option><option value="A5">A5</option><option value="A6">A6</option><option value="A7">A7</option><option value="A8">A8</option><option value="A9">A9</option><option value="A10">A10</option><option value="A11">A11</option><option value="A12">A12</option>
-                                </select>
-                            </div>
-                            <div class="form-group-crm col-span-2"><label class="text-[#00e676]">TO FU (PS Master)</label>
-                                <input type="text" id="crmps-tofu" autocomplete="off" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Pilih task / #TaskBaru..." oninput="window.handleTofuInput(this)" onfocus="window.openTofuDropdown(this)" onclick="window.openTofuDropdown(this)">
-                            </div>
-                            <div class="form-group-crm"><label>FU Date</label><input type="date" id="crmps-fudate"></div>
-                            <div class="form-group-crm"><label>FU Time</label><input type="time" id="crmps-futime"></div>
-                            <div class="form-group-crm col-span-2"><label class="text-[#bb86fc]">Outcome</label><textarea id="crmps-outcome" class="crm-textarea" rows="2"></textarea></div>
-                            <div class="form-group-crm col-span-2"><label>History FU (Remark 2)</label><textarea id="crmps-rem2" class="crm-textarea" rows="2"></textarea></div>
-                        </div>
-                        <details class="mt-2 text-[#64b5f6] cursor-pointer">
+                        <details class="mt-2 text-[#64b5f6] cursor-pointer" open>
                             <summary class="font-bold text-xs">Other PS Master Details ▾</summary>
-                            <div id="crmps-other-details" class="grid grid-cols-2 gap-3 mt-3 cursor-default text-white pointer-events-none opacity-60"></div>
+                            <div id="crmps-other-details" class="grid grid-cols-2 gap-3 mt-3 cursor-default text-white pointer-events-none opacity-80"></div>
                         </details>
                     </div>
 
@@ -1086,8 +1101,11 @@
                         <div class="form-group-crm col-span-2"><label>All Chat (JSON)</label><textarea id="crm-chat" class="crm-textarea" rows="2"></textarea></div>
                     </div>
                 </details>
+                </div>
                 
-                <button id="btn-save-crm" onclick="window.saveCRMData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold w-full p-3 border-none rounded-lg mt-5 text-base md:text-lg cursor-pointer transition shadow-lg mb-6">💾 SAVE CRM UPDATES</button>
+                <div class="w-full p-4 bg-[#111] border-t border-[#333] shrink-0">
+                    <button id="btn-save-crm" onclick="window.saveCRMData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold w-full p-3 border-none rounded-lg text-base md:text-lg cursor-pointer transition shadow-lg">💾 SAVE CRM UPDATES</button>
+                </div>
             </div>
 
             <div class="h-1/2 md:h-full w-full md:w-1/2 bg-[#121212] flex flex-col border-t-2 md:border-t-0 md:border-l border-[#444]">
@@ -1517,7 +1535,7 @@
 
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
-    import { getFirestore, collection, getDocs, doc, getDoc, addDoc, updateDoc, query as fbQuery, where as fbWhere, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
+    import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, getDocs, getDocsFromCache, doc, getDoc, addDoc, updateDoc, query as fbQuery, where as fbWhere, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
 
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -1532,7 +1550,11 @@
         };
 
         const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
+        // 🌟 Persistent cache — data load dari IndexedDB (cache) dulu sebelum server
+        // Ini buat refresh jadi instant, data terus nampak dalam masa < 100ms
+        const db = initializeFirestore(app, {
+            localCache: persistentLocalCache({ tabManager: persistentMultipleTabManager() })
+        });
 
         let kunciAktifSekarang = 0; // Sistem akan mula dengan Kunci 1
         // GLOBAL VARIABLES
@@ -1873,11 +1895,16 @@
                         else if (rCleanContact && rCleanContact !== "-" && existingMap[`phone_${rCleanContact}`]) foundExisting = existingMap[`phone_${rCleanContact}`];
 
                         try { 
+                            let now = new Date();
+                            let tStr = now.toISOString().split('T')[0];
+                            let tTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                            let tDateFormatted = window.toSheetDate ? window.toSheetDate(tStr) : tStr.split('-').reverse().join('/');
+
                             if (foundExisting) {
                                 // 🌟 MAGIK SMART IMPORT: Data Lama Menang (TERMASUK HISTORY FU)
                                 Object.keys(foundExisting).forEach(key => {
-                                    // Pengecualian: Kita KECUALIKAN 'Staff Name' supaya Excel/CSV boleh overwrite nama staf lama
-                                    if (key !== "ALL CHAT (JSON)" && key !== "Staff Name") {
+                                    // Pengecualian: Kita KECUALIKAN 'Staff Name', 'LEADS INBOUND', 'LEADS INBOUND TIME' supaya import baru sentiasa overwrite
+                                    if (key !== "ALL CHAT (JSON)" && key !== "Staff Name" && key !== "LEADS INBOUND" && key !== "LEADS INBOUND TIME") {
                                         let dataLama = foundExisting[key];
                                         let adaIsiLama = dataLama !== undefined && dataLama !== null && String(dataLama).trim() !== "" && String(dataLama).trim() !== "-";
                                         
@@ -1888,20 +1915,26 @@
                                     }
                                 });
 
-                                rowData["Timestamp Masuk"] = foundExisting["Timestamp Masuk"] || new Date().toISOString(); 
+                                rowData["Timestamp Masuk"] = now.toISOString(); // 🌟 Refresh timestamp setiap kali import/update
                                 rowData["Lead ID"] = foundExisting["Lead ID"]; 
+                                rowData["LEADS INBOUND"] = tDateFormatted;
+                                rowData["LEADS INBOUND TIME"] = tTime;
+                                
                                 await updateDoc(doc(db, "crm_leads", foundExisting.docId), rowData); 
                                 bUpdated++;
                             } else {
                                 // ADD LEAD BARU (Termasuk History FU dari CSV sebab dia orang baru)
-                                rowData["Timestamp Masuk"] = new Date().toISOString(); 
+                                rowData["Timestamp Masuk"] = now.toISOString(); 
+                                rowData["LEADS INBOUND"] = tDateFormatted;
+                                rowData["LEADS INBOUND TIME"] = tTime;
+
                                 if (!csvLeadId) {
                                     maxLeadNumber++;
                                     csvLeadId = "L" + String(maxLeadNumber).padStart(5, '0'); 
                                 }
                                 rowData["Lead ID"] = csvLeadId;
                                 let newDocRef = await addDoc(collection(db, "crm_leads"), rowData); 
-                                bAdded++; 
+                                bAdded++;
                                 
                                 existingMap[`id_${csvLeadId}`] = { docId: newDocRef.id, ...rowData };
                                 if (rCleanContact) existingMap[`phone_${rCleanContact}`] = { docId: newDocRef.id, ...rowData };
@@ -1909,6 +1942,11 @@
                         } catch (e) { ralat++; }
                     }
                     
+                    // 🌟 FIX: UPDATE KAUNTER SUPAYA ADD LEAD SETERUSNYA TAK BERTINDIH
+                    try {
+                        await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: maxLeadNumber }, { merge: true });
+                    } catch(e) { console.error("Gagal kemaskini kaunter:", e); }
+
                     let ralatText = ralat > 0 ? ` (${ralat} lompang)` : "";
                     status.innerText = `✅ SIAP! ${bAdded} BARU, ${bUpdated} UPDATE.${ralatText}`; 
                     status.style.color = "#00e676";
@@ -4001,8 +4039,8 @@
         // Kunci diubah supaya SAMA SEBIJI HURUF BESAR dengan database boss!
         const crmColumns = [
           { key: 'Lead ID', label: 'Lead ID', color: '#ffeb3b' },
-          { key: 'Timestamp Masuk', id: 'crm_imported_date', label: 'Imported Date', isImportDate: true, color: '#9c27b0', defaultHidden: true },
-          { key: 'Timestamp Masuk', id: 'crm_imported_time', label: 'Imported Time', isImportTime: true, color: '#9c27b0', defaultHidden: true },
+          { key: 'Timestamp Masuk', id: 'crm_imported_date', label: 'Imported Date', isImportDate: true, color: '#9c27b0' },
+          { key: 'Timestamp Masuk', id: 'crm_imported_time', label: 'Imported Time', isImportTime: true, color: '#9c27b0' },
           { key: 'LEADS INBOUND', label: 'Inbound Date', color: '#ff9800' },
             { key: 'LEADS INBOUND TIME', label: 'Inbound Time', color: '#ff9800' },
           { key: 'STATUS', label: 'Status', color: '#ff9800' },
@@ -4062,7 +4100,7 @@
             let set = tableType === 'crm' ? window.hiddenColsCRM : (tableType === 'ps' ? window.hiddenColsPS : window.hiddenColsEnroll);
             if(set.has(colId)) set.delete(colId); else set.add(colId);
             // Re-render header + body
-            if(tableType === 'crm') { isAdmin ? window.renderAdminCRMTable() : window.renderCRMTable(); }
+            if(tableType === 'crm') { isAdmin ? window.renderAdminCRMTable(true) : window.renderCRMTable(true); }
             else if(tableType === 'ps') { isAdmin ? window.renderAdminPSTable() : window.renderPSTable(); }
             else { isAdmin ? window.renderAdminEnrollTable() : window.renderEnrollTable(); }
             // Refresh panel if still open
@@ -4095,18 +4133,18 @@
 
             let hiddenCount = set.size;
             panel.innerHTML = `
-                <div class="flex justify-between items-center mb-2">
+                <div onclick="event.stopPropagation()" class="flex justify-between items-center mb-2">
                     <span class="text-[#00c6ff] font-bold text-xs">👁️ Papar/Sembunyi Kolum</span>
                     <button onclick="window.showAllCols('${tableType}', ${isAdmin})" class="text-[10px] text-[#00e676] hover:underline">Show All (${hiddenCount} hidden)</button>
                 </div>
-                <div class="grid grid-cols-2 gap-1 max-h-64 overflow-y-auto pr-1">${html}</div>
+                <div onclick="event.stopPropagation()" class="grid grid-cols-2 gap-1 max-h-64 overflow-y-auto pr-1">${html}</div>
             `;
         };
 
         window.showAllCols = function(tableType, isAdmin) {
             let set = tableType === 'crm' ? window.hiddenColsCRM : (tableType === 'ps' ? window.hiddenColsPS : window.hiddenColsEnroll);
             set.clear();
-            if(tableType === 'crm') { isAdmin ? window.renderAdminCRMTable() : window.renderCRMTable(); }
+            if(tableType === 'crm') { isAdmin ? window.renderAdminCRMTable(true) : window.renderCRMTable(true); }
             else if(tableType === 'ps') { isAdmin ? window.renderAdminPSTable() : window.renderPSTable(); }
             else { isAdmin ? window.renderAdminEnrollTable() : window.renderEnrollTable(); }
             window.renderColVisPanel(tableType, isAdmin);
@@ -4142,6 +4180,11 @@
           let currSortAsc = isAdmin ? adminSortAsc : teamSortAsc;
           let currentFilters = isAdmin ? adminFilters : teamFilters;
           let renderFunc = isAdmin ? 'window.renderAdminCRMTable()' : 'window.renderCRMTable()';
+          let quickSearchValues = {};
+          let searchWrapper = isAdmin ? '#crm-desktop-wrapper-true' : '#crm-desktop-wrapper-false';
+          document.querySelectorAll(searchWrapper + ' .crm-quick-search').forEach(input => {
+              quickSearchValues[input.getAttribute('data-col')] = input.value;
+          });
 
           function getIcon(colKey) { return currSortCol === colKey ? (currSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕'; }
 
@@ -4152,61 +4195,60 @@
               <th class="sticky-col" style="left: 45px; z-index: 30; top: 0; width: 85px; min-width: 85px; max-width: 85px; text-align:center;">Action</th>`;
               
             if(isAdmin) {
-                let colKey = 'Staff Name';
-                let selectedArr = currentFilters[colKey] || [];
+                let colID = 'Staff Name';
+                let selectedArr = currentFilters[colID] || [];
                 let btnText = selectedArr.length > 0 ? `<span class="text-[#00e676] font-bold">${selectedArr.length} Selected</span>` : "All";
                 let btnBg = selectedArr.length > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
+                let staffSearchVal = quickSearchValues[colID] ? ` value="${quickSearchValues[colID].replace(/"/g, '&quot;')}"` : "";
 
                 html += `<th class="sticky-col" style="left: 130px; overflow: visible; position: sticky; top: 0; z-index: 30; background-color: #1e1e1e; width: 180px; min-width: 180px; max-width: 180px;">
-                    <div class="th-content">Staff Name <span class="sort-icon" onclick="window.${fSort}('${colKey}')">${getIcon(colKey)}</span></div>
-                    <input type="text" data-col="${colKey}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner">
+                    <div class="th-content">Staff Name <span class="sort-icon" onclick="window.${fSort}('${colID}')">${getIcon(colID)}</span></div>
+                    <input type="text" data-col="${colID}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${staffSearchVal}>
                     <div class="text-left relative">
-                        <button onclick="window.toggleCRMFilterMenu('${colKey}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                        <button onclick="window.toggleCRMFilterMenu('${colID}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                             ${btnText} <span class="text-[8px] ml-1">▼</span>
                         </button>
-                        <div id="crm-filter-menu-${colKey}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
+                        <div id="crm-filter-menu-${colID}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
                     </div>
                 </th>`;
             }
 
           crmColumns.forEach(col => {
               if(window.isColHidden('crm', col)) return; // 🌟 Skip hidden columns
+              let colID = col.id || col.key;
               let colSty = col.color ? `color:${col.color};` : "";
-              let selectedArr = currentFilters[col.key] || [];
+              let selectedArr = currentFilters[colID] || [];
               let btnText = selectedArr.length > 0 ? `<span class="text-[#00e676] font-bold">${selectedArr.length} Selected</span>` : "All";
               let btnBg = selectedArr.length > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
+              let searchVal = quickSearchValues[colID] ? ` value="${quickSearchValues[colID].replace(/"/g, '&quot;')}"` : "";
 
               html += `<th style="${colSty} overflow: visible; position: sticky; top: 0; z-index: 20; background-color: #1e1e1e; min-width: 140px;">
-                  <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${col.key}')">${getIcon(col.key)}</span></div>
-                  <input type="text" data-col="${col.key}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner">
+                  <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${colID}')">${getIcon(colID)}</span></div>
+                  <input type="text" data-col="${colID}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="crm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
                   <div class="text-left relative">
-                      <button onclick="window.toggleCRMFilterMenu('${col.key}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                      <button onclick="window.toggleCRMFilterMenu('${colID}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                           ${btnText} <span class="text-[8px] ml-1">▼</span>
                       </button>
-                      <div id="crm-filter-menu-${col.key}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
+                      <div id="crm-filter-menu-${colID}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
                   </div>
               </th>`;
           });
           return html + `</tr>`;
         };
 
-        window.setTeamFilter = function(col, val) { teamFilters[col] = val.toLowerCase(); teamCrmPage = 1; window.renderCRMTable(); };
-        window.setAdminFilter = function(col, val) { adminFilters[col] = val.toLowerCase(); adminCrmPage = 1; window.renderAdminCRMTable(); };
+        window.setTeamFilter = function(col, val) { teamFilters[col] = val.toLowerCase(); teamCrmPage = 1; window.renderCRMTable(true); };
+        window.setAdminFilter = function(col, val) { adminFilters[col] = val.toLowerCase(); adminCrmPage = 1; window.renderAdminCRMTable(true); };
         
         window.sortTeamCRM = function(col) { 
             teamSortAsc = teamSortCol === col ? !teamSortAsc : true; 
             teamSortCol = col; 
-            // Auto-refresh header supaya anak panah bertukar warna
-            document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false);
-            window.renderCRMTable(); 
+            window.renderCRMTable(true); 
         };
         
         window.sortAdminCRM = function(col) { 
             adminSortAsc = adminSortCol === col ? !adminSortAsc : true; 
             adminSortCol = col; 
-            // Auto-refresh header supaya anak panah bertukar warna
-            document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
-            window.renderAdminCRMTable(); 
+            window.renderAdminCRMTable(true); 
         };
 
         // 🌟 FIX ULTIMATE: Tambah 'window.' supaya sistem seluruh web boleh jumpa fungsi ni
@@ -4216,12 +4258,29 @@
               for(let key in filtersObj) {
                   let selectedOptions = filtersObj[key];
                   if(Array.isArray(selectedOptions) && selectedOptions.length > 0) {
+                      let matchedColDefFilter = (typeof crmColumns !== 'undefined' ? crmColumns : []).find(c => (c.id || c.key) === key) || (typeof psColumns !== 'undefined' ? psColumns : []).find(c => (c.id || c.key) === key) || (typeof enrollColumns !== 'undefined' ? enrollColumns : []).find(c => (c.id || c.key) === key);
+                      let realKey = matchedColDefFilter ? matchedColDefFilter.key : key;
                       // 🌟 FIX: Gunakan fallback key yang sama masa buat tapisan
-                      let rawVal = row[key];
-                      if (key === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Name"];
-                      if (key === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"];
-                      if (key === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Refferal"] || row["referral"] || row["refferal"];
-                      if (key === 'NAME' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["name"];
+                      let rawVal = row[realKey];
+                      // 🌟 FIX: TO FU, History FU, FU Date, FU Time — ambil dari CRM (sama seperti display dalam jadual)
+                      let crmRec4Filter = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
+                      if (crmRec4Filter) {
+                          if (realKey === 'TO FU') rawVal = crmRec4Filter["TO FU"] || rawVal;
+                          if (realKey === 'Remark 2') rawVal = crmRec4Filter["HISTORY FU"] || crmRec4Filter["history_fu"] || rawVal;
+                          if (realKey === 'FU Date') rawVal = crmRec4Filter["FOLLOW UP (DATE)"] || crmRec4Filter["fu_date"] || rawVal;
+                          if (realKey === 'FU Time') rawVal = crmRec4Filter["FOLLOW UP (TIME)"] || crmRec4Filter["fu_time"] || rawVal;
+                      }
+                      if (realKey === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Name"];
+                      if (realKey === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"];
+                      if (realKey === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Refferal"] || row["referral"] || row["refferal"];
+                      if (realKey === 'NAME' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["name"];
+
+                      // 🌟 Timestamp Masuk columns — match formatted value bukan ISO string
+                      let matchedColDef = matchedColDefFilter;
+                      if(matchedColDef && (matchedColDef.isImportDate || matchedColDef.isImportTime)) {
+                          let parsed = window.parseTimestampMasuk(rawVal);
+                          rawVal = matchedColDef.isImportDate ? parsed.date : parsed.time;
+                      }
 
                       let val = (rawVal !== undefined && rawVal !== null && String(rawVal).trim() !== "") ? String(rawVal).trim() : "-";
                       if(!selectedOptions.includes(val)) return false; 
@@ -4230,16 +4289,26 @@
             });
             
             if(sortCol) {
+              let matchedSortCol = (typeof crmColumns !== 'undefined' ? crmColumns : []).find(c => (c.id || c.key) === sortCol) || (typeof psColumns !== 'undefined' ? psColumns : []).find(c => (c.id || c.key) === sortCol) || (typeof enrollColumns !== 'undefined' ? enrollColumns : []).find(c => (c.id || c.key) === sortCol);
+              let realSortKey = matchedSortCol ? matchedSortCol.key : sortCol;
               filtered.sort((a,b) => {
-                  let rawA = a[sortCol]; let rawB = b[sortCol];
+                  let rawA = a[realSortKey]; let rawB = b[realSortKey];
                   let vA = (rawA !== undefined && rawA !== null) ? String(rawA).trim() : ""; 
                   let vB = (rawB !== undefined && rawB !== null) ? String(rawB).trim() : "";
+
+                  if (matchedSortCol && matchedSortCol.isImportDate) {
+                      vA = (rawA && rawA.length >= 10) ? rawA.substring(0,10) : "";
+                      vB = (rawB && rawB.length >= 10) ? rawB.substring(0,10) : "";
+                  } else if (matchedSortCol && matchedSortCol.isImportTime) {
+                      vA = (rawA && rawA.length >= 19) ? rawA.substring(11,19) : "";
+                      vB = (rawB && rawB.length >= 19) ? rawB.substring(11,19) : "";
+                  }
 
                   let aEmpty = (vA === "" || vA === "-"); let bEmpty = (vB === "" || vB === "-");
                   if (aEmpty && !bEmpty) return 1; if (!aEmpty && bEmpty) return -1; if (aEmpty && bEmpty) return 0;
 
                   // Susun Tarikh
-                  if (sortCol === 'FOLLOW UP (DATE)' || sortCol === 'LAST CONTACTED (DATE)' || sortCol === 'LEADS INBOUND' || sortCol === 'Date' || sortCol === 'Invoice Date') {
+                  if (realSortKey === 'FOLLOW UP (DATE)' || realSortKey === 'LAST CONTACTED (DATE)' || realSortKey === 'LEADS INBOUND' || realSortKey === 'Date' || realSortKey === 'Invoice Date') {
                       const dateToNum = (str) => {
                           if (!str || str === "-") return 0;
                           if (str.includes('/')) {
@@ -4260,9 +4329,11 @@
                   }
 
                   // Susun Duit / Nombor
-                  let numValA = parseFloat(vA.replace(/,/g, '')); let numValB = parseFloat(vB.replace(/,/g, ''));
-                  if (!isNaN(numValA) && !isNaN(numValB)) {
-                      if (numValA < numValB) return sortAsc ? -1 : 1; if (numValA > numValB) return sortAsc ? 1 : -1; return 0;
+                  if (!(matchedSortCol && (matchedSortCol.isImportDate || matchedSortCol.isImportTime))) {
+                      let numValA = parseFloat(vA.replace(/,/g, '')); let numValB = parseFloat(vB.replace(/,/g, ''));
+                      if (!isNaN(numValA) && !isNaN(numValB)) {
+                          if (numValA < numValB) return sortAsc ? -1 : 1; if (numValA > numValB) return sortAsc ? 1 : -1; return 0;
+                      }
                   }
 
                   // Susun Abjad
@@ -4275,29 +4346,37 @@
 
         window.loadCRMData = async function(forceRefresh = false) {
             document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false);
-            
-            // Semak cache, elak ralat kalau forceRefresh tak didefine sebelum ni
             let isForce = (typeof forceRefresh === 'boolean') ? forceRefresh : false;
-            
+
             if (!isForce && typeof crmState !== 'undefined' && crmState.data && crmState.data.length > 0) {
-                window.renderCRMTable(); 
-                return; 
+                window.renderCRMTable(true); return;
             }
 
             document.getElementById('crm-table-body').innerHTML = `<tr><td colspan="22" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data CRM dari pelayan...</td></tr>`;
             try {
-                // 🌟 FIX: Tukar query -> fbQuery, where -> fbWhere
-                const q = fbQuery(collection(db, "crm_leads"), fbWhere("Staff Name", "==", currentUser));
+                const q = fbQuery(collection(db, "crm_leads"), fbWhere("Staff Name", "==", currentUser.trim()));
+
+                // 🌟 Cache-first: cuba tunjuk data dari IndexedDB cache dulu (instant)
+                try {
+                    const cacheSnap = await getDocsFromCache(q);
+                    if(!cacheSnap.empty) {
+                        crmState.data = [];
+                        cacheSnap.forEach(doc => crmState.data.push({ docId: doc.id, ...doc.data() }));
+                        window.rebuildCRMLookup();
+                        teamCrmPage = 1; window.renderCRMTable(true);
+                    }
+                } catch(_) {}
+
+                // 🌟 Background server sync — update silently, re-render bila dah dapat
                 const snap = await getDocs(q);
-                
                 crmState.data = []; snap.forEach(doc => crmState.data.push({ docId: doc.id, ...doc.data() }));
                 window.rebuildCRMLookup();
-                teamCrmPage = 1; window.renderCRMTable();
+                teamCrmPage = 1; window.renderCRMTable(true);
             } catch(e) { alert("Gagal tarik data CRM: " + e.message); }
         };
 
-        window.renderCRMTable = function() {
-          document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false); // 🌟 Regen header (utk col visibility)
+        window.renderCRMTable = function(regenHeader = false) {
+          if(regenHeader) document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false);
           let tbody = document.getElementById('crm-table-body'); tbody.innerHTML = "";
           let filteredData = applySortAndFilter(crmState.data, teamFilters, teamSortCol, teamSortAsc);
           
@@ -4310,7 +4389,18 @@
           searchBoxes.forEach(input => {
               let query = input.value.toLowerCase().trim();
               let colKey = input.getAttribute('data-col');
-              if (query !== "") filteredData = filteredData.filter(r => String(r[colKey] || "").toLowerCase().includes(query));
+              if (query !== "") {
+                  filteredData = filteredData.filter(r => {
+                      let matchedColDef = (typeof crmColumns !== 'undefined' ? crmColumns : []).find(c => (c.id || c.key) === colKey);
+                      let realKey = matchedColDef ? matchedColDef.key : colKey;
+                      let rawVal = r[realKey];
+                      if (matchedColDef && (matchedColDef.isImportDate || matchedColDef.isImportTime)) {
+                          let parsed = window.parseTimestampMasuk(rawVal);
+                          rawVal = matchedColDef.isImportDate ? parsed.date : parsed.time;
+                      }
+                      return String(rawVal || "").toLowerCase().includes(query);
+                  });
+              }
           });
 
           if(filteredData.length === 0) {
@@ -4363,8 +4453,8 @@
           });
         };
 
-        window.prevTeamCRM = function() { if(teamCrmPage > 1) { teamCrmPage--; window.renderCRMTable(); } };
-        window.nextTeamCRM = function() { teamCrmPage++; window.renderCRMTable(); };
+        window.prevTeamCRM = function() { if(teamCrmPage > 1) { teamCrmPage--; window.renderCRMTable(true); } };
+        window.nextTeamCRM = function() { teamCrmPage++; window.renderCRMTable(true); };
 
         window.loadAdminCRMData = async function(forceRefresh = false) {
             document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
@@ -4392,20 +4482,34 @@
             let isForce = (typeof forceRefresh === 'boolean') ? forceRefresh : false;
 
             if (!isForce && typeof crmState !== 'undefined' && crmState.adminData && crmState.adminData.length > 0) {
-                window.renderAdminCRMTable(); 
+                window.renderAdminCRMTable(true); 
                 return; 
             }
 
             document.getElementById('admin-crm-table-body').innerHTML = `<tr><td colspan="22" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data CRM (Semua Staf)...</td></tr>`;
             try {
-                const snap = await getDocs(collection(db, "crm_leads"));
-                crmState.adminData = []; 
+                const col_ = collection(db, "crm_leads");
+
+                // 🌟 Cache-first: tunjuk data dari IndexedDB dulu (instant)
+                try {
+                    const cacheSnap = await getDocsFromCache(col_);
+                    if(!cacheSnap.empty) {
+                        crmState.adminData = [];
+                        cacheSnap.forEach(doc => crmState.adminData.push({ docId: doc.id, ...doc.data() }));
+                        window.rebuildCRMLookup();
+                        adminCrmPage = 1; window.renderAdminCRMTable(true);
+                    }
+                } catch(_) {}
+
+                // 🌟 Background server sync
+                const snap = await getDocs(col_);
+                crmState.adminData = [];
                 snap.forEach(doc => crmState.adminData.push({ docId: doc.id, ...doc.data() }));
                 window.rebuildCRMLookup();
-                adminCrmPage = 1; 
-                window.renderAdminCRMTable();
-            } catch(e) { 
-                alert("Gagal tarik data CRM Admin: " + e.message); 
+                adminCrmPage = 1;
+                window.renderAdminCRMTable(true);
+            } catch(e) {
+                alert("Gagal tarik data CRM Admin: " + e.message);
             }
         };
 
@@ -4527,8 +4631,8 @@
             if(btn) { btn.innerText = "📥 Simpan Leads"; btn.disabled = false; }
         };
         
-        window.renderAdminCRMTable = function() {
-          document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true); // 🌟 Regen header
+        window.renderAdminCRMTable = function(regenHeader = false) {
+          if(regenHeader) document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
           let tbody = document.getElementById('admin-crm-table-body'); tbody.innerHTML = "";
           let filteredData = applySortAndFilter(crmState.adminData, adminFilters, adminSortCol, adminSortAsc);
           
@@ -4541,7 +4645,18 @@
           searchBoxes.forEach(input => {
               let query = input.value.toLowerCase().trim();
               let colKey = input.getAttribute('data-col');
-              if (query !== "") filteredData = filteredData.filter(r => String(r[colKey] || "").toLowerCase().includes(query));
+              if (query !== "") {
+                  filteredData = filteredData.filter(r => {
+                      let matchedColDef = (typeof crmColumns !== 'undefined' ? crmColumns : []).find(c => (c.id || c.key) === colKey);
+                      let realKey = matchedColDef ? matchedColDef.key : colKey;
+                      let rawVal = r[realKey];
+                      if (matchedColDef && (matchedColDef.isImportDate || matchedColDef.isImportTime)) {
+                          let parsed = window.parseTimestampMasuk(rawVal);
+                          rawVal = matchedColDef.isImportDate ? parsed.date : parsed.time;
+                      }
+                      return String(rawVal || "").toLowerCase().includes(query);
+                  });
+              }
           });
 
           if(filteredData.length === 0) {
@@ -4649,8 +4764,8 @@
             window.updateCRMBulkPanel();
         };
 
-        window.prevAdminCRM = function() { if(adminCrmPage > 1) { adminCrmPage--; window.renderAdminCRMTable(); } };
-        window.nextAdminCRM = function() { adminCrmPage++; window.renderAdminCRMTable(); };
+        window.prevAdminCRM = function() { if(adminCrmPage > 1) { adminCrmPage--; window.renderAdminCRMTable(true); } };
+        window.nextAdminCRM = function() { adminCrmPage++; window.renderAdminCRMTable(true); };
 
         // MODAL CHAT
         window.viewChat = function(isAdmin, idx) {
@@ -4881,6 +4996,22 @@
 
             historyEl.value = currentHistory ? (previewTxt + "\n" + currentHistory) : previewTxt;
             // Silent append - takde alert, terus masuk History FU
+            
+            // 🌟 FIX: Clear Outcome lepas berjaya append
+            let outcomeId;
+            if (prefix === 'crm') outcomeId = 'crm-outcome';
+            else if (prefix === 'ps') outcomeId = 'ps-outcome';
+            else if (prefix === 'enroll') outcomeId = 'enroll-outcome';
+            
+            if (outcomeId) {
+                let outEl = document.getElementById(outcomeId);
+                if (outEl) outEl.value = "";
+            }
+            
+            // Refresh preview box supaya outcome hilang dari situ jugak
+            if (prefix === 'crm' && typeof window.updatePreviewFU === 'function') window.updatePreviewFU();
+            else if (prefix === 'ps' && typeof window.updatePSPreview === 'function') window.updatePSPreview();
+            else if (prefix === 'enroll' && typeof window.updateEnrollPreview === 'function') window.updateEnrollPreview();
         };
 
         // ==========================================
@@ -5064,16 +5195,13 @@
               if(psSection && psSection.style.display !== 'none') {
                   let psDocId = getSafeVal('crmps-docid');
                   if(psDocId) {
+                      // 🌟 FIX: Gabung TO FU, FU Date, FU Time, Outcome terus dari CRM utama ke PS Master
                       let psUpdateData = {
-                          "Referral": getSafeVal('crmps-ref'),
-                          "Student Name": getSafeVal('crmps-name'),
-                          "Phone Number": getSafeVal('crmps-phone'),
-                          "TO FU": getSafeVal('crmps-tofu'),
-                          "Outcome": getSafeVal('crmps-outcome'),
-                          "Class Progress": getSafeVal('crmps-classprog'),
-                          "FU Date": window.toSheetDate(getSafeVal('crmps-fudate')),
-                          "FU Time": getSafeVal('crmps-futime'),
-                          "Remark 2": getSafeVal('crmps-rem2')
+                          "TO FU": actionVal,
+                          "Outcome": getSafeVal('crm-outcome'),
+                          "FU Date": window.toSheetDate(getSafeVal('crm-fu-date')),
+                          "FU Time": getSafeVal('crm-fu-time'),
+                          "Remark 2": getSafeVal('crm-history')
                       };
                       try {
                           await updateDoc(doc(db, "ps_students", psDocId), psUpdateData);
@@ -5140,6 +5268,59 @@
           
           if(btn) { btn.innerText = "💾 SAVE CRM UPDATES"; btn.disabled = false; }
         };
+
+        // ================================================
+        // 🌟 CLICK OUTSIDE TO CLOSE — modals, panels, dropdowns
+        // ================================================
+        (function() {
+            const MODAL_IDS = [
+                'modal-chat', 'modal-crm', 'modal-add-crm', 'modal-crm-sync',
+                'modal-crm-bulk', 'modal-ps', 'modal-ps-bulk',
+                'modal-enroll', 'modal-enroll-bulk',
+                'modal-add-task-bulk', 'modal-delete-task-bulk'
+            ];
+
+            const MODAL_CLOSE_FN = {
+                'modal-crm': () => typeof window.closeCRMModal === 'function' && window.closeCRMModal(),
+            };
+
+            MODAL_IDS.forEach(id => {
+                let el = document.getElementById(id);
+                if(!el) return;
+                el.addEventListener('click', function(e) {
+                    if(e.target !== el) return;
+                    if(MODAL_CLOSE_FN[id]) {
+                        MODAL_CLOSE_FN[id]();
+                    } else {
+                        el.style.display = 'none';
+                    }
+                });
+            });
+
+            document.addEventListener('click', function(e) {
+                // Col-vis panels — SKIP sebab dah ada dedicated listener dalam toggleColVisPanel
+                // (guna data-col-vis-btn sebagai exclusion, bukan onclick string check)
+
+                // Tofu float dropdown
+                let tofuDd = document.getElementById('tofu-float-dropdown');
+                if(tofuDd && !tofuDd.classList.contains('hidden')) {
+                    if(!tofuDd.contains(e.target) && !e.target.closest('[oninput*="handleTofuInput"],[onclick*="openTofuDropdown"],[onfocus*="openTofuDropdown"]')) {
+                        tofuDd.classList.add('hidden');
+                    }
+                }
+
+                // Filter menus — mobile PS (m-filter-menu-*), desktop PS (filter-menu-*), CRM (crm-filter-menu-*)
+                ['m-filter-menu-', 'filter-menu-', 'crm-filter-menu-'].forEach(prefix => {
+                    document.querySelectorAll(`[id^="${prefix}"]`).forEach(menu => {
+                        if(menu.classList.contains('hidden')) return;
+                        // Jangan tutup kalau klik dalam menu atau pada butang yang buka menu tu
+                        if(!menu.contains(e.target) && !e.target.closest('[onclick*="toggleFilterMenu"],[onclick*="toggleCRMFilterMenu"]')) {
+                            menu.classList.add('hidden');
+                        }
+                    });
+                });
+            });
+        })();
 
         window.closeCRMModal = function() { document.getElementById('modal-crm').style.display = 'none'; };
 
@@ -5311,6 +5492,22 @@
             return "L" + String(currentMax).padStart(5, '0');
         };
 
+        // 🌟 HELPER: Normalize Staff Name ke nama sistem pendek
+        window._resolveStaffName = function(rawName) {
+            if (!rawName || rawName === "-") return currentUser || "-";
+            let r = String(rawName).trim();
+            // Cari dalam senaraiStafAdmin - match nama pendek atau nama penuh
+            if (typeof senaraiStafAdmin !== "undefined" && senaraiStafAdmin.length > 0) {
+                let rLow = r.toLowerCase();
+                let matched = senaraiStafAdmin.find(s =>
+                    String(s.name || "").toLowerCase() === rLow ||
+                    String(s.fullName || "").toLowerCase() === rLow
+                );
+                if (matched) return matched.name; // Sentiasa return nama pendek
+            }
+            return r; // Fallback: guna apa yang ada
+        };
+
         // Buka modal CRM dari row PS Master / PS Enroll - cari link sedia ada, atau auto-create CRM lead baru
         window._openCRMModalFromLinkedRecord = async function(type, isAdmin, actualIdx) {
             let stateObj = type === 'ps' ? psState : enrollState;
@@ -5352,7 +5549,7 @@
                     let newLeadId = await window._generateNewLeadId();
                     let todayStr = new Date().toISOString().split('T')[0];
                     let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
-                    let staffName = record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser || "-";
+                    let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
 
                     let newData = {
                         "Lead ID": newLeadId,
@@ -5380,6 +5577,104 @@
             } catch(e) {
                 alert("Gagal buka/cipta rekod CRM: " + e.message);
             }
+        };
+
+        window.bulkAutoCreateCRM = async function(type, isAdmin, isSilent = false) {
+            if(!isSilent && !confirm(`Sahkan untuk Auto-Create CRM bagi semua rekod ${type.toUpperCase()} yang belum ada link?`)) return;
+            let stateObj = type === 'ps' ? psState : enrollState;
+            let stateArr = isAdmin ? stateObj.adminData : stateObj.data;
+            if(!stateArr || stateArr.length === 0) { if(!isSilent) alert("Tiada data."); return; }
+            
+            let linkFieldOnCrm = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
+
+            // 🌟 FIX: Pre-fetch semua existing links dari Firebase dalam batch (elak N+1 queries & duplicate)
+            // Tak boleh bergantung pada crmState memori sahaja — mungkin kosong kalau belum buka tab CRM
+            let linkedDocIds = new Set();
+            let allDocIds = stateArr.map(r => r.docId).filter(Boolean);
+            try {
+                for(let i = 0; i < allDocIds.length; i += 30) {
+                    const q = fbQuery(collection(db, "crm_leads"), fbWhere(linkFieldOnCrm, "in", allDocIds.slice(i, i + 30)));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        let linkedId = d.data()[linkFieldOnCrm];
+                        if(linkedId) linkedDocIds.add(linkedId);
+                        // Sekaligus masuk dalam crmState kalau belum ada
+                        let targetArr = isAdmin ? crmState.adminData : crmState.data;
+                        if(!targetArr.find(r => r.docId === d.id)) {
+                            targetArr.push({ docId: d.id, ...d.data() });
+                        }
+                    });
+                }
+            } catch(e) { console.error("Gagal prefetch CRM links:", e); }
+
+            let unlinkedIndices = [];
+            stateArr.forEach((record, idx) => {
+                if(!linkedDocIds.has(record.docId)) unlinkedIndices.push(idx);
+            });
+            
+            if(unlinkedIndices.length === 0) {
+                if(!isSilent) alert("Semua rekod sudah ada link CRM!");
+                return;
+            }
+            
+            if(!isSilent && !confirm(`Terdapat ${unlinkedIndices.length} rekod yang belum ada CRM. Proses ini mungkin mengambil masa. Teruskan?`)) return;
+            
+            let loadingMsg = document.createElement('div');
+            loadingMsg.id = 'bulk-crm-loading';
+            loadingMsg.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#ff9800; color:#000; padding:15px 30px; border-radius:8px; z-index:99999; font-weight:bold; box-shadow:0 4px 15px rgba(0,0,0,0.5);';
+            loadingMsg.innerText = `Memproses 0 / ${unlinkedIndices.length}...`;
+            document.body.appendChild(loadingMsg);
+            
+            let successCount = 0;
+            
+            for(let i=0; i<unlinkedIndices.length; i++) {
+                let actualIdx = unlinkedIndices[i];
+                let record = stateArr[actualIdx];
+                
+                try {
+                    let newLeadId = await window._generateNewLeadId();
+                    let todayStr = new Date().toISOString().split('T')[0];
+                    let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+                    let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
+                    let recordPhone = type === 'ps' ? (record["Phone Number"] || record["Phone"] || record["Contact"] || "") : (record["Phone"] || "");
+                    let recordName = record["Student Name"] || record["Name"] || "-";
+                    
+                    let newCRMDoc = {
+                        "Lead ID": newLeadId,
+                        "Timestamp Masuk": record["Timestamp Masuk"] || new Date().toISOString(),
+                        "Staff Name": staffName,
+                        "Student Name": recordName,
+                        "Phone Number": recordPhone,
+                        "TO FU": "",
+                        "TO FU DONE": false,
+                        "HISTORY FU": `[${todayStr} ${timeStr}] [AUTO] CRM Lead created dari ${type.toUpperCase()}`,
+                        "Status CRM": "Baru Masuk (Belum FU)",
+                        [linkFieldOnCrm]: record.docId
+                    };
+                    
+                    const newRef = await addDoc(collection(db, "crm_leads"), newCRMDoc);
+                    newCRMDoc.docId = newRef.id;
+                    let targetArr = isAdmin ? crmState.adminData : crmState.data;
+                    targetArr.push(newCRMDoc);
+                    
+                    if(!window.crmByPsDocId) window.crmByPsDocId = {};
+                    if(!window.crmByEnrollDocId) window.crmByEnrollDocId = {};
+                    
+                    if(type === 'ps') { window.crmByPsDocId[record.docId] = newCRMDoc; }
+                    else { window.crmByEnrollDocId[record.docId] = newCRMDoc; }
+                } catch(e) { console.error("Error create in bulk:", e); }
+                
+                successCount++;
+                let lMsg = document.getElementById('bulk-crm-loading');
+                if(lMsg) lMsg.innerText = `Memproses ${successCount} / ${unlinkedIndices.length}...`;
+            }
+            
+            let lMsgFinal = document.getElementById('bulk-crm-loading');
+            if(lMsgFinal) document.body.removeChild(lMsgFinal);
+            if (!isSilent) alert(`Selesai! ${successCount} rekod telah diproses dan di-link ke CRM.`);
+            
+            if(type === 'ps') { window.renderPSTable(isAdmin); window.renderPSMobileList(isAdmin); }
+            else { window.renderEnrollTable(isAdmin); window.renderEnrollMobileList(isAdmin); }
         };
 
         window.openCRMModalFromPS = function(isAdmin, actualIdx) {
@@ -5453,19 +5748,11 @@
             section.style.display = 'block';
 
             document.getElementById('crmps-docid').value = record.docId || "";
-            document.getElementById('crmps-ref').value = record["Referral"] || record["Refferal"] || "";
-            document.getElementById('crmps-name').value = record["Student Name"] || record["Name"] || "";
-            document.getElementById('crmps-phone').value = record["Phone Number"] || record["Phone"] || record["Contact"] || "";
-            document.getElementById('crmps-tofu').value = record["TO FU"] || "";
-            document.getElementById('crmps-outcome').value = record["Outcome"] || "";
-            document.getElementById('crmps-classprog').value = record["Class Progress"] || "";
-            document.getElementById('crmps-rem2').value = record["Remark 2"] || "";
-            document.getElementById('crmps-fudate').value = window.toInputDate(record["FU Date"]);
-            document.getElementById('crmps-futime').value = record["FU Time"] || "";
 
+            // 🌟 FIX: Masukkan semua detail (termasuk Referral, Name, Phone, Class Progress) ke dalam Other Details
             let otherDiv = document.getElementById('crmps-other-details');
             otherDiv.innerHTML = "";
-            let excludeKeys = ["Referral", "Refferal", "Student Name", "Name", "Phone Number", "Phone", "Contact", "Class Progress", "Remark 2", "FU Date", "FU Time", "TO FU", "Outcome", "docId"];
+            let excludeKeys = ["docId"]; // Hanya abaikan docId
             psColumns.forEach(col => {
                 if(!excludeKeys.includes(col.key)) {
                     let val = record[col.key];
@@ -6112,6 +6399,170 @@
             btn.innerText = "Tukar Nama Sekarang"; btn.disabled = false;
         };
 
+        // AUTO-STANDARDIZE STAFF NAME CRM MASTER
+        window.standardizeStaffNameCRM = async function(btn) {
+            let logDiv = document.getElementById("std-crm-log");
+            logDiv.classList.remove("hidden");
+            logDiv.innerHTML = "⏳ Loading senarai staf...";
+            btn.disabled = true;
+            try {
+                if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) await window.renderUrusStaf();
+                if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) {
+                    logDiv.innerHTML = "❌ Gagal load senarai staf."; btn.disabled = false; return;
+                }
+                let fullToShort = {};
+                senaraiStafAdmin.forEach(s => {
+                    if (s.fullName && s.fullName.trim()) {
+                        fullToShort[s.fullName.trim().toLowerCase()] = s.name;
+                    }
+                });
+                logDiv.innerHTML = "🔍 Scan semua rekod crm_leads...";
+                const snapAll = await getDocs(collection(db, "crm_leads"));
+                let toUpdate = [];
+                snapAll.forEach(d => {
+                    let sn = String(d.data()["Staff Name"] || "").trim();
+                    if (fullToShort[sn.toLowerCase()]) {
+                        toUpdate.push({ id: d.id, newName: fullToShort[sn.toLowerCase()], oldName: sn });
+                    }
+                });
+                if (toUpdate.length === 0) {
+                    logDiv.innerHTML = "✅ Semua Staff Name CRM dah standard! Tiada rekod perlu ditukar.";
+                    btn.disabled = false; return;
+                }
+                if (!confirm(`Jumpa ${toUpdate.length} rekod CRM yang perlu ditukar nama. Teruskan?`)) {
+                    btn.disabled = false; logDiv.classList.add("hidden"); return;
+                }
+                logDiv.innerHTML = `⏳ Tukar ${toUpdate.length} rekod...`;
+                let count = 0;
+                for (let item of toUpdate) {
+                    await updateDoc(doc(db, "crm_leads", item.id), { "Staff Name": item.newName });
+                    count++;
+                    if (count % 20 === 0) logDiv.innerHTML = `⏳ Tukar ${count}/${toUpdate.length}...`;
+                }
+                logDiv.innerHTML = `✅ Siap! ${count} rekod CRM berjaya ditukar ke nama sistem pendek.`;
+                if (typeof crmState !== "undefined") { crmState.data = []; crmState.adminData = []; }
+            } catch(e) {
+                logDiv.innerHTML = "❌ Ralat: " + e.message;
+            }
+            btn.disabled = false;
+        };
+
+        // AUTO-STANDARDIZE STAFF NAME PS MASTER
+        window.standardizeStaffNamePS = async function(btn) {
+            let logDiv = document.getElementById('std-ps-log');
+            logDiv.classList.remove('hidden');
+            logDiv.innerHTML = "⏳ Loading senarai staf...";
+            btn.disabled = true;
+
+            try {
+                // 1) Pastikan senaraiStafAdmin ada
+                if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) await window.renderUrusStaf();
+                if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) {
+                    logDiv.innerHTML = "❌ Gagal load senarai staf. Cuba refresh."; btn.disabled = false; return;
+                }
+
+                // 2) Bina map: nama penuh (lowercase) -> nama sistem pendek
+                // e.g. "siti nur hasyyati binti ruzelan" -> "Atie"
+                let fullToShort = {};
+                senaraiStafAdmin.forEach(s => {
+                    if (s.fullName && s.fullName.trim()) {
+                        fullToShort[s.fullName.trim().toLowerCase()] = s.name;
+                        fullToShort[s.fullName.trim().toUpperCase().toLowerCase()] = s.name;
+                    }
+                });
+
+                logDiv.innerHTML = `🔍 Scan semua rekod ps_students...`;
+
+                // 3) Tarik semua rekod
+                const snapAll = await getDocs(collection(db, "ps_students"));
+                let toUpdate = []; // { id, shortName }
+                snapAll.forEach(d => {
+                    let sn = String(d.data()["Staff Name"] || "").trim();
+                    let snLow = sn.toLowerCase();
+                    // Kalau nama dalam rekod = nama penuh (ada dalam map), kena tukar
+                    if (fullToShort[snLow]) {
+                        toUpdate.push({ id: d.id, newName: fullToShort[snLow], oldName: sn });
+                    }
+                });
+
+                if (toUpdate.length === 0) {
+                    logDiv.innerHTML = "✅ Semua Staff Name dah standard! Tiada rekod perlu ditukar.";
+                    btn.disabled = false; return;
+                }
+
+                if (!confirm(`Jumpa ${toUpdate.length} rekod yang perlu ditukar nama. Teruskan?`)) {
+                    btn.disabled = false; logDiv.classList.add('hidden'); return;
+                }
+
+                // 4) Update batch
+                logDiv.innerHTML = `⏳ Tukar ${toUpdate.length} rekod...`;
+                let count = 0;
+                for (let item of toUpdate) {
+                    await updateDoc(doc(db, "ps_students", item.id), { "Staff Name": item.newName });
+                    count++;
+                    if (count % 20 === 0) logDiv.innerHTML = `⏳ Tukar ${count}/${toUpdate.length}...`;
+                }
+
+                logDiv.innerHTML = `✅ Siap! ${count} rekod berjaya ditukar ke nama sistem pendek.<br><span class="text-green-400">Lepas ni semua Staff Name dalam Firebase = nama sistem (cth: "Atie", "Asyikin") - konsisten!</span>`;
+                if (typeof psState !== 'undefined') { psState.data = []; psState.adminData = []; }
+
+            } catch(e) {
+                logDiv.innerHTML = "❌ Ralat: " + e.message;
+            }
+            btn.disabled = false;
+        };
+
+        // FUNGSI KECEMASAN GANTI NAMA PS MASTER (FIND & REPLACE)
+        window.gantiNamaPS = async function(btn) {
+            let oldName = document.getElementById('ps-rename-old').value.trim();
+            let newName = document.getElementById('ps-rename-new').value.trim();
+            let logDiv = document.getElementById('ps-rename-log');
+
+            if(!oldName || !newName) { alert("Sila isi kedua-dua nama lama dan baru!"); return; }
+            if(oldName === newName) { alert("Nama sama je tu boss!"); return; }
+
+            if(!confirm(`AMARAN: Sistem akan mencari semua rekod PS Master yang Staff Name = "${oldName}" dan tukar kepada "${newName}". Teruskan?`)) return;
+
+            btn.innerText = "⏳ Sedang menukar..."; btn.disabled = true;
+            logDiv.classList.remove('hidden');
+            logDiv.innerHTML = "⏳ Sedang cari rekod...";
+
+            try {
+                const q = fbQuery(collection(db, "ps_students"), fbWhere("Staff Name", "==", oldName));
+                const snap = await getDocs(q);
+
+                if (snap.empty) {
+                    logDiv.innerHTML = `❌ Tiada rekod dijumpai untuk Staff Name = "${oldName}". Pastikan ejaan tepat.`;
+                    btn.innerText = "Tukar Nama Sekarang (PS Master) 🔁"; btn.disabled = false;
+                    return;
+                }
+
+                logDiv.innerHTML = `🔍 Jumpa ${snap.size} rekod. Sedang tukar...`;
+
+                let count = 0;
+                for (const docSnap of snap.docs) {
+                    await updateDoc(doc(db, "ps_students", docSnap.id), { "Staff Name": newName });
+                    count++;
+                    if(count % 10 === 0) logDiv.innerHTML = `⏳ Tukar ${count}/${snap.size} rekod...`;
+                }
+
+                logDiv.innerHTML = `✅ Berjaya tukar ${count} rekod dari "<b>${oldName}</b>" kepada "<b>${newName}</b>"!`
+                    + `<br><span class="text-yellow-400">⚠️ PENTING: Pastikan <b>fullName</b> dalam System Setup → Urus Staf untuk staf ini ditukar kepada "<b>${newName}</b>" juga, supaya staff view boleh tarik data dengan betul.</span>`;
+                document.getElementById('ps-rename-old').value = "";
+                document.getElementById('ps-rename-new').value = "";
+
+                // Refresh PS Master kalau tengah buka
+                if (typeof psState !== 'undefined') { psState.data = []; psState.adminData = []; }
+                if (!document.getElementById('adm-view-ps').classList.contains('hidden')) {
+                    window.loadAdminPSData(true);
+                }
+
+            } catch(e) {
+                logDiv.innerHTML = "❌ Ralat: " + e.message;
+            }
+            btn.innerText = "Tukar Nama Sekarang (PS Master) 🔁"; btn.disabled = false;
+        };
+
         // ==========================================
         // 10. MODUL AUDIT DAILY LOGS (ADMIN CCTV)
         // ==========================================
@@ -6320,6 +6771,47 @@
         // ==========================================
         // ENJIN IMPORT PS (SNIPER 12.1 - BATCHED WRITES + ANTI-OVERWRITE 🔥🛡️)
         // ==========================================
+        window.excelSerialToDate = function(serial) {
+            if (!serial || isNaN(serial)) return null;
+            let n = Number(serial);
+            // Excel serial starts at Jan 1, 1900.
+            let date = new Date(Math.round((n - 25569) * 86400 * 1000));
+            // Apply timezone offset to get local time correctly
+            let localDate = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+            return localDate;
+        };
+
+        window.formatDisplayValue = function(val) {
+            if (!val || (typeof val !== 'string' && typeof val !== 'number')) return val;
+            let strVal = String(val).trim();
+            if (strVal === "") return val;
+            
+            // Check if ISO Date string
+            if (strVal.match(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}/)) {
+                let d = new Date(strVal);
+                if (!isNaN(d)) {
+                    let pad = n => String(n).padStart(2, '0');
+                    return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                }
+            }
+            
+            // Check if Excel Serial (between 30000 and 70000)
+            let numVal = Number(val);
+            if (!isNaN(numVal) && numVal > 30000 && numVal < 70000) {
+                let d = window.excelSerialToDate(numVal);
+                if (d) {
+                    let pad = n => String(n).padStart(2, '0');
+                    if (numVal % 1 !== 0) {
+                        return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                    } else {
+                        let m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                        return `${pad(d.getDate())}-${m[d.getMonth()]} ${d.getFullYear()}`;
+                    }
+                }
+            }
+            return val;
+        };
+
         window.prosesImportPSExcel = async function(inputId, statusId, btn, isStaffView = false) {
             const fail = document.getElementById(inputId).files[0];
             const status = document.getElementById(statusId);
@@ -6364,7 +6856,26 @@
                         if(studentCodeExcel) {
                             excelCodes.push(studentCodeExcel);
                             let rowData = {};
-                            headers.forEach((h, c) => { rowData[h || `Col_${c}`] = String(rowArray[c] || "").trim(); });
+                            headers.forEach((h, c) => { 
+                                let val = rowArray[c];
+                                // 🌟 FIX: Detect dan convert Excel Serial Number (Date/Timestamp)
+                                let numVal = Number(val);
+                                if (!isNaN(numVal) && numVal > 30000 && numVal < 70000 && String(val).trim() !== "") {
+                                    let d = window.excelSerialToDate(numVal);
+                                    if (d) {
+                                        let pad = n => String(n).padStart(2, '0');
+                                        if (numVal % 1 !== 0) {
+                                            // Timestamp format: 2026-05-08 10:43:02
+                                            val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                                        } else {
+                                            // Date format: 08-May 2026
+                                            let m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                            val = `${pad(d.getDate())}-${m[d.getMonth()]} ${d.getFullYear()}`;
+                                        }
+                                    }
+                                }
+                                rowData[h || `Col_${c}`] = String(val || "").trim(); 
+                            });
                             validRows.push({ code: studentCodeExcel, data: rowData, name: idxName !== -1 ? String(rowArray[idxName] || "").trim() : "" });
                         }
                     }
@@ -6414,8 +6925,10 @@
                                     return (excelNameMap !== "" && excelNameMap === rowNameLow) || (sysNameMap === rowNameLow);
                                 });
                             }
-                            if (matchedStaff) finalStaffName = matchedStaff.name; 
-                            else finalStaffName = row.name; 
+                            // 🌟 STANDARD: Sentiasa guna nama sistem (name pendek) sebagai Staff Name
+                            // Ini pastikan Staff Name dalam Firebase SENTIASA konsisten
+                            if (matchedStaff) finalStaffName = matchedStaff.name;
+                            else finalStaffName = row.name; // Fallback: nama dari Excel kalau tiada match
                         }
                         
                         rowData["Staff Name"] = finalStaffName;
@@ -6426,7 +6939,7 @@
                         if (existingMap[row.code]) {
                             // UPDATE REKOD (Guna Batch)
                             let old = existingMap[row.code];
-                            rowData["Timestamp Masuk"] = old["Timestamp Masuk"] || new Date().toISOString();
+                            rowData["Timestamp Masuk"] = new Date().toISOString(); // 🌟 Refresh timestamp setiap kali import/update
                             
                             // 🛡️ PROTECT MODE: Ambil balik data manual dari Firebase dan timpa data Excel
                             rowData["TO FU"] = old["TO FU"] || "";
@@ -6495,6 +7008,12 @@
                     if (isStaffView && typeof window.renderPSTable === 'function') window.renderPSTable();
                     else if (!isStaffView && typeof window.renderAdminPSTable === 'function') window.renderAdminPSTable();
 
+                    // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
+                    if (typeof window.bulkAutoCreateCRM === 'function') {
+                        // isStaffView = false means it's Admin (isAdmin = true)
+                        window.bulkAutoCreateCRM('ps', !isStaffView, true);
+                    }
+
                 } catch (err) {
                     alert("Ralat: " + err.message);
                     status.innerText = "❌ Gagal"; btn.disabled = false;
@@ -6524,6 +7043,7 @@
 
         const psColumns = [
             { key: 'Referral', label: 'Referral' },
+            { key: 'Staff Name', label: 'Staff Name', color: '#bb86fc', adminOnly: true },
             { key: 'Student Name', label: 'Name', color: '#00c6ff' },
             { key: 'Phone Number', label: 'Phone' },
             { key: 'TO FU', label: 'Action (TO FU)', color: '#00e676' }, // 🌟 BARU: Action TO FU
@@ -6532,8 +7052,8 @@
             { key: 'FU Time', label: 'FU Time' },
             { key: 'Timestamp', label: 'Timestamp' },
             { key: 'Potential Student Code', label: 'PS Code' },
-            { key: 'Timestamp Masuk', id: 'ps_imported_date', label: 'Imported Date', isImportDate: true, color: '#9c27b0', defaultHidden: true },
-            { key: 'Timestamp Masuk', id: 'ps_imported_time', label: 'Imported Time', isImportTime: true, color: '#9c27b0', defaultHidden: true },
+            { key: 'Timestamp Masuk', id: 'ps_imported_date', label: 'Imported Date', isImportDate: true, color: '#9c27b0' },
+            { key: 'Timestamp Masuk', id: 'ps_imported_time', label: 'Imported Time', isImportTime: true, color: '#9c27b0' },
             { key: 'Email', label: 'Email' },
             { key: 'Age', label: 'Age' },
             { key: 'Country', label: 'Country' },
@@ -6579,6 +7099,11 @@
           let currSortAsc = isAdmin ? adminPsSortAsc : teamPsSortAsc;
           let currentFilters = isAdmin ? adminPsFilters : teamPsFilters;
           let renderFunc = isAdmin ? 'window.renderAdminPSTable()' : 'window.renderPSTable()';
+          let quickSearchValues = {};
+          let searchWrapper = isAdmin ? '#ps-desktop-wrapper-true' : '#ps-desktop-wrapper-false';
+          document.querySelectorAll(searchWrapper + ' .ps-quick-search').forEach(input => {
+              quickSearchValues[input.getAttribute('data-col')] = input.value;
+          });
 
           function getIcon(colKey) { return currSortCol === colKey ? (currSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕'; }
 
@@ -6590,20 +7115,23 @@
               
           psColumns.forEach(col => {
               if(!isAdmin && col.key === 'EFO') return;
+              if(!isAdmin && col.adminOnly) return;
               if(window.isColHidden('ps', col)) return; // 🌟 Skip hidden columns
+              let colID = col.id || col.key;
               let colSty = col.color ? `color:${col.color};` : "";
-              let selectedArr = currentFilters[col.key] || [];
+              let selectedArr = currentFilters[colID] || [];
               let btnText = selectedArr.length > 0 ? `<span class="text-[#00e676] font-bold">${selectedArr.length} Selected</span>` : "All";
               let btnBg = selectedArr.length > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
+              let searchVal = quickSearchValues[colID] ? ` value="${quickSearchValues[colID].replace(/"/g, '&quot;')}"` : "";
 
               html += `<th style="${colSty} overflow: visible; position: sticky; top: 0; background-color: #1e1e1e; padding: 5px; min-width: 140px; z-index: 20;">
-                  <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${col.key}')">${getIcon(col.key)}</span></div>
-                  <input type="text" data-col="${col.key}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="ps-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner">
+                  <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${colID}')">${getIcon(colID)}</span></div>
+                  <input type="text" data-col="${colID}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="ps-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
                   <div class="text-left relative">
-                      <button onclick="window.toggleFilterMenu('${col.key}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                      <button onclick="window.toggleFilterMenu('${colID}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                           ${btnText} <span class="text-[8px] ml-1">▼</span>
                       </button>
-                      <div id="filter-menu-${col.key}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-48 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-60 overflow-y-auto p-2 text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
+                      <div id="filter-menu-${colID}-${isAdmin}" class="hidden absolute left-0 top-full mt-1 w-48 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-60 overflow-y-auto p-2 text-xs font-normal text-left text-white" style="z-index: 9999;"></div>
                   </div>
               </th>`;
           });
@@ -6612,6 +7140,34 @@
 
         window.togglePSBulkAll = function(el) {
             document.querySelectorAll('.ps-bulk-cb').forEach(cb => cb.checked = el.checked);
+        };
+
+        // 🌟 COUNTER & DESELECT ALL UNTUK MOBILE VIEW
+        window.psMobileUpdateCounter = function(isAdmin) {
+            let wrapId = isAdmin ? 'ps-mobile-wrapper-true' : 'ps-mobile-wrapper-false';
+            let wrapper = document.getElementById(wrapId);
+            if(!wrapper) return;
+            let checked = wrapper.querySelectorAll('.ps-bulk-cb:checked').length;
+            let countEl = document.getElementById(`ps-mob-cb-count-${isAdmin}`);
+            let deselectBtn = document.getElementById(`ps-mob-deselect-${isAdmin}`);
+            if(countEl) {
+                if(checked > 0) {
+                    countEl.innerText = `${checked} dipilih`;
+                    countEl.classList.remove('hidden');
+                    if(deselectBtn) deselectBtn.classList.remove('hidden');
+                } else {
+                    countEl.classList.add('hidden');
+                    if(deselectBtn) deselectBtn.classList.add('hidden');
+                }
+            }
+        };
+
+        window.psMobileDeselectAll = function(isAdmin) {
+            let wrapId = isAdmin ? 'ps-mobile-wrapper-true' : 'ps-mobile-wrapper-false';
+            let wrapper = document.getElementById(wrapId);
+            if(!wrapper) return;
+            wrapper.querySelectorAll('.ps-bulk-cb').forEach(cb => cb.checked = false);
+            window.psMobileUpdateCounter(isAdmin);
         };
 
         // --- JANTUNG PS MASTER (SEDUT DATA & LUKIS) ---
@@ -6625,11 +7181,24 @@
             
             document.getElementById('ps-table-body').innerHTML = `<tr><td colspan="45" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data PS Master...</td></tr>`;
             try {
-                // 🌟 FIX: Tukar query -> fbQuery, where -> fbWhere
-                const q = fbQuery(collection(db, "ps_students"), fbWhere("Staff Name", "==", currentUser));
+                const q = fbQuery(collection(db, "ps_students"), fbWhere("Staff Name", "==", currentUser.trim()));
+
+                // 🌟 Cache-first
+                try {
+                    const cacheSnap = await getDocsFromCache(q);
+                    if(!cacheSnap.empty) {
+                        psState.data = [];
+                        cacheSnap.forEach(d => psState.data.push({ docId: d.id, ...d.data() }));
+                        await window._prefetchCRMLinksForPS(psState.data);
+                        teamPsPage = 1; window.renderPSTable();
+                    }
+                } catch(_) {}
+
+                // 🌟 Background server sync
                 const snap = await getDocs(q);
-                
-                psState.data = []; snap.forEach(doc => psState.data.push({ docId: doc.id, ...doc.data() }));
+                psState.data = [];
+                snap.forEach(d => psState.data.push({ docId: d.id, ...d.data() }));
+                await window._prefetchCRMLinksForPS(psState.data);
                 teamPsPage = 1; window.renderPSTable();
             } catch(e) { alert("Gagal tarik data PS: " + e.message); }
         };
@@ -6646,29 +7215,57 @@
             
             document.getElementById('admin-ps-table-body').innerHTML = `<tr><td colspan="45" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data PS Master (Semua Staf)...</td></tr>`;
             try {
-                const snap = await getDocs(collection(db, "ps_students"));
-                psState.adminData = []; 
-                snap.forEach(doc => psState.adminData.push({ docId: doc.id, ...doc.data() }));
-                
-                // 🌟 MAGIK BARU: OTAK KALENDAR UNTUK SUSUN TIMESTAMP DENGAN TEPAT
-                psState.adminData.sort((a, b) => {
-                    // Tarik nilai timestamp (dari Excel atau dari butang upload)
-                    let nilaiA = a["Timestamp"] || a["Timestamp Masuk"] || "";
-                    let nilaiB = b["Timestamp"] || b["Timestamp Masuk"] || "";
+                const col_ = collection(db, "ps_students");
 
-                    // Tukar jadi format masa sebenar komputer (milliseconds)
-                    // (Kalau kotak tu kosong, kita letak 0 je supaya dia jatuh ke bawah sekali)
-                    let tarikhA = new Date(nilaiA).getTime() || 0;
-                    let tarikhB = new Date(nilaiB).getTime() || 0;
-
-                    // Susun secara Descending (Terbaru duduk atas, Terlama duduk bawah)
-                    return tarikhB - tarikhA; 
+                const sortFn = arr => arr.sort((a, b) => {
+                    let tA = new Date(a["Timestamp"] || a["Timestamp Masuk"] || "").getTime() || 0;
+                    let tB = new Date(b["Timestamp"] || b["Timestamp Masuk"] || "").getTime() || 0;
+                    return tB - tA;
                 });
 
-                adminPsPage = 1; 
+                // 🌟 Cache-first
+                try {
+                    const cacheSnap = await getDocsFromCache(col_);
+                    if(!cacheSnap.empty) {
+                        psState.adminData = [];
+                        cacheSnap.forEach(doc => psState.adminData.push({ docId: doc.id, ...doc.data() }));
+                        sortFn(psState.adminData);
+                        await window._prefetchCRMLinksForPS(psState.adminData);
+                        adminPsPage = 1; window.renderAdminPSTable(); window.populatePSCopyDropdown();
+                    }
+                } catch(_) {}
+
+                // 🌟 Background server sync
+                const snap = await getDocs(col_);
+                psState.adminData = [];
+                snap.forEach(doc => psState.adminData.push({ docId: doc.id, ...doc.data() }));
+                sortFn(psState.adminData);
+                await window._prefetchCRMLinksForPS(psState.adminData);
+                adminPsPage = 1;
                 window.renderAdminPSTable();
                 window.populatePSCopyDropdown();
             } catch(e) { alert("Gagal tarik data PS Admin: " + e.message); }
+        };
+
+        // 🌟 Fetch semua CRM records yang ada Linked PS DocID untuk rekod PS yang dipass masuk
+        // Hasil masuk crmState + rebuildCRMLookup → crmByPsDocId terus ready walau tab CRM belum dibuka
+        window._prefetchCRMLinksForPS = async function(psArr) {
+            if(!psArr || psArr.length === 0) return;
+            let docIds = psArr.map(r => r.docId).filter(Boolean);
+            try {
+                for(let i = 0; i < docIds.length; i += 30) {
+                    const q = fbQuery(collection(db, "crm_leads"), fbWhere("Linked PS DocID", "in", docIds.slice(i, i + 30)));
+                    const snap = await getDocs(q);
+                    snap.forEach(d => {
+                        let existing = [...(crmState.adminData||[]), ...(crmState.data||[])].find(r => r.docId === d.id);
+                        if(!existing) {
+                            let rec = { docId: d.id, ...d.data() };
+                            crmState.adminData.push(rec);
+                        }
+                    });
+                }
+                window.rebuildCRMLookup();
+            } catch(e) { console.error("Gagal prefetch CRM links:", e); }
         };
 
         // Pembalut (Wrapper) untuk jadual & Butang Page
@@ -6698,7 +7295,37 @@
         // --- RENDER JADUAL ---
         function _renderPSTableGeneric(isAdmin) {
             let headId = isAdmin ? 'admin-ps-head' : 'team-ps-head';
-            document.getElementById(headId).innerHTML = window.generatePSHeader(isAdmin); // 🌟 Regen header
+            
+            // 🌟 FIX: Simpan nilai search box + FOCUS SEBELUM header dijanakan semula
+            let wrapperId = isAdmin ? 'ps-desktop-wrapper-true' : 'ps-desktop-wrapper-false';
+            let savedSearchValues = {};
+            let activeColKey = null;
+            let cursorPos = 0;
+            let searchBoxesBefore = document.querySelectorAll(`#${wrapperId} .ps-quick-search`);
+            searchBoxesBefore.forEach(input => {
+                let colKey = input.getAttribute('data-col');
+                if (colKey && input.value.trim() !== "") {
+                    savedSearchValues[colKey] = input.value;
+                }
+                if (document.activeElement === input) {
+                    activeColKey = colKey;
+                    cursorPos = input.selectionStart || input.value.length;
+                }
+            });
+            
+            if (document.getElementById(headId).innerHTML.trim() === "") {
+                document.getElementById(headId).innerHTML = window.generatePSHeader(isAdmin);
+            }
+            
+            // 🌟 FIX: Pulihkan nilai search box + FOCUS SELEPAS header dijanakan semula
+            let searchBoxesAfter = document.querySelectorAll(`#${wrapperId} .ps-quick-search`);
+            searchBoxesAfter.forEach(input => {
+                let colKey = input.getAttribute('data-col');
+                if (colKey && savedSearchValues[colKey] && input.value !== savedSearchValues[colKey]) {
+                    input.value = savedSearchValues[colKey];
+                }
+            });
+            
             let stateData = isAdmin ? psState.adminData : psState.data;
             let filters = isAdmin ? adminPsFilters : teamPsFilters;
             let sortCol = isAdmin ? adminPsSortCol : teamPsSortCol;
@@ -6720,7 +7347,6 @@
             }
 
             // ⚡ CARIAN SEARCH BOX PS MASTER
-            let wrapperId = isAdmin ? 'ps-desktop-wrapper-true' : 'ps-desktop-wrapper-false';
             let searchBoxes = document.querySelectorAll(`#${wrapperId} .ps-quick-search`);
             searchBoxes.forEach(input => {
                 let query = input.value.toLowerCase().trim();
@@ -6728,6 +7354,12 @@
                 if (query !== "") {
                     filtered = filtered.filter(r => {
                         let rawVal = r[colKey];
+                        // 🌟 FIX: TO FU, History FU, FU Date, FU Time — ambil dari CRM (sama seperti display dalam jadual)
+                        let crmRec = window.crmByPsDocId ? window.crmByPsDocId[r.docId] : null;
+                        if (colKey === 'TO FU') rawVal = crmRec ? (crmRec["TO FU"] || "") : rawVal;
+                        if (colKey === 'Remark 2') rawVal = crmRec ? (crmRec["HISTORY FU"] || crmRec["history_fu"] || "") : rawVal;
+                        if (colKey === 'FU Date') rawVal = crmRec ? (crmRec["FOLLOW UP (DATE)"] || crmRec["fu_date"] || "") : rawVal;
+                        if (colKey === 'FU Time') rawVal = crmRec ? (crmRec["FOLLOW UP (TIME)"] || crmRec["fu_time"] || "") : rawVal;
                         if (colKey === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = r["Name"];
                         if (colKey === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = r["Phone"] || r["phone"] || r["Contact"] || r["contact"];
                         if (colKey === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = r["Refferal"] || r["referral"] || r["refferal"];
@@ -6765,6 +7397,7 @@
                 
                 psColumns.forEach(col => {
                     if(!isAdmin && col.key === 'EFO') return;
+                    if(!isAdmin && col.adminOnly) return;
                     if(window.isColHidden('ps', col)) return; // 🌟 Skip hidden
                     
                     // 🌟 Imported Date / Imported Time — parse dari Timestamp Masuk
@@ -6775,10 +7408,10 @@
                         return;
                     }
 
-                    let rawVal = row[col.key];
-                    if (col.key === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = row["Name"]; }
-                    if (col.key === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"]; }
-                    if (col.key === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = row["Refferal"] || row["referral"] || row["refferal"]; }
+                    let rawVal = window.formatDisplayValue(row[col.key]);
+                    if (col.key === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = window.formatDisplayValue(row["Name"]); }
+                    if (col.key === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = window.formatDisplayValue(row["Phone"] || row["phone"] || row["Contact"] || row["contact"]); }
+                    if (col.key === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = window.formatDisplayValue(row["Refferal"] || row["referral"] || row["refferal"]); }
 
                     // 🌟 TO FU, History FU, FU Date, FU Time — ambik dari CRM Modal (linked CRM record)
                     let crmRec = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
@@ -7260,27 +7893,38 @@
         };
 
         // 🌟 1. FUNGSI MENU (Dicuci dari ralat 'Space')
-        window.toggleFilterMenu = function(colKey, isAdmin, btnElement) {
-            let menu = document.getElementById(`filter-menu-${colKey}-${isAdmin}`);
+        window.toggleFilterMenu = function(colKey, isAdmin, btnElement, isMobile = false) {
+            let menuId = isMobile ? `m-filter-menu-${colKey}-${isAdmin}` : `filter-menu-${colKey}-${isAdmin}`;
+            let menu = document.getElementById(menuId);
+            if(!menu) return;
             let isHidden = menu.classList.contains('hidden');
             
             document.querySelectorAll('th').forEach(th => th.style.zIndex = (th.classList.contains('sticky-col') ? '30' : '20'));
             document.querySelectorAll('[id^="filter-menu-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="m-filter-menu-"]').forEach(el => el.classList.add('hidden'));
 
             if(isHidden) {
                 menu.classList.remove('hidden');
-                if(btnElement) btnElement.closest('th').style.zIndex = '999';
+                if(btnElement) { let closestTh = btnElement.closest('th'); if(closestTh) closestTh.style.zIndex = '999'; }
 
                 let stateData = isAdmin ? psState.adminData : psState.data;
                 let currentFilters = isAdmin ? adminPsFilters : teamPsFilters;
                 let selectedArr = currentFilters[colKey] || [];
 
                 let uniques = [...new Set(stateData.map(row => {
-                    let rawVal = row[colKey];
-                    if (colKey === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Name"];
-                    if (colKey === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"];
-                    if (colKey === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Refferal"] || row["referral"] || row["refferal"];
-                    if (colKey === 'NAME' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["name"];
+                    let matchedCol = (typeof psColumns !== 'undefined' ? psColumns : []).find(c => (c.id || c.key) === colKey) || (typeof enrollColumns !== 'undefined' ? enrollColumns : []).find(c => (c.id || c.key) === colKey);
+                    let realKey = matchedCol ? matchedCol.key : colKey;
+                    let rawVal = row[realKey];
+                    // 🌟 FIX: TO FU, History FU, FU Date, FU Time — ambil dari CRM (sama seperti display dalam jadual)
+                    let crmRec = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
+                    if (realKey === 'TO FU') rawVal = crmRec ? (crmRec["TO FU"] || "") : rawVal;
+                    if (realKey === 'Remark 2') rawVal = crmRec ? (crmRec["HISTORY FU"] || crmRec["history_fu"] || "") : rawVal;
+                    if (realKey === 'FU Date') rawVal = crmRec ? (crmRec["FOLLOW UP (DATE)"] || crmRec["fu_date"] || "") : rawVal;
+                    if (realKey === 'FU Time') rawVal = crmRec ? (crmRec["FOLLOW UP (TIME)"] || crmRec["fu_time"] || "") : rawVal;
+                    if (realKey === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Name"];
+                    if (realKey === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"];
+                    if (realKey === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Refferal"] || row["referral"] || row["refferal"];
+                    if (realKey === 'NAME' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["name"];
                     return (rawVal !== undefined && rawVal !== null && String(rawVal).trim() !== "") ? String(rawVal).trim() : "-";
                 }))].sort();
 
@@ -7289,12 +7933,12 @@
                 let html = `
                 <div class="mb-2 pb-2 border-b border-[#555] flex flex-col gap-2 sticky top-0 bg-[#2a2a2a] z-10">
                     <div class="flex justify-between">
-                        <button onclick="window.clearExcelFilter('${colKey}', ${isAdmin})" class="text-[#ff5252] hover:text-red-400 font-bold px-2 py-1 rounded hover:bg-[#ff525220]">Clear</button>
-                        <button onclick="window.applyExcelFilter('${colKey}', ${isAdmin})" class="text-[#00e676] hover:text-green-400 font-bold px-2 py-1 rounded hover:bg-[#00e67620]">Apply</button>
+                        <button onclick="window.clearExcelFilter('${colKey}', ${isAdmin}, ${isMobile})" class="text-[#ff5252] hover:text-red-400 font-bold px-2 py-1 rounded hover:bg-[#ff525220]">Clear</button>
+                        <button onclick="window.applyExcelFilter('${colKey}', ${isAdmin}, ${isMobile})" class="text-[#00e676] hover:text-green-400 font-bold px-2 py-1 rounded hover:bg-[#00e67620]">Apply</button>
                     </div>
-                    <input type="text" placeholder="Search..." oninput="window.searchFilterOptions(this, '${colKey}', ${isAdmin})" class="w-full bg-[#111] text-white p-1.5 rounded border border-[#555] outline-none text-xs focus:border-[#00e676]" onclick="event.stopPropagation()">
+                    <input type="text" placeholder="Search..." oninput="window.searchFilterOptions(this, '${colKey}', ${isAdmin}, ${isMobile})" class="w-full bg-[#111] text-white p-1.5 rounded border border-[#555] outline-none text-xs focus:border-[#00e676]" onclick="event.stopPropagation()">
                     <label class="flex items-start gap-2 mt-1 cursor-pointer p-1.5 rounded bg-[#222] hover:bg-[#333] transition border border-[#00c6ff] shadow-[0_0_5px_rgba(0,198,255,0.3)]">
-                        <input type="checkbox" onchange="window.toggleSelectAll(this, '${colKey}', ${isAdmin})" class="mt-0.5 accent-[#00c6ff]" ${isAllChecked}> 
+                        <input type="checkbox" onchange="window.toggleSelectAll(this, '${colKey}', ${isAdmin}, ${isMobile})" class="mt-0.5 accent-[#00c6ff]" ${isAllChecked}> 
                         <span class="break-words w-full text-[#00c6ff] font-bold">Select All</span>
                     </label>
                 </div>
@@ -7315,9 +7959,10 @@
         };
 
         // 🌟 2. LOGIK TICK SEMUA
-        window.toggleSelectAll = function(selectAllCheckbox, colKey, isAdmin) {
+        window.toggleSelectAll = function(selectAllCheckbox, colKey, isAdmin, isMobile = false) {
             let isChecked = selectAllCheckbox.checked;
-            let menu = document.getElementById(`filter-menu-${colKey}-${isAdmin}`);
+            let menuId = isMobile ? `m-filter-menu-${colKey}-${isAdmin}` : `filter-menu-${colKey}-${isAdmin}`;
+            let menu = document.getElementById(menuId);
             
             // Tarik kotak checkbox yang kita lukis kat bawah dia je
             let checkboxes = menu.querySelectorAll('.filter-cb');
@@ -7331,8 +7976,10 @@
         };
 
         // 🌟 3. LOGIK APPLY (PS MASTER)
-        window.applyExcelFilter = function(colKey, isAdmin) {
-            let menu = document.getElementById(`filter-menu-${colKey}-${isAdmin}`);
+        window.applyExcelFilter = function(colKey, isAdmin, isMobile = false) {
+            let menuId = isMobile ? `m-filter-menu-${colKey}-${isAdmin}` : `filter-menu-${colKey}-${isAdmin}`;
+            let menu = document.getElementById(menuId);
+            if(!menu) return;
             let checkboxes = menu.querySelectorAll('.filter-cb:checked');
             let selected = Array.from(checkboxes).map(cb => cb.value);
             
@@ -7355,11 +8002,12 @@
         };
 
         // 🌟 LOGIK CLEAR (PS MASTER) - (Kena letak kalau takde lagi)
-        window.clearExcelFilter = function(colKey, isAdmin) {
+        window.clearExcelFilter = function(colKey, isAdmin, isMobile = false) {
             let filtersObj = isAdmin ? adminPsFilters : teamPsFilters;
             filtersObj[colKey] = []; // Kosongkan filter
             
-            let menu = document.getElementById(`filter-menu-${colKey}-${isAdmin}`);
+            let menuId = isMobile ? `m-filter-menu-${colKey}-${isAdmin}` : `filter-menu-${colKey}-${isAdmin}`;
+            let menu = document.getElementById(menuId);
             if(menu) menu.classList.add('hidden'); // Tutup menu
 
             // Wajib lukis balik Header
@@ -7375,9 +8023,11 @@
         };
 
         // 🌟 4. LOGIK SEARCH
-        window.searchFilterOptions = function(inputElem, colKey, isAdmin) {
+        window.searchFilterOptions = function(inputElem, colKey, isAdmin, isMobile = false) {
             let filterText = inputElem.value.toLowerCase();
-            let menu = document.getElementById(`filter-menu-${colKey}-${isAdmin}`);
+            let menuId = isMobile ? `m-filter-menu-${colKey}-${isAdmin}` : `filter-menu-${colKey}-${isAdmin}`;
+            let menu = document.getElementById(menuId);
+            if(!menu) return;
             let labels = menu.querySelectorAll('label.filter-item'); 
 
             labels.forEach(label => {
@@ -7404,12 +8054,26 @@
             if(isHidden) {
                 menu.classList.remove('hidden');
                 // BOOST Z-INDEX SUPAYA DUDUK PALING ATAS!
-                if(btnElement) btnElement.closest('th').style.zIndex = '999';
+                if(btnElement) { let closestTh = btnElement.closest('th'); if(closestTh) closestTh.style.zIndex = '999'; }
 
                 let stateData = isAdmin ? crmState.adminData : crmState.data;
                 let currentFilters = isAdmin ? adminFilters : teamFilters;
                 let selectedArr = currentFilters[colKey] || [];
-                let uniques = [...new Set(stateData.map(row => { let v = row[colKey]; return (v !== undefined && v !== null && String(v).trim() !== "") ? String(v).trim() : "-"; }))].sort();
+
+                // Detect kalau column ni adalah Imported Date / Imported Time
+                let matchedCol = crmColumns.find(c => (c.id || c.key) === colKey);
+                let realKey = matchedCol ? matchedCol.key : colKey;
+                let isImpDate = matchedCol && matchedCol.isImportDate;
+                let isImpTime = matchedCol && matchedCol.isImportTime;
+
+                let uniques = [...new Set(stateData.map(row => {
+                    let v = row[realKey];
+                    if(isImpDate || isImpTime) {
+                        let parsed = window.parseTimestampMasuk(v);
+                        return isImpDate ? parsed.date : parsed.time;
+                    }
+                    return (v !== undefined && v !== null && String(v).trim() !== "") ? String(v).trim() : "-";
+                }))].sort();
                 let isAllChecked = (selectedArr.length > 0 && selectedArr.length === uniques.length) ? "checked" : "";
 
                 let html = `
@@ -7465,11 +8129,11 @@
             if(isAdmin) { 
                 adminCrmPage = 1; 
                 document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
-                window.renderAdminCRMTable(); 
+                window.renderAdminCRMTable(true); 
             } else { 
                 teamCrmPage = 1; 
                 document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false);
-                window.renderCRMTable(); 
+                window.renderCRMTable(true); 
             }
         };
 
@@ -7485,11 +8149,11 @@
             if(isAdmin) { 
                 adminCrmPage = 1; 
                 document.getElementById('admin-crm-head').innerHTML = window.generateCRMHeader(true);
-                window.renderAdminCRMTable(); 
+                window.renderAdminCRMTable(true); 
             } else { 
                 teamCrmPage = 1; 
                 document.getElementById('team-crm-head').innerHTML = window.generateCRMHeader(false);
-                window.renderCRMTable(); 
+                window.renderCRMTable(true); 
             }
         };
 
@@ -7513,10 +8177,10 @@
                 // Buang dari memori jadual dan lukis semula serta merta
                 if(isAdmin) {
                     crmState.adminData = crmState.adminData.filter(row => row.docId !== docId);
-                    window.renderAdminCRMTable();
+                    window.renderAdminCRMTable(true);
                 } else {
                     crmState.data = crmState.data.filter(row => row.docId !== docId);
-                    window.renderCRMTable();
+                    window.renderCRMTable(true);
                 }
                 alert("✅ Rekod CRM berjaya dihapuskan!");
             } catch(e) {
@@ -7691,6 +8355,11 @@
                         count++;
                     }
                 }
+
+                // 🌟 FIX: UPDATE KAUNTER SUPAYA ADD LEAD SETERUSNYA TAK BERTINDIH
+                try {
+                    await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: semuaLeads.length }, { merge: true });
+                } catch(e) { console.error("Gagal kemaskini kaunter:", e); }
 
                 alert(`✅ PUMPANG! Berjaya menyusun dan mengemaskini Lead ID untuk ${count} rekod lama ikut turutan Tarikh & Masa.`);
                 
@@ -8300,7 +8969,27 @@
                         <div class="text-gray-300 text-xs truncate mb-1.5 flex items-center gap-1">
                              ${waBtnHtml}
                         </div>
-                        <div class="text-[#ff9800] text-xs font-bold truncate">🎯 ${row["TO FU"] || "-"}</div>
+                        
+                        ${(function() {
+                            let crmTofu = row["TO FU"] || "";
+                            let cbSection = "";
+                            if(crmTofu && crmTofu !== "-") {
+                                let tasks = crmTofu.split('\n').filter(t => t.trim() !== "");
+                                tasks.forEach((task, tIdx) => {
+                                    let isDone = task.trim().startsWith('✅');
+                                    let displayTask = isDone ? task.replace(/^✅\s*/, '') : task;
+                                    let cbId = `crm-mob-tofu-cb-${row.docId}-${tIdx}`;
+                                    cbSection += `
+                                    <div class="flex items-center gap-2 mb-2 bg-[#181818] border ${isDone ? 'border-[#333]' : 'border-[#2a4a2a]'} rounded-lg px-2.5 py-2 transition">
+                                        <input type="checkbox" id="${cbId}" ${isDone ? 'checked' : ''} 
+                                            class="w-4 h-4 accent-[#00e676] cursor-pointer shrink-0"
+                                            onchange="window.toggleMultilineTofu('${row.docId}','crm',${isAdmin},${tIdx},this.checked)">
+                                        <label for="${cbId}" class="text-[11px] font-bold cursor-pointer select-none flex-1 ${isDone ? 'line-through text-gray-500' : 'text-[#ff9800]'}">${displayTask}</label>
+                                    </div>`;
+                                });
+                            }
+                            return cbSection || `<div class="text-[#ff9800] text-xs font-bold truncate mb-2">🎯 -</div>`;
+                        })()}
                         
                         <!-- PANGGIL UI PRELOVED LEADS -->
                         ${prelovedUI}
@@ -8405,14 +9094,14 @@
         
         // 🌟 Hook Auto-Refresh (Supaya mobile view pun update bila data di-edit)
         const asalRenderCRM = window.renderCRMTable;
-        window.renderCRMTable = function() {
-            asalRenderCRM();
+        window.renderCRMTable = function(regenHeader = false) {
+            asalRenderCRM(regenHeader);
             window.renderCRMMobileList(false);
         };
         
         const asalRenderAdminCRM = window.renderAdminCRMTable;
-        window.renderAdminCRMTable = function() {
-            asalRenderAdminCRM();
+        window.renderAdminCRMTable = function(regenHeader = false) {
+            asalRenderAdminCRM(regenHeader);
             window.renderCRMMobileList(true);
         };
 
@@ -8548,6 +9237,7 @@
                 } catch(e) { return defVal; }
             };
 
+            let currentFilters = isAdmin ? adminPsFilters : teamPsFilters;
             let mapped = stateArr.filter(row => {
                 let name = String(row["Student Name"] || row["Name"] || "").toLowerCase();
                 let contact = String(row["Phone Number"] || row["Phone"] || row["Contact"] || row["contact"] || "").toLowerCase();
@@ -8558,6 +9248,26 @@
                 if(window.psMobileFilterState === 'Absent' && att !== "absent") return false;
                 if(window.psMobileFilterState === 'Half' && att !== "half") return false;
                 if(window.psMobileFilterState === 'AttendTakEnroll' && !(att === "attended" && enr === "no")) return false;
+                
+                // Guna Excel Filters (cth: Class, Staff Name)
+                for(let colKey in currentFilters) {
+                    let selectedArr = currentFilters[colKey];
+                    if(!selectedArr || selectedArr.length === 0) continue;
+                    
+                    let matchedCol = (typeof psColumns !== 'undefined' ? psColumns : []).find(c => (c.id || c.key) === colKey) || (typeof enrollColumns !== 'undefined' ? enrollColumns : []).find(c => (c.id || c.key) === colKey);
+                    let realKey = matchedCol ? matchedCol.key : colKey;
+                    let rawVal = row[realKey];
+                    
+                    if (realKey === 'Student Name' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Name"];
+                    if (realKey === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Phone"] || row["phone"] || row["Contact"] || row["contact"];
+                    if (realKey === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["Refferal"] || row["referral"] || row["refferal"];
+                    if (realKey === 'NAME' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) rawVal = row["name"];
+                    
+                    let finalVal = (rawVal !== undefined && rawVal !== null && String(rawVal).trim() !== "") ? String(rawVal).trim() : "-";
+                    
+                    if(!selectedArr.includes(finalVal)) return false;
+                }
+                
                 return true;
             }).map(row => {
                 let crmRec = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
@@ -8587,6 +9297,18 @@
 
             // 4. Render 100 Data
             let html = "";
+            let activeFiltersSummary = [];
+            for(let key in currentFilters) {
+                if(currentFilters[key] && currentFilters[key].length > 0) {
+                    activeFiltersSummary.push(`<span class="text-[#00e676] font-bold">${key}:</span> <span class="text-gray-300 break-words">${currentFilters[key].join(', ')}</span>`);
+                }
+            }
+            if (activeFiltersSummary.length > 0) {
+                html += `<div class="mx-3 mt-1 mb-3 p-2 bg-[#222] border border-[#444] rounded-lg text-[10px] shadow-sm leading-relaxed">
+                    <div class="text-[#00c6ff] font-bold mb-1 border-b border-[#333] pb-1 uppercase tracking-wider">Tapis Aktif</div>
+                    ${activeFiltersSummary.join('<div class="my-0.5"></div>')}
+                </div>`;
+            }
             mapped.slice(0, 100).forEach(item => {
                 let row = item.row, actualIdx = stateArr.indexOf(row);
                 let name = (row["Student Name"] || row["Name"] || "Unknown").substring(0, 18);
@@ -8619,18 +9341,23 @@
                     ? `text-decoration:line-through; color:#555; font-style:italic;`
                     : `color:#00e676; font-weight:bold;`;
 
-                // Checkbox satu — label = TO FU tu sendiri, tick = done
+                // Checkbox — label = TO FU (multiline support)
                 let cbSection = "";
                 if(crmTofu && crmTofu !== "-") {
-                    let cbId = `ps-mob-tofu-cb-${row.docId}`;
-                    cbSection = `
-                    <div class="flex items-center gap-2 mb-2 bg-[#181818] border ${tofuDone ? 'border-[#333]' : 'border-[#2a4a2a]'} rounded-lg px-2.5 py-2 transition">
-                        <input type="checkbox" id="${cbId}" ${tofuDone ? 'checked' : ''} 
-                            class="w-4 h-4 accent-[#00e676] cursor-pointer shrink-0"
-                            onchange="window.psMobileTofuDone('${row.docId}','${crmDocId}',${isAdmin},this)">
-                        <label for="${cbId}" class="text-[11px] font-bold cursor-pointer select-none flex-1 ${tofuDone ? 'line-through text-gray-500' : 'text-[#00e676]'}">${tofuDisplay}</label>
-                        ${tofuDone ? '<span class="text-[9px] text-gray-500 shrink-0">✅ Settled</span>' : '<span class="text-[9px] text-gray-600 shrink-0">→ CRM History</span>'}
-                    </div>`;
+                    let tasks = crmTofu.split('\n').filter(t => t.trim() !== "");
+                    tasks.forEach((task, tIdx) => {
+                        let isDone = task.trim().startsWith('✅');
+                        let displayTask = isDone ? task.replace(/^✅\s*/, '') : task;
+                        let cbId = `ps-mob-tofu-cb-${row.docId}-${tIdx}`;
+                        cbSection += `
+                        <div class="flex items-center gap-2 mb-2 bg-[#181818] border ${isDone ? 'border-[#333]' : 'border-[#2a4a2a]'} rounded-lg px-2.5 py-2 transition">
+                            <input type="checkbox" id="${cbId}" ${isDone ? 'checked' : ''} 
+                                class="w-4 h-4 accent-[#00e676] cursor-pointer shrink-0"
+                                onchange="window.toggleMultilineTofu('${crmDocId}','ps',${isAdmin},${tIdx},this.checked)">
+                            <label for="${cbId}" class="text-[11px] font-bold cursor-pointer select-none flex-1 ${isDone ? 'line-through text-gray-500' : 'text-[#00e676]'}">${displayTask}</label>
+                            ${isDone ? '<span class="text-[9px] text-gray-500 shrink-0">✅ Settled</span>' : '<span class="text-[9px] text-gray-600 shrink-0">→ CRM</span>'}
+                        </div>`;
+                    });
                 } else if(!crmDocId) {
                     cbSection = `<div class="text-[10px] text-gray-500 italic mb-2">⚠️ Belum link CRM. Tekan ✏️ untuk link.</div>`;
                 }
@@ -8638,7 +9365,7 @@
                 html += `
                 <div class="border-b border-[#222] hover:bg-[#1a1a1a] transition">
                 <div class="flex items-start p-3 relative pr-8">
-                    <input type="checkbox" class="ps-bulk-cb accent-purple-500 w-5 h-5 absolute top-3 right-2" value="${row.docId}">
+                    <input type="checkbox" class="ps-bulk-cb accent-purple-500 w-5 h-5 absolute top-3 right-2" value="${row.docId}" onchange="window.psMobileUpdateCounter(${isAdmin})">
                     <div class="flex flex-col items-center mr-3 shrink-0">
                         <div class="w-[50px] h-[50px] rounded-full bg-gradient-to-br from-[#128C7E] to-[#25D366] text-white flex items-center justify-center font-bold text-xl">${name[0]}</div>
                         ${staffBadge}
@@ -8669,6 +9396,64 @@
                 </div>`;
             });
             listContainer.innerHTML = html || `<div class="text-center p-10 text-gray-500">Tiada hasil.</div>`;
+            window.psMobileUpdateCounter(isAdmin);
+        };
+
+        // Multiline TO FU Toggle Function
+        window.toggleMultilineTofu = async function(crmDocId, srcType, isAdmin, lineIdx, isChecked) {
+            if(!crmDocId) { alert("Sila link CRM dahulu."); return; }
+            
+            let crmRec = null;
+            [{ arr: crmState.adminData }, { arr: crmState.data }].forEach(grp => {
+                if(!crmRec && grp.arr) crmRec = grp.arr.find(r => r.docId === crmDocId);
+            });
+            if(!crmRec) { alert("CRM record tak jumpa."); return; }
+            
+            let tasks = (crmRec["TO FU"] || "").split('\n').filter(t => t.trim() !== "");
+            if(lineIdx >= tasks.length) return;
+            
+            let task = tasks[lineIdx].trim();
+            let wasDone = task.startsWith('✅');
+            
+            if(isChecked && !wasDone) {
+                tasks[lineIdx] = '✅ ' + task;
+            } else if(!isChecked && wasDone) {
+                tasks[lineIdx] = task.replace(/^✅\s*/, '');
+            }
+            
+            let newTofu = tasks.join('\n');
+            let allDone = tasks.length > 0 && tasks.every(t => t.trim().startsWith('✅'));
+            
+            let todayStr = new Date().toISOString().split('T')[0];
+            let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+            let cleanTask = task.replace(/^✅\s*/, '');
+            let histStr = `[${todayStr} ${timeStr}] Action: ${isChecked ? 'Settle' : 'Undo'} Task "${cleanTask}"`;
+            
+            let currentHistory = crmRec["HISTORY FU"] || crmRec["history_fu"] || "";
+            let newHist = currentHistory ? (histStr + "\n" + currentHistory) : histStr;
+            
+            let updateData = {
+                "TO FU": newTofu,
+                "TO FU DONE": allDone,
+                "HISTORY FU": newHist
+            };
+            
+            try {
+                await updateDoc(doc(db, "crm_leads", crmDocId), updateData);
+                
+                [crmState.adminData, crmState.data].forEach(arr => {
+                    if(!arr) return;
+                    let i = arr.findIndex(r => r.docId === crmDocId);
+                    if(i > -1) arr[i] = { ...arr[i], ...updateData };
+                });
+                
+                if(srcType === 'ps') { window.renderPSMobileList(isAdmin); }
+                else if(srcType === 'enroll') { window.renderEnrollMobileList(isAdmin); }
+                else if(srcType === 'crm') { window.renderCRMMobileList(isAdmin); }
+            } catch(e) {
+                console.error("Gagal update multiline TO FU:", e);
+                alert("Gagal update CRM!");
+            }
         };
 
         // 🌟 Format tarikh & masa semasa (DD/MM/YYYY HH:MM) untuk entry History FU
@@ -8685,7 +9470,6 @@
             el.style.height = (el.scrollHeight) + 'px';
         };
 
-        // 🌟 Tick checkbox TO FU → append ke CRM HISTORY FU + set TO FU DONE: true
         // Untick → set TO FU DONE: false (tapi HISTORY FU tak diubah)
         // Kalau TO FU bertukar → TO FU DONE auto reset kepada false (sebab task lain)
         window.psMobileTofuDone = async function(psDocId, crmDocId, isAdmin, cbEl) {
@@ -8827,8 +9611,8 @@
                 }
             });
             // Tembak jadual suruh lukis balik
-            if(isAdmin) { adminCrmPage = 1; window.renderAdminCRMTable(); }
-            else { teamCrmPage = 1; window.renderCRMTable(); }
+            if(isAdmin) { adminCrmPage = 1; window.renderAdminCRMTable(true); }
+            else { teamCrmPage = 1; window.renderCRMTable(true); }
         };
 
         window.setPSDesktopFilter = function(type, isAdmin) {
@@ -9016,6 +9800,11 @@
                 if (i < allChatTexts.length - 1) await new Promise(r => setTimeout(r, 4500));
             }
             
+            // 🌟 FIX: UPDATE KAUNTER SUPAYA ADD LEAD SETERUSNYA TAK BERTINDIH
+            try {
+                await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: maxLeadNumber }, { merge: true });
+            } catch(e) { console.error("Gagal kemaskini kaunter:", e); }
+
             let errorTxt = gagal > 0 ? ` (${gagal} Gagal - Punca: ${lastError})` : "";
             status.innerText = `✅ SIAP! ${berjaya} Fail Berjaya Ditambah Sebagai Baru.${errorTxt}`;
             status.style.color = gagal === 0 ? "#00e676" : "#ff5252";
@@ -9119,9 +9908,17 @@
             let container = document.getElementById('hunt-staff-list');
             container.innerHTML = `<div class="text-center p-10 text-[#ffeb3b]">⏳ Mencari leads untuk dihantui...</div>`;
             try {
-                const q = fbQuery(collection(db, "hunt_cs"), fbWhere("Staff Name", "==", currentUser));
+                let queryNames = [currentUser];
+                if (typeof senaraiStafAdmin !== 'undefined') {
+                    let matched = senaraiStafAdmin.find(s => s.name === currentUser);
+                    if (matched && matched.fullName) {
+                        queryNames.push(matched.fullName);
+                        queryNames.push(matched.fullName.toUpperCase());
+                        queryNames.push(matched.fullName.toUpperCase() + " ");
+                    }
+                }
+                const q = fbQuery(collection(db, "hunt_cs"), fbWhere("Staff Name", "in", [...new Set(queryNames)]));
                 const snap = await getDocs(q);
-                huntStaffState = [];
                 snap.forEach(doc => huntStaffState.push({ docId: doc.id, ...doc.data() }));
                 
                 // Susunan Pintar: IN PROGRESS duduk atas. DONE & INVALID mendap ke bawah.
@@ -9264,6 +10061,11 @@
           let currSortAsc = isAdmin ? adminEnrollSortAsc : teamEnrollSortAsc;
           let currentFilters = isAdmin ? adminEnrollFilters : teamEnrollFilters;
           let renderFunc = isAdmin ? 'window.renderAdminEnrollTable()' : 'window.renderEnrollTable()';
+          let quickSearchValues = {};
+          let searchWrapper = isAdmin ? '#enroll-desktop-wrapper-true' : '#enroll-desktop-wrapper-false';
+          document.querySelectorAll(searchWrapper + ' .enroll-quick-search').forEach(input => {
+              quickSearchValues[input.getAttribute('data-col')] = input.value;
+          });
           
           function getIcon(colKey) { return currSortCol === colKey ? (currSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕'; }
 
@@ -9303,7 +10105,27 @@
             if (!forceRefresh && enrollState.data.length > 0) { window.renderEnrollTable(); return; }
             document.getElementById('enroll-table-body').innerHTML = `<tr><td colspan="30" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data...</td></tr>`;
             try {
-                const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Staff Name", "==", currentUser));
+                let queryNames = [currentUser];
+                if (typeof senaraiStafAdmin !== 'undefined') {
+                    let matched = senaraiStafAdmin.find(s => s.name === currentUser);
+                    if (matched && matched.fullName) {
+                        queryNames.push(matched.fullName);
+                        queryNames.push(matched.fullName.toUpperCase());
+                        queryNames.push(matched.fullName.toUpperCase() + " ");
+                    }
+                }
+                const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Staff Name", "in", [...new Set(queryNames)]));
+
+                // 🌟 Cache-first
+                try {
+                    const cacheSnap = await getDocsFromCache(q);
+                    if(!cacheSnap.empty) {
+                        enrollState.data = [];
+                        cacheSnap.forEach(doc => enrollState.data.push({ docId: doc.id, ...doc.data() }));
+                        teamEnrollPage = 1; window.renderEnrollTable();
+                    }
+                } catch(_) {}
+
                 const snap = await getDocs(q);
                 enrollState.data = []; snap.forEach(doc => enrollState.data.push({ docId: doc.id, ...doc.data() }));
                 teamEnrollPage = 1; window.renderEnrollTable();
@@ -9315,7 +10137,19 @@
             if (!forceRefresh && enrollState.adminData.length > 0) { window.renderAdminEnrollTable(); return; }
             document.getElementById('admin-enroll-table-body').innerHTML = `<tr><td colspan="30" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data Admin...</td></tr>`;
             try {
-                const snap = await getDocs(collection(db, "ps_enroll"));
+                const col_ = collection(db, "ps_enroll");
+
+                // 🌟 Cache-first
+                try {
+                    const cacheSnap = await getDocsFromCache(col_);
+                    if(!cacheSnap.empty) {
+                        enrollState.adminData = [];
+                        cacheSnap.forEach(doc => enrollState.adminData.push({ docId: doc.id, ...doc.data() }));
+                        adminEnrollPage = 1; window.renderAdminEnrollTable();
+                    }
+                } catch(_) {}
+
+                const snap = await getDocs(col_);
                 enrollState.adminData = []; snap.forEach(doc => enrollState.adminData.push({ docId: doc.id, ...doc.data() }));
                 adminEnrollPage = 1; window.renderAdminEnrollTable();
             } catch(e) { alert("Gagal tarik Admin: " + e.message); }
@@ -9341,7 +10175,18 @@
             searchBoxes.forEach(input => {
                 let query = input.value.toLowerCase().trim();
                 let colKey = input.getAttribute('data-col');
-                if (query !== "") filtered = filtered.filter(r => String(r[colKey] || "").toLowerCase().includes(query));
+                if (query !== "") {
+                    filtered = filtered.filter(r => {
+                        let matchedColDef = (typeof enrollColumns !== 'undefined' ? enrollColumns : []).find(c => (c.id || c.key) === colKey);
+                        let realKey = matchedColDef ? matchedColDef.key : colKey;
+                        let rawVal = r[realKey];
+                        if (matchedColDef && (matchedColDef.isImportDate || matchedColDef.isImportTime)) {
+                            let parsed = window.parseTimestampMasuk(rawVal);
+                            rawVal = matchedColDef.isImportDate ? parsed.date : parsed.time;
+                        }
+                        return String(rawVal || "").toLowerCase().includes(query);
+                    });
+                }
             });
 
             let tbody = document.getElementById(tbodyId); tbody.innerHTML = "";
@@ -9443,8 +10288,30 @@
             mapped.slice(0, 100).forEach(row => {
                 let actualIdx = stateArr.indexOf(row);
                 let name = row["Student Name"] || "Unknown";
-                let tofu = row["TO FU"] || "-";
                 let crmLink = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(name)}`;
+                
+                let crmRec = window.crmByEnrollDocId ? window.crmByEnrollDocId[row.docId] : null;
+                let crmTofu   = crmRec ? (crmRec["TO FU"] || "") : (row["TO FU"] || "");
+                let crmDocId  = crmRec ? crmRec.docId : "";
+                
+                let cbSection = "";
+                if(crmTofu && crmTofu !== "-") {
+                    let tasks = crmTofu.split('\n').filter(t => t.trim() !== "");
+                    tasks.forEach((task, tIdx) => {
+                        let isDone = task.trim().startsWith('✅');
+                        let displayTask = isDone ? task.replace(/^✅\s*/, '') : task;
+                        let cbId = `enroll-mob-tofu-cb-${row.docId}-${tIdx}`;
+                        cbSection += `
+                        <div class="flex items-center gap-2 mb-2 mt-2 bg-[#181818] border ${isDone ? 'border-[#333]' : 'border-[#2a4a2a]'} rounded-lg px-2.5 py-2 transition">
+                            <input type="checkbox" id="${cbId}" ${isDone ? 'checked' : ''} 
+                                class="w-4 h-4 accent-[#00e676] cursor-pointer shrink-0"
+                                onchange="window.toggleMultilineTofu('${crmDocId}','enroll',${isAdmin},${tIdx},this.checked)">
+                            <label for="${cbId}" class="text-[11px] font-bold cursor-pointer select-none flex-1 ${isDone ? 'line-through text-gray-500' : 'text-[#00e676]'}">${displayTask}</label>
+                        </div>`;
+                    });
+                } else if(!crmDocId) {
+                    cbSection = `<div class="text-[10px] text-gray-500 italic mb-2 mt-2">⚠️ Belum link CRM. Tekan ✏️ untuk link.</div>`;
+                }
 
                 html += `
                 <div class="flex items-start p-3 border-b border-[#222] hover:bg-[#1a1a1a] transition relative pr-8">
@@ -9454,7 +10321,7 @@
                             <span class="text-[#ffeb3b] text-[10px] font-bold bg-[#333] px-1 rounded">${row["Invoice Number"]||"-"}</span>
                         </div>
                         <a href="${crmLink}" target="_blank" class="bg-[#111] border border-[#00c6ff] text-[#00c6ff] px-2 py-1 rounded text-[10px] font-bold no-underline inline-block mb-2 shadow-sm hover:bg-[#00c6ff] hover:text-black transition">ℹ️ Info Student</a>
-                        <div class="text-[#00e676] text-xs font-bold truncate">🎯 TO FU: ${tofu}</div>
+                        ${cbSection}
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-3">
                         <button onclick="window.openCRMModalFromEnroll(${isAdmin}, ${actualIdx})" class="w-8 h-8 rounded-full bg-[#0072ff] text-white flex items-center justify-center text-[12px] shadow-lg">✏️</button>
@@ -9536,7 +10403,7 @@
                             rowData["FU Time"] = oldData["FU Time"] || "";
                             rowData["Class Progress"] = oldData["Class Progress"] || "";
                             rowData["History FU"] = oldData["History FU"] || "";
-                            rowData["Timestamp Masuk"] = oldData["Timestamp Masuk"] || new Date().toISOString();
+                            rowData["Timestamp Masuk"] = new Date().toISOString(); // 🌟 Refresh timestamp setiap kali import/update
                             
                             batch.update(doc(db, "ps_enroll", oldDoc.id), rowData);
                             bUpdated++;
@@ -9587,6 +10454,11 @@
                     status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update.`;
                     btn.disabled = false;
                     window.loadAdminEnrollData(true);
+                    
+                    // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
+                    if (typeof window.bulkAutoCreateCRM === 'function') {
+                        window.bulkAutoCreateCRM('enroll', true, true);
+                    }
 
                 } catch(err) { alert("Ralat: " + err.message); btn.disabled = false; }
             };
@@ -9685,7 +10557,7 @@
 
             if(isHidden) {
                 menu.classList.remove('hidden');
-                if(btnElement) btnElement.closest('th').style.zIndex = '999';
+                if(btnElement) { let closestTh = btnElement.closest('th'); if(closestTh) closestTh.style.zIndex = '999'; }
 
                 let stateData = isAdmin ? enrollState.adminData : enrollState.data;
                 let currentFilters = isAdmin ? adminEnrollFilters : teamEnrollFilters;
