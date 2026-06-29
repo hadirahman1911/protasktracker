@@ -284,7 +284,7 @@
 
                     <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
                         <span class="text-[#bb86fc] font-bold text-sm min-w-[120px]">📥 Import PS (Excel):</span>
-                        <input type="file" id="failPSStaff" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <input type="file" id="failPSStaff" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
                         <button onclick="window.prosesImportPSExcel('failPSStaff', 'statusPSStaff', this, true)" class="bg-[#bb86fc] hover:bg-[#9965f4] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
                         <span id="statusPSStaff" class="text-xs font-bold text-[#bb86fc] ml-2"></span>
                     </div>
@@ -332,6 +332,7 @@
                             <button id="m-ps-sort-false" onclick="window.togglePSMobileSort('CLASS', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Class Date <span id="m-ps-sort-icon-false">↕️</span></button>
                             <button id="m-ps-sort-fu-false" onclick="window.togglePSMobileSort('FU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-false">↕️</span></button>
                             <button id="m-ps-class-filter-false" onclick="window.toggleFilterMenu('Class', false, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
+                            <button id="m-ps-tags-filter-false" onclick="window.openMobileTagsFilter(false, 'ps')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
                             <button id="m-ps-filter-All-false" onclick="window.setPSMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                             <button id="m-ps-filter-Absent-false" onclick="window.setPSMobileFilter('Absent', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                             <button id="m-ps-filter-Half-false" onclick="window.setPSMobileFilter('Half', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
@@ -371,6 +372,12 @@
                     <h3 class="text-[#00c6ff] font-bold mb-4 flex items-center gap-2">📝 PS Enroll (My Students)
                         <button onclick="window.loadEnrollData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1 px-3 rounded text-xs ml-auto">🔄 Refresh</button>
                     </h3>
+                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
+                        <span class="text-[#00c6ff] font-bold text-sm min-w-[120px]">📥 Import PS Enroll (Excel):</span>
+                        <input type="file" id="failEnrollStaff" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <button onclick="window.prosesImportEnrollExcel('failEnrollStaff', 'statusEnrollStaff', this)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
+                        <span id="statusEnrollStaff" class="text-xs font-bold text-[#00c6ff] ml-2"></span>
+                    </div>
                     <button onclick="window.openEnrollBulkEdit(false)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-1.5 px-4 rounded text-xs shadow ml-auto">🛠️ Bulk Edit</button>
                     <button onclick="window.bulkAutoCreateCRM('enroll', false)" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-2">🔄 Bulk Auto-Create CRM</button>
                 </div>  
@@ -382,6 +389,7 @@
                             <button data-col-vis-btn onclick="window.toggleColVisPanel('enroll', false)" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-[#9c27b0] border border-[#9c27b0] hover:bg-[#2a1a3a] transition">👁️ Kolum</button>
                             <div id="col-vis-panel-enroll-false" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#1e1e1e] border border-[#555] rounded-lg shadow-2xl p-3 z-[9999] text-left"></div>
                         </div>
+                    <button onclick="window.openEnrollBulkEdit(false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
                 </div>
 
                 <div id="enroll-desktop-wrapper-false">
@@ -393,11 +401,21 @@
                         <span id="team-enroll-page-info" class="font-bold text-sm">Page 1</span>
                         <button class="btn-page" onclick="window.nextEnrollTeam()">Next ➡</button>
                     </div>
-                </div> 
-                
+                </div>
+
                 <div id="enroll-mobile-wrapper-false" style="display:none;" class="w-full max-w-lg mx-auto bg-[#121212] rounded-xl border border-[#333] overflow-hidden mt-2 shadow-2xl">
                     <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
                         <input type="text" id="enroll-mobile-search-false" oninput="window.renderEnrollMobileList(false)" placeholder="🔍 Search Name or Invoice..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#00c6ff] text-sm mb-3">
+                        <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
+                            <button id="m-enroll-tags-filter-false" onclick="window.openMobileTagsFilter(false, 'enroll')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
+                        </div>
+                        <div class="flex items-center justify-between mt-2">
+                            <div class="flex items-center gap-2">
+                                <span id="enroll-mob-cb-count-false" class="hidden text-xs font-bold text-[#00c6ff] bg-[#0d2233] border border-[#00c6ff] px-2.5 py-1 rounded-full">0 dipilih</span>
+                                <button id="enroll-mob-deselect-false" onclick="window.enrollMobileDeselectAll(false)" class="hidden text-xs font-bold text-gray-300 bg-[#222] border border-[#555] hover:bg-[#333] px-2.5 py-1 rounded-full transition">✕ Nyahpilih</button>
+                            </div>
+                            <button onclick="window.openEnrollBulkEdit(false)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
+                        </div>
                     </div>
                     <div id="enroll-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                 </div>
@@ -588,7 +606,7 @@
 
                     <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
                         <span class="text-[#bb86fc] font-bold text-sm min-w-[150px]">📥 Import PS (Excel):</span>
-                        <input type="file" id="failPSSetup" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <input type="file" id="failPSSetup" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
                         <button onclick="window.prosesImportPSExcel('failPSSetup', 'statusPSSetup', this, false)" class="bg-[#bb86fc] hover:bg-[#9965f4] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
                         <span id="statusPSSetup" class="text-xs font-bold text-[#bb86fc] ml-2"></span>
                     </div>
@@ -636,6 +654,7 @@
                                 <button id="m-ps-sort-fu-true" onclick="window.togglePSMobileSort('FU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-true">↕️</span></button>
                                 <button id="m-ps-class-filter-true" onclick="window.toggleFilterMenu('Class', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
                                 <button id="m-ps-staff-filter-true" onclick="window.toggleFilterMenu('Staff Name', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Nama Staff ▼</button>
+                                <button id="m-ps-tags-filter-true" onclick="window.openMobileTagsFilter(true, 'ps')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
                                 <button id="m-ps-filter-All-true" onclick="window.setPSMobileFilter('All', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
                                 <button id="m-ps-filter-Absent-true" onclick="window.setPSMobileFilter('Absent', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                                 <button id="m-ps-filter-Half-true" onclick="window.setPSMobileFilter('Half', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
@@ -886,7 +905,7 @@
                     </div>
                     <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
                         <span class="text-[#00c6ff] font-bold text-sm min-w-[150px]">📥 Import PS Enroll (Excel):</span>
-                        <input type="file" id="failEnrollSetup" accept=".xlsx, .xls, .csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                        <input type="file" id="failEnrollSetup" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
                         <button onclick="window.prosesImportEnrollExcel('failEnrollSetup', 'statusEnrollSetup', this, false)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
                         <span id="statusEnrollSetup" class="text-xs font-bold text-[#00c6ff] ml-2"></span>
                     </div>
@@ -897,6 +916,7 @@
                             <button data-col-vis-btn onclick="window.toggleColVisPanel('enroll', true)" class="px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-[#9c27b0] border border-[#9c27b0] hover:bg-[#2a1a3a] transition">👁️ Kolum</button>
                             <div id="col-vis-panel-enroll-true" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#1e1e1e] border border-[#555] rounded-lg shadow-2xl p-3 z-[9999] text-left"></div>
                         </div>
+                        <button onclick="window.openEnrollBulkEdit(true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
                     </div>
                     <div id="enroll-desktop-wrapper-true">
                         <div class="crm-table-wrapper">
@@ -911,6 +931,16 @@
                     <div id="enroll-mobile-wrapper-true" style="display:none;" class="w-full max-w-lg mx-auto bg-[#121212] rounded-xl border border-[#333] overflow-hidden mt-2 shadow-2xl">
                         <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
                             <input type="text" id="enroll-mobile-search-true" oninput="window.renderEnrollMobileList(true)" placeholder="🔍 Search Name or Invoice..." class="w-full bg-[#2a2a2a] text-white px-4 py-2.5 rounded-full outline-none border border-[#444] focus:border-[#00c6ff] text-sm mb-3">
+                            <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
+                                <button id="m-enroll-tags-filter-true" onclick="window.openMobileTagsFilter(true, 'enroll')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
+                            </div>
+                            <div class="flex items-center justify-between mt-2">
+                                <div class="flex items-center gap-2">
+                                    <span id="enroll-mob-cb-count-true" class="hidden text-xs font-bold text-[#00c6ff] bg-[#0d2233] border border-[#00c6ff] px-2.5 py-1 rounded-full">0 dipilih</span>
+                                    <button id="enroll-mob-deselect-true" onclick="window.enrollMobileDeselectAll(true)" class="hidden text-xs font-bold text-gray-300 bg-[#222] border border-[#555] hover:bg-[#333] px-2.5 py-1 rounded-full transition">✕ Nyahpilih</button>
+                                </div>
+                                <button onclick="window.openEnrollBulkEdit(true)" class="px-4 py-1.5 rounded-full text-xs font-bold bg-purple-600 hover:bg-purple-500 text-white shadow transition">🛠️ Bulk Edit</button>
+                            </div>
                         </div>
                         <div id="enroll-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                     </div>
@@ -993,6 +1023,19 @@
                     <div id="crm-ps-section" class="form-group-crm col-span-2 bg-[#15202b] p-3 rounded-lg border border-[#3f51b5] mb-2" style="display:none;">
                         <input type="hidden" id="crmps-docid">
                         <label class="text-[#64b5f6] font-bold text-xs block mb-2">🎓 PS Master Details</label>
+                        <!-- 🏷️ Tags PS Master (editable) -->
+                        <div class="mb-3">
+                            <label class="text-[#f59e0b] font-bold text-xs block mb-1">🏷️ Tags</label>
+                            <div id="crmps-tags-container" class="flex flex-wrap gap-1.5 mb-2 min-h-[24px]"></div>
+                            <div class="flex gap-2 mb-1.5">
+                                <input type="text" id="crmps-tag-input" placeholder="Taip tag, Enter untuk tambah..." class="flex-1 bg-[#111] text-white p-1.5 rounded border border-[#f59e0b] outline-none text-xs"
+                                    oninput="window._renderCRMSectionTagPicker('crmps-tag-picker','crmps-tag-input','crmps-tags-container','crmps-tags-value','ps')"
+                                    onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();window.crmpsAddTag();}">
+                                <button type="button" onclick="window.crmpsAddTag()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-2 py-1 rounded text-xs">+ Add</button>
+                            </div>
+                            <div id="crmps-tag-picker" class="flex flex-wrap gap-1.5 p-2 bg-[#111] rounded-lg border border-[#333] min-h-[28px]"></div>
+                            <input type="hidden" id="crmps-tags-value">
+                        </div>
                         <details class="mt-2 text-[#64b5f6] cursor-pointer" open>
                             <summary class="font-bold text-xs">Other PS Master Details ▾</summary>
                             <div id="crmps-other-details" class="grid grid-cols-2 gap-3 mt-3 cursor-default text-white pointer-events-none opacity-80"></div>
@@ -1027,6 +1070,19 @@
                             <div class="form-group-crm"><label>FU Time</label><input type="time" id="crmenroll-futime"></div>
                             <div class="form-group-crm col-span-2"><label class="text-[#bb86fc]">Outcome</label><textarea id="crmenroll-outcome" class="crm-textarea" rows="2"></textarea></div>
                             <div class="form-group-crm col-span-2"><label>History FU</label><textarea id="crmenroll-history" class="crm-textarea" rows="2"></textarea></div>
+                            <!-- 🏷️ Tags PS Enroll (editable) -->
+                            <div class="col-span-2">
+                                <label class="text-[#f59e0b] font-bold text-xs block mb-1">🏷️ Tags</label>
+                                <div id="crmenroll-tags-container" class="flex flex-wrap gap-1.5 mb-2 min-h-[24px]"></div>
+                                <div class="flex gap-2 mb-1.5">
+                                    <input type="text" id="crmenroll-tag-input" placeholder="Taip tag, Enter untuk tambah..." class="flex-1 bg-[#111] text-white p-1.5 rounded border border-[#f59e0b] outline-none text-xs"
+                                        oninput="window._renderCRMSectionTagPicker('crmenroll-tag-picker','crmenroll-tag-input','crmenroll-tags-container','crmenroll-tags-value','enroll')"
+                                        onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();window.crmenrollAddTag();}">
+                                    <button type="button" onclick="window.crmenrollAddTag()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-2 py-1 rounded text-xs">+ Add</button>
+                                </div>
+                                <div id="crmenroll-tag-picker" class="flex flex-wrap gap-1.5 p-2 bg-[#111] rounded-lg border border-[#333] min-h-[28px]"></div>
+                                <input type="hidden" id="crmenroll-tags-value">
+                            </div>
                         </div>
                         <details class="mt-2 text-[#00c6ff] cursor-pointer">
                             <summary class="font-bold text-xs">Other PS Enroll Details ▾</summary>
@@ -1265,6 +1321,21 @@
                     </select>
                 </div>
                 
+                <div class="form-group-crm col-span-2">
+                    <label class="text-[#f59e0b] font-bold">🏷️ Tags</label>
+                    <div id="ps-tags-container" class="flex flex-wrap gap-1.5 mb-2 min-h-[28px]"></div>
+                    <div class="flex gap-2">
+                        <input type="text" id="ps-tag-input" placeholder="Taip tag baru, Enter untuk tambah..." class="flex-1 bg-[#222] text-white p-2 rounded border border-[#f59e0b] outline-none text-xs" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();window.psAddTag('ps');}">
+                        <button onclick="window.psAddTag('ps')" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-3 py-1.5 rounded text-xs">+ Add</button>
+                    </div>
+                    <input type="hidden" id="ps-tags-value">
+                </div>
+
+                <details class="col-span-2 mt-1 cursor-pointer p-2 bg-[#1a1a2e] rounded-lg border border-[#3f3f7a]">
+                    <summary class="font-bold text-sm text-[#64b5f6]">🔗 Status PS (Master &amp; Enroll) ▾</summary>
+                    <div id="ps-status-link-display" class="mt-3 text-xs text-gray-400">Loading...</div>
+                </details>
+
                 <div class="form-group-crm col-span-2"><label class="text-[#00e676]">★ TO FU (Action)</label>
                     <input type="text" id="ps-tofu" autocomplete="off" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Pilih task / #TaskBaru..." oninput="window.handleTofuInput(this, window.updatePSPreview)" onfocus="window.openTofuDropdown(this, window.updatePSPreview)" onclick="window.openTofuDropdown(this, window.updatePSPreview)">
                     <div class="text-[10px] text-gray-500 mt-1">💡 Pilih dari senarai, atau taip <span class="text-[#00c6ff] font-bold">#TaskBaru</span> untuk terus simpan task baru.</div>
@@ -1365,6 +1436,16 @@
                 <div class="form-group-crm col-span-2"><label>History FU (Akan disambung/append)</label>
                     <input type="text" id="ps-bulk-rem2" placeholder="Cth: Tunggu gaji...">
                 </div>
+
+                <div class="col-span-2 mt-1">
+                    <label class="text-[#f59e0b] font-bold text-sm block mb-2">🏷️ Tags (Bulk)</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="ps-bulk-tag-search" placeholder="🔍 Cari atau tambah tag baru..." oninput="window.renderBulkTagPicker('ps')" class="flex-1 bg-[#222] text-white p-2 rounded border border-[#f59e0b] outline-none text-xs" onkeydown="if(event.key==='Enter'){event.preventDefault();window.bulkTagAddNew('ps');}">
+                        <button type="button" onclick="window.bulkTagAddNew('ps')" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-3 py-1.5 rounded text-xs shrink-0">+ Add</button>
+                    </div>
+                    <div id="ps-bulk-tag-picker" class="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 bg-[#111] rounded-lg border border-[#333]"></div>
+                    <p class="text-[10px] text-gray-500 mt-1">Klik tag untuk pilih/nyahpilih. Tag dipilih akan ditambah ke semua rekod yang dipilih.</p>
+                </div>
             </div>
 
             <button onclick="window.savePSBulkData()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold w-full p-3 rounded-lg mt-5 text-lg shadow-lg">🚀 APPLY BULK EDIT</button>
@@ -1393,6 +1474,21 @@
                 <div class="form-group-crm col-span-2">
                     <a href="#" id="enroll-info-link" target="_blank" class="bg-[#00c6ff] hover:bg-[#009ee0] text-black font-bold py-2 px-4 rounded-lg shadow block text-center no-underline">ℹ️ Info Student (Buka di CRM)</a>
                 </div>
+
+                <div class="form-group-crm col-span-2">
+                    <label class="text-[#f59e0b] font-bold">🏷️ Tags</label>
+                    <div id="enroll-tags-container" class="flex flex-wrap gap-1.5 mb-2 min-h-[28px]"></div>
+                    <div class="flex gap-2">
+                        <input type="text" id="enroll-tag-input" placeholder="Taip tag baru, Enter untuk tambah..." class="flex-1 bg-[#222] text-white p-2 rounded border border-[#f59e0b] outline-none text-xs" onkeydown="if(event.key==='Enter'||event.key===','){event.preventDefault();window.psAddTag('enroll');}">
+                        <button onclick="window.psAddTag('enroll')" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-3 py-1.5 rounded text-xs">+ Add</button>
+                    </div>
+                    <input type="hidden" id="enroll-tags-value">
+                </div>
+
+                <details class="col-span-2 mt-1 cursor-pointer p-2 bg-[#1a1a2e] rounded-lg border border-[#3f3f7a]">
+                    <summary class="font-bold text-sm text-[#64b5f6]">🔗 Status PS (Master &amp; Enroll) ▾</summary>
+                    <div id="enroll-status-link-display" class="mt-3 text-xs text-gray-400">Loading...</div>
+                </details>
 
                 <div class="form-group-crm col-span-2"><label class="text-[#00e676]">★ TO FU (Action)</label>
                     <input type="text" id="enroll-tofu" autocomplete="off" class="border-2 border-[#00e676] bg-[#1a2e23] text-white font-bold" placeholder="Pilih task / #TaskBaru..." oninput="window.handleTofuInput(this, window.updateEnrollPreview)" onfocus="window.openTofuDropdown(this, window.updateEnrollPreview)" onclick="window.openTofuDropdown(this, window.updateEnrollPreview)">
@@ -1472,6 +1568,16 @@
                 <div class="form-group-crm col-span-2"><label>History FU (Akan disambung/append)</label>
                     <input type="text" id="enroll-bulk-history" placeholder="Cth: Tunggu gaji...">
                 </div>
+
+                <div class="col-span-2 mt-1">
+                    <label class="text-[#f59e0b] font-bold text-sm block mb-2">🏷️ Tags (Bulk)</label>
+                    <div class="flex gap-2 mb-2">
+                        <input type="text" id="enroll-bulk-tag-search" placeholder="🔍 Cari atau tambah tag baru..." oninput="window.renderBulkTagPicker('enroll')" class="flex-1 bg-[#222] text-white p-2 rounded border border-[#f59e0b] outline-none text-xs" onkeydown="if(event.key==='Enter'){event.preventDefault();window.bulkTagAddNew('enroll');}">
+                        <button type="button" onclick="window.bulkTagAddNew('enroll')" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-3 py-1.5 rounded text-xs shrink-0">+ Add</button>
+                    </div>
+                    <div id="enroll-bulk-tag-picker" class="flex flex-wrap gap-2 max-h-40 overflow-y-auto p-2 bg-[#111] rounded-lg border border-[#333]"></div>
+                    <p class="text-[10px] text-gray-500 mt-1">Klik tag untuk pilih/nyahpilih. Tag dipilih akan ditambah ke semua rekod yang dipilih.</p>
+                </div>
             </div>
 
             <button onclick="window.saveEnrollBulkData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold w-full p-3 rounded-lg mt-5 text-lg shadow-lg">🚀 APPLY BULK EDIT</button>
@@ -1503,7 +1609,48 @@
         </div>
     </div>
 
-    <!-- 🌟 MODAL DELETE TASK PUKAL -->
+    <!-- 🌟 MODAL TAGS FILTER (MOBILE) — Include/Exclude with Select All -->
+    <div id="modal-mobile-tags-filter" class="hidden fixed inset-0 bg-black bg-opacity-70 z-[99999] flex items-center justify-center">
+        <div class="bg-[#1e1e1e] border border-[#f59e0b] rounded-xl w-[92vw] max-w-sm p-4 shadow-2xl" style="max-height:90vh;overflow-y:auto;">
+            <div class="flex justify-between items-center mb-3">
+                <h4 class="text-[#f59e0b] font-bold m-0 text-sm">🏷️ Filter Tags</h4>
+                <button onclick="document.getElementById('modal-mobile-tags-filter').classList.add('hidden')" class="text-gray-400 text-xl leading-none">&times;</button>
+            </div>
+            <input type="text" id="mobile-tags-filter-search" placeholder="🔍 Cari tag..." oninput="window.renderMobileTagsFilterList()" class="w-full bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs mb-3">
+            
+            <!-- Tab: Included -->
+            <div class="mb-2">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[#00e676] font-bold text-xs">✅ Included (mesti ada tag ini)</span>
+                    <div class="flex gap-1">
+                        <button onclick="window.mobileTagsSelectAll('include')" class="text-[10px] text-[#00e676] hover:underline font-bold">All</button>
+                        <span class="text-gray-600 text-[10px]">|</span>
+                        <button onclick="window.mobileTagsDeselectAll('include')" class="text-[10px] text-gray-400 hover:underline font-bold">None</button>
+                    </div>
+                </div>
+                <div id="mobile-tags-include-list" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 bg-[#111] rounded-lg border border-[#1a3a1a] min-h-[36px]"></div>
+            </div>
+
+            <!-- Tab: Excluded -->
+            <div class="mb-3">
+                <div class="flex justify-between items-center mb-1.5">
+                    <span class="text-[#ff5252] font-bold text-xs">🚫 Excluded (tolak rekod yang ada tag ini)</span>
+                    <div class="flex gap-1">
+                        <button onclick="window.mobileTagsSelectAll('exclude')" class="text-[10px] text-[#ff5252] hover:underline font-bold">All</button>
+                        <span class="text-gray-600 text-[10px]">|</span>
+                        <button onclick="window.mobileTagsDeselectAll('exclude')" class="text-[10px] text-gray-400 hover:underline font-bold">None</button>
+                    </div>
+                </div>
+                <div id="mobile-tags-exclude-list" class="flex flex-wrap gap-1.5 max-h-32 overflow-y-auto p-2 bg-[#111] rounded-lg border border-[#3a1a1a] min-h-[36px]"></div>
+            </div>
+
+            <div class="flex gap-2">
+                <button onclick="window.applyMobileTagsFilter()" class="flex-1 bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold py-2 rounded text-sm">✅ Apply</button>
+                <button onclick="window.clearMobileTagsFilter()" class="bg-[#444] hover:bg-[#555] text-gray-300 font-bold py-2 px-3 rounded text-sm">Clear</button>
+            </div>
+        </div>
+    </div>
+
     <div id="modal-delete-task-bulk" class="modal-overlay" style="z-index: 9999;">
         <div class="modal-box border-t-4 border-red-500 w-[500px] max-w-[95%]">
             <div class="flex justify-between items-center border-b border-[#444] pb-2 mb-4">
@@ -3015,7 +3162,6 @@
             }
             if(tab === 'enroll') {
                 window.loadAdminEnrollData();
-                window.populateEnrollCopyDropdown();
                 window.renderEnrollUploadLogs();
             }
         };
@@ -5192,53 +5338,56 @@
 
               // 1b. Kalau section PS Master / PS Enroll sedang dipaparkan (ada link), simpan sekali
               let psSection = document.getElementById('crm-ps-section');
-              if(psSection && psSection.style.display !== 'none') {
-                  let psDocId = getSafeVal('crmps-docid');
-                  if(psDocId) {
-                      // 🌟 FIX: Gabung TO FU, FU Date, FU Time, Outcome terus dari CRM utama ke PS Master
-                      let psUpdateData = {
-                          "TO FU": actionVal,
-                          "Outcome": getSafeVal('crm-outcome'),
-                          "FU Date": window.toSheetDate(getSafeVal('crm-fu-date')),
-                          "FU Time": getSafeVal('crm-fu-time'),
-                          "Remark 2": getSafeVal('crm-history')
-                      };
-                      try {
-                          await updateDoc(doc(db, "ps_students", psDocId), psUpdateData);
-                          ['data', 'adminData'].forEach(k => {
-                              let arr = psState[k];
-                              let i = arr.findIndex(r => r.docId === psDocId);
-                              if(i > -1) arr[i] = { ...arr[i], ...psUpdateData };
-                          });
-                      } catch(e) { console.error("Gagal simpan PS Master:", e); }
-                  }
+              let enrollSection = document.getElementById('crm-enroll-section');
+              let psDocId = getSafeVal('crmps-docid');
+              let enrollDocId = getSafeVal('crmenroll-docid');
+
+              // 🌟 Sync tags: merge PS Master + PS Enroll tags jadi satu pool
+              let psTags = (getSafeVal('crmps-tags-value') || '').split(',').map(t=>t.trim()).filter(Boolean);
+              let enrollTagsRaw = (getSafeVal('crmenroll-tags-value') || '').split(',').map(t=>t.trim()).filter(Boolean);
+              let mergedTags = [...new Set([...psTags, ...enrollTagsRaw])];
+
+              if(psSection && psSection.style.display !== 'none' && psDocId) {
+                  let psUpdateData = {
+                      "TO FU": actionVal,
+                      "Outcome": getSafeVal('crm-outcome'),
+                      "FU Date": window.toSheetDate(getSafeVal('crm-fu-date')),
+                      "FU Time": getSafeVal('crm-fu-time'),
+                      "Remark 2": getSafeVal('crm-history'),
+                      "Tags": mergedTags
+                  };
+                  try {
+                      await updateDoc(doc(db, "ps_students", psDocId), psUpdateData);
+                      ['data', 'adminData'].forEach(k => {
+                          let arr = psState[k];
+                          let i = arr.findIndex(r => r.docId === psDocId);
+                          if(i > -1) arr[i] = { ...arr[i], ...psUpdateData };
+                      });
+                  } catch(e) { console.error("Gagal simpan PS Master:", e); }
               }
 
               // 1c. Kalau section PS Enroll sedang dipaparkan (ada link), simpan sekali
-              let enrollSection = document.getElementById('crm-enroll-section');
-              if(enrollSection && enrollSection.style.display !== 'none') {
-                  let enrollDocId = getSafeVal('crmenroll-docid');
-                  if(enrollDocId) {
-                      let enrollUpdateData = {
-                          "TO FU": getSafeVal('crmenroll-tofu'),
-                          "Outcome": getSafeVal('crmenroll-outcome'),
-                          "Class Progress": getSafeVal('crmenroll-classprog'),
-                          "FU Date": window.toSheetDate(getSafeVal('crmenroll-fudate')),
-                          "FU Time": getSafeVal('crmenroll-futime'),
-                          "History FU": getSafeVal('crmenroll-history')
-                      };
-                      try {
-                          await updateDoc(doc(db, "ps_enroll", enrollDocId), enrollUpdateData);
-                          ['data', 'adminData'].forEach(k => {
-                              let arr = enrollState[k];
-                              let i = arr.findIndex(r => r.docId === enrollDocId);
-                              if(i > -1) arr[i] = { ...arr[i], ...enrollUpdateData };
-                          });
-                      } catch(e) { console.error("Gagal simpan PS Enroll:", e); }
-                  }
+              if(enrollSection && enrollSection.style.display !== 'none' && enrollDocId) {
+                  let enrollUpdateData = {
+                      "TO FU": getSafeVal('crmenroll-tofu'),
+                      "Outcome": getSafeVal('crmenroll-outcome'),
+                      "Class Progress": getSafeVal('crmenroll-classprog'),
+                      "FU Date": window.toSheetDate(getSafeVal('crmenroll-fudate')),
+                      "FU Time": getSafeVal('crmenroll-futime'),
+                      "History FU": getSafeVal('crmenroll-history'),
+                      "Tags": mergedTags
+                  };
+                  try {
+                      await updateDoc(doc(db, "ps_enroll", enrollDocId), enrollUpdateData);
+                      ['data', 'adminData'].forEach(k => {
+                          let arr = enrollState[k];
+                          let i = arr.findIndex(r => r.docId === enrollDocId);
+                          if(i > -1) arr[i] = { ...arr[i], ...enrollUpdateData };
+                      });
+                  } catch(e) { console.error("Gagal simpan PS Enroll:", e); }
               }
 
-              alert("✅ Data CRM berjaya dikemaskini!");
+              window.showToast("✅ Data CRM berjaya dikemaskini!");
               if(typeof window.closeCRMModal === 'function') window.closeCRMModal();
               
               // 2. Suntik data ke dalam memori jadual (Zero Reads Update)
@@ -5321,6 +5470,21 @@
                 });
             });
         })();
+
+        // ==========================================
+        // 🌟 TOAST NOTIFICATION (gantikan alert() untuk success messages)
+        // ==========================================
+        window.showToast = function(msg, type = 'success', duration = 3000) {
+            let existing = document.getElementById('app-toast');
+            if(existing) existing.remove();
+            let toast = document.createElement('div');
+            toast.id = 'app-toast';
+            let bg = type === 'error' ? '#b91c1c' : (type === 'warn' ? '#d97706' : '#16a34a');
+            toast.style.cssText = `position:fixed;bottom:24px;left:50%;transform:translateX(-50%);background:${bg};color:#fff;padding:12px 22px;border-radius:10px;font-weight:bold;font-size:0.95rem;z-index:999999;box-shadow:0 4px 20px rgba(0,0,0,0.5);max-width:90vw;text-align:center;transition:opacity 0.4s;pointer-events:none;`;
+            toast.innerText = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => { toast.style.opacity = '0'; setTimeout(() => toast.remove(), 400); }, duration);
+        };
 
         window.closeCRMModal = function() { document.getElementById('modal-crm').style.display = 'none'; };
 
@@ -5587,8 +5751,7 @@
             
             let linkFieldOnCrm = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
 
-            // 🌟 FIX: Pre-fetch semua existing links dari Firebase dalam batch (elak N+1 queries & duplicate)
-            // Tak boleh bergantung pada crmState memori sahaja — mungkin kosong kalau belum buka tab CRM
+            // ⚡ STEP 1: Pre-fetch semua existing links dalam batch (30-in query)
             let linkedDocIds = new Set();
             let allDocIds = stateArr.map(r => r.docId).filter(Boolean);
             try {
@@ -5598,81 +5761,121 @@
                     snap.forEach(d => {
                         let linkedId = d.data()[linkFieldOnCrm];
                         if(linkedId) linkedDocIds.add(linkedId);
-                        // Sekaligus masuk dalam crmState kalau belum ada
                         let targetArr = isAdmin ? crmState.adminData : crmState.data;
-                        if(!targetArr.find(r => r.docId === d.id)) {
-                            targetArr.push({ docId: d.id, ...d.data() });
-                        }
+                        if(!targetArr.find(r => r.docId === d.id)) targetArr.push({ docId: d.id, ...d.data() });
                     });
                 }
             } catch(e) { console.error("Gagal prefetch CRM links:", e); }
 
-            let unlinkedIndices = [];
-            stateArr.forEach((record, idx) => {
-                if(!linkedDocIds.has(record.docId)) unlinkedIndices.push(idx);
-            });
+            // ⚡ STEP 2: Kumpul semua rekod yang belum ada CRM link
+            let unlinkedRecords = stateArr.filter(r => r.docId && !linkedDocIds.has(r.docId));
             
-            if(unlinkedIndices.length === 0) {
+            if(unlinkedRecords.length === 0) {
                 if(!isSilent) alert("Semua rekod sudah ada link CRM!");
                 return;
             }
             
-            if(!isSilent && !confirm(`Terdapat ${unlinkedIndices.length} rekod yang belum ada CRM. Proses ini mungkin mengambil masa. Teruskan?`)) return;
-            
-            let loadingMsg = document.createElement('div');
-            loadingMsg.id = 'bulk-crm-loading';
-            loadingMsg.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#ff9800; color:#000; padding:15px 30px; border-radius:8px; z-index:99999; font-weight:bold; box-shadow:0 4px 15px rgba(0,0,0,0.5);';
-            loadingMsg.innerText = `Memproses 0 / ${unlinkedIndices.length}...`;
-            document.body.appendChild(loadingMsg);
-            
-            let successCount = 0;
-            
-            for(let i=0; i<unlinkedIndices.length; i++) {
-                let actualIdx = unlinkedIndices[i];
-                let record = stateArr[actualIdx];
-                
-                try {
-                    let newLeadId = await window._generateNewLeadId();
-                    let todayStr = new Date().toISOString().split('T')[0];
-                    let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
-                    let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
-                    let recordPhone = type === 'ps' ? (record["Phone Number"] || record["Phone"] || record["Contact"] || "") : (record["Phone"] || "");
-                    let recordName = record["Student Name"] || record["Name"] || "-";
-                    
-                    let newCRMDoc = {
-                        "Lead ID": newLeadId,
-                        "Timestamp Masuk": record["Timestamp Masuk"] || new Date().toISOString(),
-                        "Staff Name": staffName,
-                        "Student Name": recordName,
-                        "Phone Number": recordPhone,
-                        "TO FU": "",
-                        "TO FU DONE": false,
-                        "HISTORY FU": `[${todayStr} ${timeStr}] [AUTO] CRM Lead created dari ${type.toUpperCase()}`,
-                        "Status CRM": "Baru Masuk (Belum FU)",
-                        [linkFieldOnCrm]: record.docId
-                    };
-                    
-                    const newRef = await addDoc(collection(db, "crm_leads"), newCRMDoc);
-                    newCRMDoc.docId = newRef.id;
-                    let targetArr = isAdmin ? crmState.adminData : crmState.data;
-                    targetArr.push(newCRMDoc);
-                    
-                    if(!window.crmByPsDocId) window.crmByPsDocId = {};
-                    if(!window.crmByEnrollDocId) window.crmByEnrollDocId = {};
-                    
-                    if(type === 'ps') { window.crmByPsDocId[record.docId] = newCRMDoc; }
-                    else { window.crmByEnrollDocId[record.docId] = newCRMDoc; }
-                } catch(e) { console.error("Error create in bulk:", e); }
-                
-                successCount++;
-                let lMsg = document.getElementById('bulk-crm-loading');
-                if(lMsg) lMsg.innerText = `Memproses ${successCount} / ${unlinkedIndices.length}...`;
+            if(!isSilent && !confirm(`Terdapat ${unlinkedRecords.length} rekod yang belum ada CRM. Teruskan?`)) return;
+
+            // Tunjuk loading bar
+            let loadingMsg = document.getElementById('bulk-crm-loading');
+            if(!loadingMsg) {
+                loadingMsg = document.createElement('div');
+                loadingMsg.id = 'bulk-crm-loading';
+                loadingMsg.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#00c6ff; color:#000; padding:12px 25px; border-radius:8px; z-index:99999; font-weight:bold; box-shadow:0 4px 15px rgba(0,0,0,0.5);';
+                document.body.appendChild(loadingMsg);
             }
-            
+            loadingMsg.innerText = `⏳ Menyediakan ${unlinkedRecords.length} CRM baru...`;
+
+            // ⚡ STEP 3: Jana Lead ID sekali gus — ambil max 1 kali je dari Firebase
+            let currentMax = 1000;
+            try {
+                const sysRef = doc(db, "system_settings", "crm_counter");
+                const sysSnap = await getDoc(sysRef);
+                if(sysSnap.exists()) currentMax = sysSnap.data().max_lead_id || 1000;
+                // Juga semak dalam memory (kalau ada yang lebih tinggi)
+                [crmState.data, crmState.adminData].forEach(arr => {
+                    (arr || []).forEach(r => {
+                        let num = r["Lead ID"] ? parseInt(String(r["Lead ID"]).replace(/\D/g,'')) : 0;
+                        if(!isNaN(num) && num > currentMax) currentMax = num;
+                    });
+                });
+            } catch(e) { console.error("Gagal baca crm_counter:", e); }
+
+            let todayStr = new Date().toISOString().split('T')[0];
+            let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
+
+            // ⚡ STEP 4: Bina semua doc dalam memori, tulis guna writeBatch (max 500/batch)
+            let targetArr = isAdmin ? crmState.adminData : crmState.data;
+            if(!window.crmByPsDocId) window.crmByPsDocId = {};
+            if(!window.crmByEnrollDocId) window.crmByEnrollDocId = {};
+
+            let allNewDocs = []; // { ref, data }
+            for(let record of unlinkedRecords) {
+                currentMax++;
+                let newLeadId = "L" + String(currentMax).padStart(5, '0');
+                let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
+                let recordPhone = type === 'ps' ? (record["Phone Number"] || record["Phone"] || record["Contact"] || "") : (record["Phone"] || "");
+                let recordName = record["Student Name"] || record["Name"] || "-";
+                let newRef = doc(collection(db, "crm_leads"));
+                let newCRMDoc = {
+                    "Lead ID": newLeadId,
+                    "Timestamp Masuk": record["Timestamp Masuk"] || new Date().toISOString(),
+                    "Staff Name": staffName,
+                    "Student Name": recordName,
+                    "Phone Number": recordPhone,
+                    "TO FU": "",
+                    "TO FU DONE": false,
+                    "HISTORY FU": `[${todayStr} ${timeStr}] [AUTO] CRM Lead created dari ${type.toUpperCase()}`,
+                    "Status CRM": "Baru Masuk (Belum FU)",
+                    [linkFieldOnCrm]: record.docId
+                };
+                allNewDocs.push({ ref: newRef, data: newCRMDoc, psDocId: record.docId });
+            }
+
+            // ⚡ STEP 5: Batch write 500 serentak
+            let batchCount = 0;
+            let batch = writeBatch(db);
+            let opCount = 0;
+            let totalBatches = Math.ceil(allNewDocs.length / 500);
+            let batchNum = 1;
+
+            for(let item of allNewDocs) {
+                batch.set(item.ref, item.data);
+                opCount++;
+                batchCount++;
+
+                if(opCount >= 500) {
+                    loadingMsg.innerText = `🚀 Lori ${batchNum}/${totalBatches} — ${batchCount}/${allNewDocs.length} CRM...`;
+                    await batch.commit();
+                    batch = writeBatch(db);
+                    opCount = 0;
+                    batchNum++;
+                }
+            }
+            if(opCount > 0) {
+                loadingMsg.innerText = `🚀 Lori terakhir — ${batchCount}/${allNewDocs.length} CRM...`;
+                await batch.commit();
+            }
+
+            // ⚡ STEP 6: Update counter sekali je
+            try {
+                await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: currentMax }, { merge: true });
+            } catch(e) { console.error("Gagal update crm_counter:", e); }
+
+            // ⚡ STEP 7: Update memori (state & lookup map)
+            for(let item of allNewDocs) {
+                let fullDoc = { docId: item.ref.id, ...item.data };
+                targetArr.push(fullDoc);
+                if(type === 'ps') window.crmByPsDocId[item.psDocId] = fullDoc;
+                else window.crmByEnrollDocId[item.psDocId] = fullDoc;
+            }
+
+            // Tutup loading
             let lMsgFinal = document.getElementById('bulk-crm-loading');
             if(lMsgFinal) document.body.removeChild(lMsgFinal);
-            if (!isSilent) alert(`Selesai! ${successCount} rekod telah diproses dan di-link ke CRM.`);
-            
+            if(!isSilent) alert(`✅ Selesai! ${allNewDocs.length} CRM baru berjaya dicipta.`);
+
             if(type === 'ps') { window.renderPSTable(isAdmin); window.renderPSMobileList(isAdmin); }
             else { window.renderEnrollTable(isAdmin); window.renderEnrollMobileList(isAdmin); }
         };
@@ -5708,6 +5911,16 @@
             await window.renderLinkedBox('ps', data["Linked PS DocID"] || "");
             await window.renderLinkedBox('enroll', data["Linked Enroll DocID"] || "");
             window.renderFUComparisonBox();
+            // 🌟 Merge tags dari kedua-dua section jadi satu pool yang sama
+            let psTags = (document.getElementById('crmps-tags-value')?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let enrollTags2 = (document.getElementById('crmenroll-tags-value')?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let merged2 = [...new Set([...psTags, ...enrollTags2])];
+            if(merged2.length > 0 && (data["Linked PS DocID"] || data["Linked Enroll DocID"])) {
+                window._renderCRMSectionTags('crmps-tags-container', 'crmps-tags-value', merged2);
+                window._renderCRMSectionTags('crmenroll-tags-container', 'crmenroll-tags-value', merged2);
+                window._renderCRMSectionTagPicker('crmps-tag-picker','crmps-tag-input','crmps-tags-container','crmps-tags-value','ps');
+                window._renderCRMSectionTagPicker('crmenroll-tag-picker','crmenroll-tag-input','crmenroll-tags-container','crmenroll-tags-value','enroll');
+            }
         };
 
         // ==========================================
@@ -5744,20 +5957,33 @@
         window.populateCRMPSSection = function(record) {
             let section = document.getElementById('crm-ps-section');
             if(!section) return;
-            if(!record) { section.style.display = 'none'; return; }
+            if(!record) {
+                section.style.display = 'none';
+                window._renderCRMSectionTags('crmps-tags-container','crmps-tags-value',[]);
+                let picker = document.getElementById('crmps-tag-picker');
+                if(picker) picker.innerHTML = '';
+                return;
+            }
             section.style.display = 'block';
 
             document.getElementById('crmps-docid').value = record.docId || "";
 
+            // 🏷️ Load Tags + render picker
+            let psTags = window.getRecordTags(record);
+            window._renderCRMSectionTags('crmps-tags-container', 'crmps-tags-value', psTags);
+            let inp = document.getElementById('crmps-tag-input');
+            if(inp) inp.value = '';
+            window._renderCRMSectionTagPicker('crmps-tag-picker','crmps-tag-input','crmps-tags-container','crmps-tags-value','ps');
+
             // 🌟 FIX: Masukkan semua detail (termasuk Referral, Name, Phone, Class Progress) ke dalam Other Details
             let otherDiv = document.getElementById('crmps-other-details');
             otherDiv.innerHTML = "";
-            let excludeKeys = ["docId"]; // Hanya abaikan docId
+            let excludeKeys = ["docId", "Tags"];
             psColumns.forEach(col => {
-                if(!excludeKeys.includes(col.key)) {
+                if(!excludeKeys.includes(col.key) && !col.isTagsCol) {
                     let val = record[col.key];
                     if(val && val !== "-" && String(val).trim() !== "") {
-                        otherDiv.innerHTML += `<div class="form-group-crm"><label>${col.label}</label><input type="text" value="${val}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1"></div>`;
+                        otherDiv.innerHTML += `<div class="form-group-crm"><label>${col.label}</label><input type="text" value="${String(val).replace(/"/g,'&quot;')}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1"></div>`;
                     }
                 }
             });
@@ -5766,7 +5992,13 @@
         window.populateCRMEnrollSection = function(record) {
             let section = document.getElementById('crm-enroll-section');
             if(!section) return;
-            if(!record) { section.style.display = 'none'; return; }
+            if(!record) {
+                section.style.display = 'none';
+                window._renderCRMSectionTags('crmenroll-tags-container','crmenroll-tags-value',[]);
+                let picker = document.getElementById('crmenroll-tag-picker');
+                if(picker) picker.innerHTML = '';
+                return;
+            }
             section.style.display = 'block';
 
             document.getElementById('crmenroll-docid').value = record.docId || "";
@@ -5780,12 +6012,19 @@
             document.getElementById('crmenroll-futime').value = record["FU Time"] || "";
             document.getElementById('crmenroll-history').value = record["History FU"] || "";
 
+            // 🏷️ Load Tags + render picker
+            let enrollTags = window.getRecordTags(record);
+            window._renderCRMSectionTags('crmenroll-tags-container', 'crmenroll-tags-value', enrollTags);
+            let inp = document.getElementById('crmenroll-tag-input');
+            if(inp) inp.value = '';
+            window._renderCRMSectionTagPicker('crmenroll-tag-picker','crmenroll-tag-input','crmenroll-tags-container','crmenroll-tags-value','enroll');
+
             let otherDiv = document.getElementById('crmenroll-other-details');
             otherDiv.innerHTML = "";
-            let excludeKeys = ["Staff Name", "Inviter", "Student Name", "Phone", "TO FU", "Outcome", "Class Progress", "FU Date", "FU Time", "History FU", "docId", "Timestamp Masuk"];
+            let excludeKeys = ["Staff Name", "Inviter", "Student Name", "Phone", "TO FU", "Outcome", "Class Progress", "FU Date", "FU Time", "History FU", "docId", "Timestamp Masuk", "Tags"];
             enrollColumns.forEach(col => {
-                if(!excludeKeys.includes(col.key) && record[col.key]) {
-                    otherDiv.innerHTML += `<div class="form-group-crm"><label>${col.label}</label><input type="text" value="${record[col.key]}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1"></div>`;
+                if(!excludeKeys.includes(col.key) && !col.isTagsCol && record[col.key]) {
+                    otherDiv.innerHTML += `<div class="form-group-crm"><label>${col.label}</label><input type="text" value="${String(record[col.key]).replace(/"/g,'&quot;')}" readonly class="bg-transparent border-none text-gray-300 px-0 py-1"></div>`;
                 }
             });
         };
@@ -6813,213 +7052,229 @@
         };
 
         window.prosesImportPSExcel = async function(inputId, statusId, btn, isStaffView = false) {
-            const fail = document.getElementById(inputId).files[0];
+            const failList = document.getElementById(inputId).files;
             const status = document.getElementById(statusId);
 
-            if(!fail) { alert("Sila pilih fail Excel boss!"); return; }
+            if(!failList || failList.length === 0) { alert("Sila pilih fail Excel boss!"); return; }
             
-            status.innerText = "⏳ Memulakan Sniper Mode (Batch Processing)...";
+            status.innerText = `⏳ Memulakan Sniper Mode — ${failList.length} fail dipilih...`;
             status.style.color = "#ff9800";
             btn.disabled = true;
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+            let grandAdded = 0, grandUpdated = 0;
+            let allStaffTerlibat = [];
 
-                    let headerRowIndex = -1, idxCode = -1, idxName = -1;
-                    let headers = [];
+            // Helper: proses 1 fail, return { bAdded, bUpdated, staffTerlibat }
+            async function prosesSatuFailPS(fail, fileIndex) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, {type: 'array'});
+                            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
-                    for(let r=0; r<10 && r<rows.length; r++) { 
-                        let rowArray = rows[r];
-                        if(!rowArray) continue;
-                        for(let c=0; c<rowArray.length; c++) {
-                            let cellText = String(rowArray[c]).toLowerCase().replace(/[^a-z0-9]/g, '');
-                            if(cellText.includes('potentialstudentcode') || cellText.includes('studentcode') || cellText === 'code') idxCode = c;
-                            if(cellText.includes('referral') || cellText.includes('refferal') || cellText.includes('namapenuh') || cellText.includes('staff')) idxName = c;
-                        }
-                        if(idxCode !== -1 || idxName !== -1) { headerRowIndex = r; headers = rowArray; break; }
-                    }
+                            let headerRowIndex = -1, idxCode = -1, idxName = -1;
+                            let headers = [];
 
-                    if(headerRowIndex === -1) {
-                        alert("❌ Gagal cari tajuk Kod Student dalam Excel!");
-                        status.innerText = "❌ Format Salah"; btn.disabled = false; return;
-                    }
-
-                    let excelCodes = [], validRows = [];
-                    for(let i = headerRowIndex + 1; i < rows.length; i++) {
-                        let rowArray = rows[i];
-                        let studentCodeExcel = idxCode !== -1 ? String(rowArray[idxCode] || "").trim() : "";
-                        if(studentCodeExcel) {
-                            excelCodes.push(studentCodeExcel);
-                            let rowData = {};
-                            headers.forEach((h, c) => { 
-                                let val = rowArray[c];
-                                // 🌟 FIX: Detect dan convert Excel Serial Number (Date/Timestamp)
-                                let numVal = Number(val);
-                                if (!isNaN(numVal) && numVal > 30000 && numVal < 70000 && String(val).trim() !== "") {
-                                    let d = window.excelSerialToDate(numVal);
-                                    if (d) {
-                                        let pad = n => String(n).padStart(2, '0');
-                                        if (numVal % 1 !== 0) {
-                                            // Timestamp format: 2026-05-08 10:43:02
-                                            val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
-                                        } else {
-                                            // Date format: 08-May 2026
-                                            let m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-                                            val = `${pad(d.getDate())}-${m[d.getMonth()]} ${d.getFullYear()}`;
-                                        }
-                                    }
+                            for(let r=0; r<10 && r<rows.length; r++) { 
+                                let rowArray = rows[r];
+                                if(!rowArray) continue;
+                                for(let c=0; c<rowArray.length; c++) {
+                                    let cellText = String(rowArray[c]).toLowerCase().replace(/[^a-z0-9]/g, '');
+                                    if(cellText.includes('potentialstudentcode') || cellText.includes('studentcode') || cellText === 'code') idxCode = c;
+                                    if(cellText.includes('referral') || cellText.includes('refferal') || cellText.includes('namapenuh') || cellText.includes('staff')) idxName = c;
                                 }
-                                rowData[h || `Col_${c}`] = String(val || "").trim(); 
-                            });
-                            validRows.push({ code: studentCodeExcel, data: rowData, name: idxName !== -1 ? String(rowArray[idxName] || "").trim() : "" });
-                        }
-                    }
+                                if(idxCode !== -1 || idxName !== -1) { headerRowIndex = r; headers = rowArray; break; }
+                            }
 
-                    // 1. Kumpul Data Sedia Ada (Existing Map)
-                    let existingMap = {};
-                    let uniqCodes = [...new Set(excelCodes)];
-                    
-                    status.innerText = `⏳ Menyemak ${uniqCodes.length} rekod dalam pangkalan data...`;
-                    
-                    for (let i = 0; i < uniqCodes.length; i += 30) {
-                        const q = fbQuery(collection(db, "ps_students"), fbWhere("Potential Student Code", "in", uniqCodes.slice(i, i + 30)));
-                        const snap = await getDocs(q);
-                        snap.forEach(d => { 
-                            let code = d.data()["Potential Student Code"] || d.data()["POTENTIAL STUDENT CODE"];
-                            existingMap[String(code).trim()] = { docId: d.id, ...d.data() }; 
-                        });
-                    }
+                            if(headerRowIndex === -1) {
+                                status.innerText = `❌ Fail ${fileIndex+1} (${fail.name}): Gagal cari tajuk Kod Student!`;
+                                resolve({ bAdded: 0, bUpdated: 0, staffTerlibat: [] });
+                                return;
+                            }
 
-                    let bAdded = 0, bUpdated = 0;
-                    if(typeof psState === 'undefined') window.psState = { adminData: [], data: [] };
-                    if(!psState.adminData) psState.adminData = [];
-                    if(!psState.data) psState.data = [];
+                            let excelCodes = [], validRows = [];
+                            for(let i = headerRowIndex + 1; i < rows.length; i++) {
+                                let rowArray = rows[i];
+                                let studentCodeExcel = idxCode !== -1 ? String(rowArray[idxCode] || "").trim() : "";
+                                if(studentCodeExcel) {
+                                    excelCodes.push(studentCodeExcel);
+                                    let rowData = {};
+                                    headers.forEach((h, c) => { 
+                                        let val = rowArray[c];
+                                        // 🌟 FIX: Detect dan convert Excel Serial Number (Date/Timestamp)
+                                        let numVal = Number(val);
+                                        if (!isNaN(numVal) && numVal > 30000 && numVal < 70000 && String(val).trim() !== "") {
+                                            let d = window.excelSerialToDate(numVal);
+                                            if (d) {
+                                                let pad = n => String(n).padStart(2, '0');
+                                                if (numVal % 1 !== 0) {
+                                                    val = `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+                                                } else {
+                                                    let m = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+                                                    val = `${pad(d.getDate())}-${m[d.getMonth()]} ${d.getFullYear()}`;
+                                                }
+                                            }
+                                        }
+                                        rowData[h || `Col_${c}`] = String(val || "").trim(); 
+                                    });
+                                    validRows.push({ code: studentCodeExcel, data: rowData, name: idxName !== -1 ? String(rowArray[idxName] || "").trim() : "" });
+                                }
+                            }
 
-                    let staffTerlibat = [];
-                    
-                    let batch = writeBatch(db);
-                    let operationCount = 0;
-                    let totalLori = Math.ceil(validRows.length / 450);
-                    let loriSekarang = 1;
-
-                    status.innerText = `🚀 Mula menembak lori 1 dari ${totalLori}...`;
-
-                    for(let row of validRows) {
-                        let rowData = row.data;
-                        let finalStaffName = row.name;
-
-                        if (isStaffView) {
-                            finalStaffName = currentUser;
-                        } else {
-                            let matchedStaff = null;
-                            if (typeof senaraiStafAdmin !== 'undefined' && row.name) {
-                                let rowNameLow = String(row.name).toLowerCase().trim();
-                                matchedStaff = senaraiStafAdmin.find(s => {
-                                    let excelNameMap = String(s.fullName || "").toLowerCase().trim();
-                                    let sysNameMap = String(s.name || "").toLowerCase().trim();
-                                    return (excelNameMap !== "" && excelNameMap === rowNameLow) || (sysNameMap === rowNameLow);
+                            // Kumpul Data Sedia Ada (Existing Map)
+                            let existingMap = {};
+                            let uniqCodes = [...new Set(excelCodes)];
+                            
+                            status.innerText = `⏳ Fail ${fileIndex+1}/${failList.length} (${fail.name}): Semak ${uniqCodes.length} rekod...`;
+                            
+                            for (let i = 0; i < uniqCodes.length; i += 30) {
+                                const q = fbQuery(collection(db, "ps_students"), fbWhere("Potential Student Code", "in", uniqCodes.slice(i, i + 30)));
+                                const snap = await getDocs(q);
+                                snap.forEach(d => { 
+                                    let code = d.data()["Potential Student Code"] || d.data()["POTENTIAL STUDENT CODE"];
+                                    existingMap[String(code).trim()] = { docId: d.id, ...d.data() }; 
                                 });
                             }
-                            // 🌟 STANDARD: Sentiasa guna nama sistem (name pendek) sebagai Staff Name
-                            // Ini pastikan Staff Name dalam Firebase SENTIASA konsisten
-                            if (matchedStaff) finalStaffName = matchedStaff.name;
-                            else finalStaffName = row.name; // Fallback: nama dari Excel kalau tiada match
-                        }
-                        
-                        rowData["Staff Name"] = finalStaffName;
-                        rowData["Potential Student Code"] = row.code;
 
-                        if (finalStaffName && !staffTerlibat.includes(finalStaffName)) staffTerlibat.push(finalStaffName);
+                            let bAdded = 0, bUpdated = 0;
+                            if(typeof psState === 'undefined') window.psState = { adminData: [], data: [] };
+                            if(!psState.adminData) psState.adminData = [];
+                            if(!psState.data) psState.data = [];
 
-                        if (existingMap[row.code]) {
-                            // UPDATE REKOD (Guna Batch)
-                            let old = existingMap[row.code];
-                            rowData["Timestamp Masuk"] = new Date().toISOString(); // 🌟 Refresh timestamp setiap kali import/update
+                            let staffTerlibat = [];
                             
-                            // 🛡️ PROTECT MODE: Ambil balik data manual dari Firebase dan timpa data Excel
-                            rowData["TO FU"] = old["TO FU"] || "";
-                            rowData["FU Date"] = old["FU Date"] || "";
-                            rowData["FU Time"] = old["FU Time"] || "";
-                            rowData["Remark 2"] = old["Remark 2"] || ""; // History FU
-                            rowData["Class Progress"] = old["Class Progress"] || "";
-                            
-                            let docRef = doc(db, "ps_students", old.docId);
-                            batch.update(docRef, rowData);
-                            
-                            let idx = psState.adminData.findIndex(item => item.docId === old.docId);
-                            if(idx !== -1) psState.adminData[idx] = { docId: old.docId, ...rowData };
-                            if(isStaffView) {
-                                let idxStaff = psState.data.findIndex(item => item.docId === old.docId);
-                                if(idxStaff !== -1) psState.data[idxStaff] = { docId: old.docId, ...rowData };
+                            let batch = writeBatch(db);
+                            let operationCount = 0;
+                            let totalLori = Math.ceil(validRows.length / 450);
+                            let loriSekarang = 1;
+
+                            status.innerText = `🚀 Fail ${fileIndex+1}/${failList.length} (${fail.name}): Tembak lori 1/${totalLori}...`;
+
+                            // 🌟 FIX: Pastikan senarai staf ada sebelum mapping nama
+                            if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) {
+                                try {
+                                    const staffSnap = await getDocs(collection(db, "staff_list"));
+                                    senaraiStafAdmin = [];
+                                    staffSnap.forEach(d => senaraiStafAdmin.push({
+                                        id: d.id,
+                                        name: d.data().name,
+                                        fullName: d.data().fullName || "",
+                                        isHidden: d.data().isHidden || false
+                                    }));
+                                } catch(e) { console.error("Gagal fetch staff_list untuk mapping:", e); }
                             }
-                            bUpdated++;
-                        } else {
-                            // CREATE REKOD (Guna Batch)
-                            rowData["Timestamp Masuk"] = new Date().toISOString();
-                            let newDocRef = doc(collection(db, "ps_students"));
-                            
-                            batch.set(newDocRef, rowData);
-                            
-                            psState.adminData.unshift({ docId: newDocRef.id, ...rowData });
-                            if(isStaffView) psState.data.unshift({ docId: newDocRef.id, ...rowData });
-                            
-                            bAdded++;
+
+                            for(let row of validRows) {
+                                let rowData = row.data;
+                                let finalStaffName = row.name;
+
+                                if (isStaffView) {
+                                    finalStaffName = currentUser;
+                                } else {
+                                    let matchedStaff = null;
+                                    if (typeof senaraiStafAdmin !== 'undefined' && row.name) {
+                                        let rowNameLow = String(row.name).toLowerCase().trim();
+                                        matchedStaff = senaraiStafAdmin.find(s => {
+                                            let excelNameMap = String(s.fullName || "").toLowerCase().trim();
+                                            let sysNameMap = String(s.name || "").toLowerCase().trim();
+                                            return (excelNameMap !== "" && excelNameMap === rowNameLow) || (sysNameMap === rowNameLow);
+                                        });
+                                    }
+                                    if (matchedStaff) finalStaffName = matchedStaff.name;
+                                    else finalStaffName = row.name;
+                                }
+                                
+                                rowData["Staff Name"] = finalStaffName;
+                                rowData["Potential Student Code"] = row.code;
+
+                                if (finalStaffName && !staffTerlibat.includes(finalStaffName)) staffTerlibat.push(finalStaffName);
+
+                                if (existingMap[row.code]) {
+                                    let old = existingMap[row.code];
+                                    rowData["Timestamp Masuk"] = new Date().toISOString();
+                                    rowData["TO FU"] = old["TO FU"] || "";
+                                    rowData["FU Date"] = old["FU Date"] || "";
+                                    rowData["FU Time"] = old["FU Time"] || "";
+                                    rowData["Remark 2"] = old["Remark 2"] || "";
+                                    rowData["Class Progress"] = old["Class Progress"] || "";
+                                    
+                                    let docRef = doc(db, "ps_students", old.docId);
+                                    batch.update(docRef, rowData);
+                                    
+                                    let idx = psState.adminData.findIndex(item => item.docId === old.docId);
+                                    if(idx !== -1) psState.adminData[idx] = { docId: old.docId, ...rowData };
+                                    if(isStaffView) {
+                                        let idxStaff = psState.data.findIndex(item => item.docId === old.docId);
+                                        if(idxStaff !== -1) psState.data[idxStaff] = { docId: old.docId, ...rowData };
+                                    }
+                                    bUpdated++;
+                                } else {
+                                    rowData["Timestamp Masuk"] = new Date().toISOString();
+                                    let newDocRef = doc(collection(db, "ps_students"));
+                                    batch.set(newDocRef, rowData);
+                                    psState.adminData.unshift({ docId: newDocRef.id, ...rowData });
+                                    if(isStaffView) psState.data.unshift({ docId: newDocRef.id, ...rowData });
+                                    bAdded++;
+                                }
+
+                                operationCount++;
+                                if (operationCount >= 450) {
+                                    await batch.commit();
+                                    loriSekarang++;
+                                    status.innerText = `🚀 Fail ${fileIndex+1}/${failList.length}: Lori ${loriSekarang}/${totalLori}...`;
+                                    batch = writeBatch(db);
+                                    operationCount = 0; 
+                                }
+                            }
+
+                            if (operationCount > 0) await batch.commit();
+
+                            resolve({ bAdded, bUpdated, staffTerlibat });
+                        } catch (err) {
+                            reject(err);
                         }
+                    };
+                    reader.readAsArrayBuffer(fail);
+                });
+            }
 
-                        operationCount++;
-
-                        if (operationCount >= 450) {
-                            await batch.commit();
-                            loriSekarang++;
-                            status.innerText = `🚀 Mula menembak lori ${loriSekarang} dari ${totalLori}...`;
-                            batch = writeBatch(db);
-                            operationCount = 0; 
-                        }
-                    }
-
-                    if (operationCount > 0) {
-                        await batch.commit();
-                    }
-
-                    status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update. (Data Manual Dilindungi 🛡️)`;
-                    status.style.color = "#00e676";
-                    btn.disabled = false;
-                    
-                    if (staffTerlibat.length === 0 && !isStaffView) {
-                        staffTerlibat.push("Admin Master (Pukal)");
-                    }
-                    
-                    if (staffTerlibat.length > 0) {
-                        try {
-                            let logUpdates = {};
-                            staffTerlibat.forEach(s => {
-                                if (s.trim() !== "") logUpdates[s] = new Date().toISOString();
-                            });
-                            await setDoc(doc(db, "system_settings", "ps_upload_logs"), logUpdates, { merge: true });
-                            if (typeof window.renderPSUploadLogs === 'function') window.renderPSUploadLogs();
-                        } catch(e) { console.error("Gagal update CCTV:", e); }
-                    }
-
-                    if (isStaffView && typeof window.renderPSTable === 'function') window.renderPSTable();
-                    else if (!isStaffView && typeof window.renderAdminPSTable === 'function') window.renderAdminPSTable();
-
-                    // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
-                    if (typeof window.bulkAutoCreateCRM === 'function') {
-                        // isStaffView = false means it's Admin (isAdmin = true)
-                        window.bulkAutoCreateCRM('ps', !isStaffView, true);
-                    }
-
-                } catch (err) {
-                    alert("Ralat: " + err.message);
-                    status.innerText = "❌ Gagal"; btn.disabled = false;
+            try {
+                for(let i = 0; i < failList.length; i++) {
+                    const result = await prosesSatuFailPS(failList[i], i);
+                    grandAdded += result.bAdded;
+                    grandUpdated += result.bUpdated;
+                    result.staffTerlibat.forEach(s => { if(!allStaffTerlibat.includes(s)) allStaffTerlibat.push(s); });
                 }
-            };
-            reader.readAsArrayBuffer(fail);
+
+                status.innerText = `✅ SIAP! ${failList.length} fail — ${grandAdded} Baru, ${grandUpdated} Update. (Data Manual Dilindungi 🛡️)`;
+                status.style.color = "#00e676";
+                btn.disabled = false;
+                
+                if (allStaffTerlibat.length === 0 && !isStaffView) allStaffTerlibat.push("Admin Master (Pukal)");
+                
+                if (allStaffTerlibat.length > 0) {
+                    try {
+                        let logUpdates = {};
+                        allStaffTerlibat.forEach(s => { if (s.trim() !== "") logUpdates[s] = new Date().toISOString(); });
+                        await setDoc(doc(db, "system_settings", "ps_upload_logs"), logUpdates, { merge: true });
+                        if (typeof window.renderPSUploadLogs === 'function') window.renderPSUploadLogs();
+                    } catch(e) { console.error("Gagal update CCTV:", e); }
+                }
+
+                if (isStaffView && typeof window.renderPSTable === 'function') window.renderPSTable();
+                else if (!isStaffView && typeof window.renderAdminPSTable === 'function') window.renderAdminPSTable();
+
+                // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
+                if (typeof window.bulkAutoCreateCRM === 'function') {
+                    window.bulkAutoCreateCRM('ps', !isStaffView, true);
+                }
+            } catch (err) {
+                alert("Ralat: " + err.message);
+                status.innerText = "❌ Gagal"; btn.disabled = false;
+            }
         };
 
         // 🌟 KAWINKAN FUNGSI DENGAN BUTANG DI SYSTEM SETUP
@@ -7036,7 +7291,7 @@
         // 11. MODUL PS MASTER (STAFF & ADMIN)
         // ==========================================
         let psState = { data: [], adminData: [] };
-        let teamPsPage = 1, adminPsPage = 1, psRowsPerPage = 50;
+        let teamPsPage = 1, adminPsPage = 1, psRowsPerPage = window.innerWidth < 768 ? 20 : 50;
         let teamPsFilters = {}, adminPsFilters = {};
         let teamPsSortCol = "Timestamp", teamPsSortAsc = false;
         let adminPsSortCol = "Timestamp", adminPsSortAsc = false;
@@ -7047,6 +7302,7 @@
             { key: 'Student Name', label: 'Name', color: '#00c6ff' },
             { key: 'Phone Number', label: 'Phone' },
             { key: 'TO FU', label: 'Action (TO FU)', color: '#00e676' }, // 🌟 BARU: Action TO FU
+            { key: 'Tags', label: 'Tags', color: '#f59e0b', isTagsCol: true },
             { key: 'Remark 2', label: 'History FU' }, // 🌟 TUKAR NAMA: Remark 2 -> History FU
             { key: 'FU Date', label: 'FU Date' },
             { key: 'FU Time', label: 'FU Time' },
@@ -7230,7 +7486,8 @@
                         psState.adminData = [];
                         cacheSnap.forEach(doc => psState.adminData.push({ docId: doc.id, ...doc.data() }));
                         sortFn(psState.adminData);
-                        await window._prefetchCRMLinksForPS(psState.adminData);
+                        let isMobile = window.innerWidth < 768;
+                        await window._prefetchCRMLinksForPS(psState.adminData, isMobile);
                         adminPsPage = 1; window.renderAdminPSTable(); window.populatePSCopyDropdown();
                     }
                 } catch(_) {}
@@ -7240,7 +7497,8 @@
                 psState.adminData = [];
                 snap.forEach(doc => psState.adminData.push({ docId: doc.id, ...doc.data() }));
                 sortFn(psState.adminData);
-                await window._prefetchCRMLinksForPS(psState.adminData);
+                let isMobile = window.innerWidth < 768;
+                await window._prefetchCRMLinksForPS(psState.adminData, isMobile);
                 adminPsPage = 1;
                 window.renderAdminPSTable();
                 window.populatePSCopyDropdown();
@@ -7249,9 +7507,15 @@
 
         // 🌟 Fetch semua CRM records yang ada Linked PS DocID untuk rekod PS yang dipass masuk
         // Hasil masuk crmState + rebuildCRMLookup → crmByPsDocId terus ready walau tab CRM belum dibuka
-        window._prefetchCRMLinksForPS = async function(psArr) {
+        window._prefetchCRMLinksForPS = async function(psArr, pageOnly = false) {
             if(!psArr || psArr.length === 0) return;
-            let docIds = psArr.map(r => r.docId).filter(Boolean);
+            // Kalau pageOnly, ambil slice page semasa je (jimat Firebase reads kat mobile)
+            let arrToFetch = psArr;
+            if(pageOnly) {
+                let start = (adminPsPage - 1) * psRowsPerPage;
+                arrToFetch = psArr.slice(start, start + psRowsPerPage);
+            }
+            let docIds = arrToFetch.map(r => r.docId).filter(Boolean);
             try {
                 for(let i = 0; i < docIds.length; i += 30) {
                     const q = fbQuery(collection(db, "crm_leads"), fbWhere("Linked PS DocID", "in", docIds.slice(i, i + 30)));
@@ -7413,6 +7677,14 @@
                     if (col.key === 'Phone Number' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = window.formatDisplayValue(row["Phone"] || row["phone"] || row["Contact"] || row["contact"]); }
                     if (col.key === 'Referral' && (!rawVal || String(rawVal).trim() === "" || rawVal === "-")) { rawVal = window.formatDisplayValue(row["Refferal"] || row["referral"] || row["refferal"]); }
 
+                    // 🌟 TAGS — render as pills
+                    if (col.isTagsCol) {
+                        let tags = Array.isArray(row["Tags"]) ? row["Tags"] : (row["Tags"] ? String(row["Tags"]).split(',').map(t=>t.trim()).filter(Boolean) : []);
+                        let tagsHtml = tags.length > 0 ? tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:bold;white-space:nowrap;">${t}</span>`).join(' ') : '-';
+                        html += `<td style="padding:5px;"><div class="scroll-cell" style="display:flex;flex-wrap:wrap;gap:3px;">${tagsHtml}</div></td>`;
+                        return;
+                    }
+
                     // 🌟 TO FU, History FU, FU Date, FU Time — ambik dari CRM Modal (linked CRM record)
                     let crmRec = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
                     if (col.key === 'TO FU') {
@@ -7512,10 +7784,536 @@
             });
 
             window.updatePSPreview();
+
+            // 🏷️ Load Tags
+            window.loadPSModalTagsDirect(data, 'ps');
+
+            // 🔗 Status PS — populate collapsible
+            let statusDiv = document.getElementById('ps-status-link-display');
+            if(statusDiv) {
+                let fields = ['Attendance', 'Enrollment Status', 'Progess Status', 'Collection Status', 'Class Progress', 'EFO', 'PS Student'];
+                statusDiv.innerHTML = `<div class="grid grid-cols-2 gap-2 mt-1">` + fields.map(f => {
+                    let v = data[f] || '-';
+                    return `<div class="bg-[#111] rounded p-1.5 border border-[#333]"><div class="text-[9px] text-gray-500 uppercase tracking-wide">${f}</div><div class="text-xs font-bold text-white mt-0.5">${v}</div></div>`;
+                }).join('') + `</div>`;
+            }
+
             document.getElementById('modal-ps').style.display = 'flex';
         };
         
         window.closePSModal = function() { document.getElementById('modal-ps').style.display = 'none'; };
+
+        // ============================================
+        // 🏷️ TAGS SYSTEM — PS Master & PS Enroll
+        // ============================================
+
+        // Global tags state (all unique tags in the system)
+        window._allSystemTags = [];
+        window._mobileTagsFilterActive = []; // selected tags for mobile filter
+        window._mobileTagsFilterContext = { isAdmin: false, type: 'ps' }; // context
+        window._bulkTagsSelected = { ps: [], enroll: [] };
+
+        // Helper: get tags array from a record
+        window.getRecordTags = function(row) {
+            if(Array.isArray(row["Tags"])) return row["Tags"];
+            if(row["Tags"] && String(row["Tags"]).trim()) return String(row["Tags"]).split(',').map(t=>t.trim()).filter(Boolean);
+            return [];
+        };
+
+        // Helper: collect all unique tags from a state array
+        window.collectAllTags = function(stateArr) {
+            let tagSet = new Set();
+            (stateArr || []).forEach(r => window.getRecordTags(r).forEach(t => tagSet.add(t)));
+            return [...tagSet].sort();
+        };
+
+        // Helper: collect ALL tags from CRM + PS Master + PS Enroll (shared pool)
+        window.collectAllTagsGlobal = function() {
+            let tagSet = new Set();
+            let allArrays = [
+                ...(typeof crmState !== 'undefined' ? (crmState.adminData||[]) : []),
+                ...(typeof crmState !== 'undefined' ? (crmState.data||[]) : []),
+                ...(typeof psState !== 'undefined' ? (psState.adminData||[]) : []),
+                ...(typeof psState !== 'undefined' ? (psState.data||[]) : []),
+                ...(typeof enrollState !== 'undefined' ? (enrollState.adminData||[]) : []),
+                ...(typeof enrollState !== 'undefined' ? (enrollState.data||[]) : [])
+            ];
+            // CRM tags field is "Tags" too
+            allArrays.forEach(r => {
+                let tags = window.getRecordTags(r);
+                // Also check CRM Tags field key variations
+                if(!tags.length && r["TAGS"]) tags = String(r["TAGS"]).split(',').map(t=>t.trim()).filter(Boolean);
+                tags.forEach(t => tagSet.add(t));
+            });
+            return [...tagSet].sort();
+        };
+
+        // Render tags in modal (PS or Enroll)
+        window.renderModalTags = function(type, tags) {
+            let containerId = type === 'ps' ? 'ps-tags-container' : 'enroll-tags-container';
+            let container = document.getElementById(containerId);
+            if(!container) return;
+            container.innerHTML = tags.map((t, i) => `
+                <span style="display:inline-flex;align-items:center;gap:4px;background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:bold;">
+                    ${t}
+                    <button type="button" onclick="window.psRemoveTag('${type}',${i})" style="background:none;border:none;color:#fbbf24;cursor:pointer;font-size:14px;line-height:1;padding:0;margin-left:2px;">×</button>
+                </span>`).join('');
+            // Save to hidden input as comma-separated
+            let hiddenId = type === 'ps' ? 'ps-tags-value' : 'enroll-tags-value';
+            let hid = document.getElementById(hiddenId);
+            if(hid) hid.value = tags.join(',');
+        };
+
+        // Add tag in modal
+        window.psAddTag = function(type) {
+            let inputId = type === 'ps' ? 'ps-tag-input' : 'enroll-tag-input';
+            let inp = document.getElementById(inputId);
+            if(!inp) return;
+            let val = inp.value.trim().replace(/,/g,'');
+            if(!val) return;
+            let hiddenId = type === 'ps' ? 'ps-tags-value' : 'enroll-tags-value';
+            let current = (document.getElementById(hiddenId)?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            if(!current.includes(val)) {
+                current.push(val);
+                if(!window._allSystemTags.includes(val)) window._allSystemTags.push(val);
+                // 🏷️ Log ke History FU
+                window._appendTagChangeToHistory(type, 'Added Tags', [val]);
+            }
+            window.renderModalTags(type, current);
+            inp.value = '';
+            inp.focus();
+        };
+
+        // Remove tag from modal
+        window.psRemoveTag = function(type, idx) {
+            let hiddenId = type === 'ps' ? 'ps-tags-value' : 'enroll-tags-value';
+            let current = (document.getElementById(hiddenId)?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let removed = current[idx];
+            current.splice(idx, 1);
+            window.renderModalTags(type, current);
+            // 🏷️ Log ke History FU
+            if(removed) window._appendTagChangeToHistory(type, 'Removed Tags', [removed]);
+        };
+
+        // 🏷️ Helper: Append tag change entry to CRM History FU textarea
+        window._appendTagChangeToHistory = function(type, action, tags) {
+            let histEl = document.getElementById('crm-history');
+            if(!histEl) return;
+            let now = new Date();
+            let d = now.toISOString().split('T')[0];
+            let t = now.toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit" });
+            let entry = `[${d} ${t}] ${action} : ${tags.join(', ')}`;
+            let cur = histEl.value.trim();
+            histEl.value = cur ? (entry + "\n" + cur) : entry;
+        };
+
+        // Load tags into PS modal when opening
+        window.loadPSModalTags = function(docId, type) {
+            // Cari record dari state — kalau tak jumpa, render kosong je
+            let stateArr = type === 'ps' ? [...(psState.adminData||[]), ...(psState.data||[])] : [...(enrollState.adminData||[]), ...(enrollState.data||[])];
+            let record = stateArr.find(r => r.docId === docId);
+            let tags = record ? window.getRecordTags(record) : [];
+            // Update global tags pool (untuk autocomplete & bulk picker)
+            window._allSystemTags = window.collectAllTags(stateArr);
+            window.renderModalTags(type, tags);
+        };
+
+        // Load tags terus dari data object (lebih reliable bila state belum ready)
+        window.loadPSModalTagsDirect = function(data, type) {
+            let tags = window.getRecordTags(data);
+            // 🌟 Update global tags pool dari semua collection
+            window._allSystemTags = window.collectAllTagsGlobal();
+            // Pastikan tags dari record semasa pun ada dalam pool
+            tags.forEach(t => { if(!window._allSystemTags.includes(t)) window._allSystemTags.push(t); });
+            window.renderModalTags(type, tags);
+        };
+
+        // ---- BULK TAGS ----
+        window.renderBulkTagPicker = function(type) {
+            let searchId = type === 'ps' ? 'ps-bulk-tag-search' : 'enroll-bulk-tag-search';
+            let pickerId = type === 'ps' ? 'ps-bulk-tag-picker' : 'enroll-bulk-tag-picker';
+            let search = (document.getElementById(searchId)?.value || '').toLowerCase().trim();
+            let picker = document.getElementById(pickerId);
+            if(!picker) return;
+
+            // 🌟 Gunakan global shared tags pool
+            let allTags = window.collectAllTagsGlobal();
+
+            // 🌟 FIX: Merge dengan tags yang dah dipilih/ditambah baru (walaupun belum ada dalam state)
+            let selected = window._bulkTagsSelected[type] || [];
+            selected.forEach(t => { if(!allTags.includes(t)) allTags.push(t); });
+            allTags.sort();
+
+            if(search) allTags = allTags.filter(t => t.toLowerCase().includes(search));
+
+            picker.innerHTML = allTags.slice(0, 20).map(t => {
+                let isSel = selected.includes(t);
+                return `<button type="button" onclick="window.bulkTagToggle('${type}','${t.replace(/'/g,"\\'")}')\" style="
+                    padding:5px 12px;border-radius:999px;font-size:11px;font-weight:bold;cursor:pointer;border:1.5px solid #f59e0b;transition:all 0.15s;
+                    ${isSel ? 'background:#f59e0b;color:#000;' : 'background:#1a1000;color:#f59e0b;opacity:0.7;'}
+                ">${t}</button>`;
+            }).join('') + (allTags.length === 0 ? `<span class="text-gray-500 text-xs">Tiada tag. Taip & Enter untuk tambah baru.</span>` : '');
+        };
+
+        window.bulkTagToggle = function(type, tag) {
+            let sel = window._bulkTagsSelected[type] || [];
+            let idx = sel.indexOf(tag);
+            if(idx > -1) sel.splice(idx, 1);
+            else sel.push(tag);
+            window._bulkTagsSelected[type] = sel;
+            window.renderBulkTagPicker(type);
+        };
+
+        window.bulkTagAddNew = function(type) {
+            let searchId = type === 'ps' ? 'ps-bulk-tag-search' : 'enroll-bulk-tag-search';
+            let inp = document.getElementById(searchId);
+            if(!inp) return;
+            let val = inp.value.trim().replace(/,/g, '');
+            if(!val) return;
+            let sel = window._bulkTagsSelected[type] || [];
+            if(!sel.includes(val)) sel.push(val);
+            window._bulkTagsSelected[type] = sel;
+            if(!window._allSystemTags.includes(val)) window._allSystemTags.push(val);
+            inp.value = '';
+            inp.focus();
+            window.renderBulkTagPicker(type);
+        };
+
+        // 🏷️ Tags helpers untuk CRM Modal PS section & Enroll section
+        // Render tag pills + hidden value
+        window._renderCRMSectionTags = function(containerId, hiddenId, tags) {
+            let container = document.getElementById(containerId);
+            let hidden = document.getElementById(hiddenId);
+            if(!container) return;
+            container.innerHTML = tags.map((t, i) => `
+                <span style="display:inline-flex;align-items:center;gap:4px;background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:2px 9px;border-radius:999px;font-size:10px;font-weight:bold;">
+                    ${t}
+                    <button type="button" onclick="window._removeCRMSectionTagAndSave('${containerId}','${hiddenId}',${i})" style="background:none;border:none;color:#fbbf24;cursor:pointer;font-size:13px;line-height:1;padding:0;margin-left:2px;">×</button>
+                </span>`).join('');
+            if(hidden) hidden.value = tags.join(',');
+        };
+
+        // Render tag picker (existing tags from state) for CRM section
+        window._renderCRMSectionTagPicker = function(pickerId, inputId, containerId, hiddenId, type) {
+            let picker = document.getElementById(pickerId);
+            if(!picker) return;
+            let search = (document.getElementById(inputId)?.value || '').toLowerCase().trim();
+            // 🌟 Gunakan global shared tags pool
+            let allTags = window.collectAllTagsGlobal();
+            let hidden = document.getElementById(hiddenId);
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            // Merge current tags into pool
+            current.forEach(t => { if(!allTags.includes(t)) allTags.push(t); });
+            allTags.sort();
+            if(search) allTags = allTags.filter(t => t.toLowerCase().includes(search));
+            picker.innerHTML = allTags.length === 0
+                ? `<span class="text-gray-500 text-[10px]">Tiada tag. Taip & Enter untuk tambah baru.</span>`
+                : allTags.map(t => {
+                    let isSel = current.includes(t);
+                    return `<button type="button" onclick="window._toggleCRMSectionTag('${pickerId}','${inputId}','${containerId}','${hiddenId}','${type}','${t.replace(/'/g,"\\'")}')" style="padding:3px 10px;border-radius:999px;font-size:10px;font-weight:bold;cursor:pointer;border:1.5px solid #f59e0b;transition:all 0.15s;${isSel ? 'background:#f59e0b;color:#000;' : 'background:#1a1000;color:#f59e0b;opacity:0.7;'}">${t}</button>`;
+                }).join('');
+        };
+
+        // Toggle a tag in CRM section (from picker click) — then auto-save
+        window._toggleCRMSectionTag = function(pickerId, inputId, containerId, hiddenId, type, tag) {
+            let hidden = document.getElementById(hiddenId);
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let idx = current.indexOf(tag);
+            let action, changed;
+            if(idx > -1) { current.splice(idx, 1); action = 'Removed Tags'; changed = [tag]; }
+            else { current.push(tag); action = 'Added Tags'; changed = [tag]; }
+            window._renderCRMSectionTags(containerId, hiddenId, current);
+            window._renderCRMSectionTagPicker(pickerId, inputId, containerId, hiddenId, type);
+            window._autoSaveCRMSectionTags(hiddenId, type, action, changed);
+        };
+
+        // Remove tag from pill and auto-save
+        window._removeCRMSectionTagAndSave = function(containerId, hiddenId, idx) {
+            let hidden = document.getElementById(hiddenId);
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let removed = current[idx];
+            current.splice(idx, 1);
+            window._renderCRMSectionTags(containerId, hiddenId, current);
+            // Refresh picker too
+            let type = hiddenId === 'crmps-tags-value' ? 'ps' : 'enroll';
+            let pickerId = type === 'ps' ? 'crmps-tag-picker' : 'crmenroll-tag-picker';
+            let inputId  = type === 'ps' ? 'crmps-tag-input' : 'crmenroll-tag-input';
+            window._renderCRMSectionTagPicker(pickerId, inputId, containerId, hiddenId, type);
+            window._autoSaveCRMSectionTags(hiddenId, type, 'Removed Tags', removed ? [removed] : []);
+        };
+
+        // Auto-save tags to Firebase immediately (no need to press Save CRM)
+        window._autoSaveCRMSectionTags = async function(hiddenId, type, action, changedTags) {
+            let docIdEl = document.getElementById(type === 'ps' ? 'crmps-docid' : 'crmenroll-docid');
+            if(!docIdEl || !docIdEl.value) return;
+            let docId = docIdEl.value;
+            let hidden = document.getElementById(hiddenId);
+            let tags = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let collName = type === 'ps' ? 'ps_students' : 'ps_enroll';
+            let stateObj = type === 'ps' ? psState : enrollState;
+
+            // 🌟 Cari linked counterpart DocID dari CRM modal context
+            let linkedDocId = "";
+            let linkedCollName = type === 'ps' ? 'ps_enroll' : 'ps_students';
+            let linkedStateObj = type === 'ps' ? enrollState : psState;
+            let crmDocId = document.getElementById('crm-docid')?.value || "";
+            if(window._crmModalCtx) {
+                let crmRec = [...(crmState.adminData||[]), ...(crmState.data||[])].find(r => r.docId === window._crmModalCtx.docId);
+                if(crmRec) linkedDocId = type === 'ps' ? (crmRec["Linked Enroll DocID"] || "") : (crmRec["Linked PS DocID"] || "");
+            }
+
+            try {
+                let now = new Date();
+                let d = now.toISOString().split('T')[0];
+                let tStr = now.toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit" });
+                let logEntry = (action && changedTags && changedTags.length > 0)
+                    ? `[${d} ${tStr}] ${action} : ${changedTags.join(', ')}` : "";
+
+                // ── 1. Save Tags to primary PS/Enroll collection (no history log here) ──
+                await updateDoc(doc(db, collName, docId), { "Tags": tags });
+                ['data','adminData'].forEach(k => {
+                    let arr = stateObj[k];
+                    let i = (arr||[]).findIndex(r => r.docId === docId);
+                    if(i > -1) arr[i]["Tags"] = tags;
+                });
+
+                // ── 2. Sync Tags to linked counterpart collection ──
+                if(linkedDocId) {
+                    await updateDoc(doc(db, linkedCollName, linkedDocId), { "Tags": tags });
+                    ['data','adminData'].forEach(k => {
+                        let arr = linkedStateObj[k];
+                        let i = (arr||[]).findIndex(r => r.docId === linkedDocId);
+                        if(i > -1) arr[i]["Tags"] = tags;
+                    });
+                }
+
+                // ── 3. Log entry ke CRM HISTORY FU (textarea + Firebase) ──
+                if(logEntry && crmDocId) {
+                    // Update textarea dalam modal
+                    let histEl = document.getElementById('crm-history');
+                    if(histEl) {
+                        let cur = histEl.value.trim();
+                        histEl.value = cur ? (logEntry + "\n" + cur) : logEntry;
+                    }
+                    // Save ke Firebase CRM collection
+                    let crmArr = [...(crmState.adminData||[]), ...(crmState.data||[])];
+                    let crmRec = crmArr.find(r => r.docId === crmDocId);
+                    let existingCrmHist = crmRec ? (crmRec["HISTORY FU"] || "") : "";
+                    let newCrmHist = logEntry + (existingCrmHist ? "\n" + existingCrmHist : "");
+                    await updateDoc(doc(db, "crm_leads", crmDocId), { "HISTORY FU": newCrmHist });
+                    [crmState.adminData, crmState.data].forEach(arr => {
+                        let i = arr.findIndex(r => r.docId === crmDocId);
+                        if(i > -1) arr[i]["HISTORY FU"] = newCrmHist;
+                    });
+                }
+
+                window.showToast('🏷️ Tags disimpan' + (linkedDocId ? ' & sync!' : '!'), 'success', 1500);
+
+                // ── 4. Sync UI: refresh counterpart tags display in modal ──
+                if(linkedDocId) {
+                    if(type === 'ps') {
+                        window._renderCRMSectionTags('crmenroll-tags-container', 'crmenroll-tags-value', tags);
+                        window._renderCRMSectionTagPicker('crmenroll-tag-picker','crmenroll-tag-input','crmenroll-tags-container','crmenroll-tags-value','enroll');
+                    } else {
+                        window._renderCRMSectionTags('crmps-tags-container', 'crmps-tags-value', tags);
+                        window._renderCRMSectionTagPicker('crmps-tag-picker','crmps-tag-input','crmps-tags-container','crmps-tags-value','ps');
+                    }
+                }
+            } catch(e) { console.error('Gagal auto-save tags:', e); }
+        };
+
+        // Add tag from text input (Enter / + Add button) — then auto-save
+        window._addCRMSectionTagAndSave = function(inputId, containerId, hiddenId, pickerId, type) {
+            let inp = document.getElementById(inputId);
+            if(!inp) return;
+            let val = inp.value.trim().replace(/,/g,'');
+            if(!val) return;
+            let hidden = document.getElementById(hiddenId);
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let isNew = !current.includes(val);
+            if(isNew) current.push(val);
+            window._renderCRMSectionTags(containerId, hiddenId, current);
+            inp.value = '';
+            window._renderCRMSectionTagPicker(pickerId, inputId, containerId, hiddenId, type);
+            window._autoSaveCRMSectionTags(hiddenId, type, isNew ? 'Added Tags' : null, isNew ? [val] : []);
+            inp.focus();
+        };
+
+        // Keep old _addCRMSectionTag for backward compat (no auto-save, used in populateCRMPSSection etc)
+        window._addCRMSectionTag = function(inputId, containerId, hiddenId) {
+            let inp = document.getElementById(inputId);
+            if(!inp) return;
+            let val = inp.value.trim().replace(/,/g,'');
+            if(!val) return;
+            let hidden = document.getElementById(hiddenId);
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            if(!current.includes(val)) current.push(val);
+            window._renderCRMSectionTags(containerId, hiddenId, current);
+            inp.value = '';
+            inp.focus();
+        };
+
+        window.crmpsAddTag = function() {
+            window._addCRMSectionTagAndSave('crmps-tag-input','crmps-tags-container','crmps-tags-value','crmps-tag-picker','ps');
+        };
+        window.crmenrollAddTag = function() {
+            window._addCRMSectionTagAndSave('crmenroll-tag-input','crmenroll-tags-container','crmenroll-tags-value','crmenroll-tag-picker','enroll');
+        };
+
+        // ---- MOBILE TAGS FILTER (Include / Exclude) ----
+        window._mobileTagsFilterInclude = []; // tags yang mesti ada
+        window._mobileTagsFilterExclude = []; // tags yang mesti takde
+
+        window.openMobileTagsFilter = function(isAdmin, type) {
+            window._mobileTagsFilterContext = { isAdmin, type };
+            let stateArr = type === 'ps'
+                ? (isAdmin ? psState.adminData : psState.data)
+                : (isAdmin ? enrollState.adminData : enrollState.data);
+            window._allSystemTags = window.collectAllTags(stateArr || []);
+            document.getElementById('mobile-tags-filter-search').value = '';
+            window.renderMobileTagsFilterList();
+            document.getElementById('modal-mobile-tags-filter').classList.remove('hidden');
+        };
+
+        window.renderMobileTagsFilterList = function() {
+            let search = (document.getElementById('mobile-tags-filter-search')?.value || '').toLowerCase().trim();
+            let includeList = document.getElementById('mobile-tags-include-list');
+            let excludeList = document.getElementById('mobile-tags-exclude-list');
+            if(!includeList || !excludeList) return;
+
+            let tags = (window._allSystemTags || []).filter(t => !search || t.toLowerCase().includes(search));
+            let incSel = window._mobileTagsFilterInclude || [];
+            let excSel = window._mobileTagsFilterExclude || [];
+
+            const tagBtn = (t, mode) => {
+                let isInc = incSel.includes(t);
+                let isExc = excSel.includes(t);
+                let active = mode === 'include' ? isInc : isExc;
+                let color = mode === 'include' ? '#00e676' : '#ff5252';
+                let bg = active ? color : '#1a1a1a';
+                let textColor = active ? '#000' : color;
+                let border = color;
+                let opacity = active ? '1' : '0.6';
+                return `<button type="button" onclick="window.mobileTagsToggle('${t.replace(/'/g,"\\'")}','${mode}')" style="padding:4px 11px;border-radius:999px;font-size:11px;font-weight:bold;cursor:pointer;border:1.5px solid ${border};background:${bg};color:${textColor};opacity:${opacity};transition:all 0.15s;">${t}</button>`;
+            };
+
+            includeList.innerHTML = tags.length > 0
+                ? tags.map(t => tagBtn(t,'include')).join('')
+                : `<span class="text-gray-500 text-xs p-1">Tiada tag.</span>`;
+            excludeList.innerHTML = tags.length > 0
+                ? tags.map(t => tagBtn(t,'exclude')).join('')
+                : `<span class="text-gray-500 text-xs p-1">Tiada tag.</span>`;
+        };
+
+        window.mobileTagsToggle = function(tag, mode) {
+            if(mode === 'include') {
+                let sel = window._mobileTagsFilterInclude || [];
+                let idx = sel.indexOf(tag);
+                if(idx > -1) sel.splice(idx, 1); else sel.push(tag);
+                window._mobileTagsFilterInclude = sel;
+                // Auto-remove from exclude if added to include
+                window._mobileTagsFilterExclude = (window._mobileTagsFilterExclude || []).filter(t => t !== tag);
+            } else {
+                let sel = window._mobileTagsFilterExclude || [];
+                let idx = sel.indexOf(tag);
+                if(idx > -1) sel.splice(idx, 1); else sel.push(tag);
+                window._mobileTagsFilterExclude = sel;
+                // Auto-remove from include if added to exclude
+                window._mobileTagsFilterInclude = (window._mobileTagsFilterInclude || []).filter(t => t !== tag);
+            }
+            window.renderMobileTagsFilterList();
+        };
+
+        window.mobileTagsSelectAll = function(mode) {
+            let tags = window._allSystemTags || [];
+            if(mode === 'include') {
+                window._mobileTagsFilterInclude = [...tags];
+                window._mobileTagsFilterExclude = [];
+            } else {
+                window._mobileTagsFilterExclude = [...tags];
+                window._mobileTagsFilterInclude = [];
+            }
+            window.renderMobileTagsFilterList();
+        };
+
+        window.mobileTagsDeselectAll = function(mode) {
+            if(mode === 'include') window._mobileTagsFilterInclude = [];
+            else window._mobileTagsFilterExclude = [];
+            window.renderMobileTagsFilterList();
+        };
+
+        window.applyMobileTagsFilter = function() {
+            document.getElementById('modal-mobile-tags-filter').classList.add('hidden');
+            let ctx = window._mobileTagsFilterContext;
+            if(!ctx) return;
+            // Update the filter button highlight
+            let btnId = ctx.type === 'ps' ? `m-ps-tags-filter-${ctx.isAdmin}` : `m-enroll-tags-filter-${ctx.isAdmin}`;
+            let btn = document.getElementById(btnId);
+            let hasFilter = (window._mobileTagsFilterInclude||[]).length > 0 || (window._mobileTagsFilterExclude||[]).length > 0;
+            if(btn) { btn.style.background = hasFilter ? '#f59e0b' : ''; btn.style.color = hasFilter ? '#000' : '#f59e0b'; }
+
+            if(ctx.type === 'ps') window.renderPSMobileList(ctx.isAdmin);
+            else window.renderEnrollMobileList(ctx.isAdmin);
+        };
+
+        window.clearMobileTagsFilter = function() {
+            window._mobileTagsFilterInclude = [];
+            window._mobileTagsFilterExclude = [];
+            window.renderMobileTagsFilterList();
+            let ctx = window._mobileTagsFilterContext;
+            if(ctx) {
+                let btnId = ctx.type === 'ps' ? `m-ps-tags-filter-${ctx.isAdmin}` : `m-enroll-tags-filter-${ctx.isAdmin}`;
+                let btn = document.getElementById(btnId);
+                if(btn) { btn.style.background = ''; btn.style.color = '#f59e0b'; }
+                if(ctx.type === 'ps') window.renderPSMobileList(ctx.isAdmin);
+                else window.renderEnrollMobileList(ctx.isAdmin);
+            }
+            document.getElementById('modal-mobile-tags-filter').classList.add('hidden');
+        };
+
+        // Helper: filter rows by Include/Exclude tags
+        window.applyTagsFilterToRows = function(rows) {
+            let inc = window._mobileTagsFilterInclude || [];
+            let exc = window._mobileTagsFilterExclude || [];
+            if(inc.length === 0 && exc.length === 0) return rows;
+            return rows.filter(row => {
+                let rowTags = window.getRecordTags(row);
+                if(inc.length > 0 && !inc.some(t => rowTags.includes(t))) return false;
+                if(exc.length > 0 && exc.some(t => rowTags.includes(t))) return false;
+                return true;
+            });
+        };
+
+        // Tags pill HTML helper for mobile cards
+        window.renderTagsPillsHtml = function(row) {
+            let tags = window.getRecordTags(row);
+            if(tags.length === 0) return '';
+            return `<div class="flex flex-wrap gap-1 mt-1.5">${tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 8px;border-radius:999px;font-size:9px;font-weight:bold;">${t}</span>`).join('')}</div>`;
+        };
+
+        // ---- CLEAR ALL PS MOBILE FILTERS ----
+        window.clearAllPSMobileFilters = function(isAdmin) {
+            // Clear excel-style column filters
+            if(isAdmin) { adminPsFilters = {}; } else { teamPsFilters = {}; }
+            // Clear tags filter
+            window._mobileTagsFilterInclude = [];
+            window._mobileTagsFilterExclude = [];
+            // Clear status filter
+            window.psMobileFilterState = 'All';
+            let filterBtns = ['All','Absent','Half','AttendTakEnroll'];
+            filterBtns.forEach(f => {
+                let btn = document.getElementById(`m-ps-filter-${f}-${isAdmin}`);
+                if(btn) {
+                    btn.className = f === 'All'
+                        ? "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition"
+                        : "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition";
+                }
+            });
+            // Clear Tags filter button highlight
+            let tagsBtn = document.getElementById(`m-ps-tags-filter-${isAdmin}`);
+            if(tagsBtn) { tagsBtn.style.background = ''; tagsBtn.style.color = '#f59e0b'; }
+            window.renderPSMobileList(isAdmin);
+        };
 
         window.savePSData = async function() {
           let docId = document.getElementById('ps-docid').value;
@@ -7541,12 +8339,13 @@
               "Referral": document.getElementById('ps-ref').value,
               "Student Name": document.getElementById('ps-name').value, 
               "Phone Number": document.getElementById('ps-phone').value,
-              "TO FU": actionVal, // Tembak TO FU
+              "TO FU": actionVal,
               "Outcome": document.getElementById('ps-outcome').value,
               "Class Progress": document.getElementById('ps-classprog').value,
               "FU Date": window.toSheetDate(document.getElementById('ps-fudate').value),
               "FU Time": document.getElementById('ps-futime').value,
-              "Remark 2": currentHistory // 🌟 Gunakan currentHistory yang dah di-update
+              "Remark 2": currentHistory,
+              "Tags": (document.getElementById('ps-tags-value')?.value || '').split(',').map(t=>t.trim()).filter(Boolean)
           };
 
           try {
@@ -7560,7 +8359,7 @@
               window.closePSModal();
               if(isAdmin) window.renderAdminPSTable(); else window.renderPSTable();
               
-              setTimeout(() => alert("✅ Data PS berjaya dikemaskini!"), 50);
+              setTimeout(() => window.showToast("✅ Data PS berjaya dikemaskini!"), 50);
           } catch(e) { 
               alert("Gagal update data: " + e.message); 
           }
@@ -7766,6 +8565,8 @@
             document.getElementById('ps-bulk-rem2').value = "";
             document.getElementById('ps-bulk-fudate').value = new Date().toISOString().split('T')[0];
             document.getElementById('ps-bulk-futime').value = "";
+            window._bulkTagsSelected['ps'] = [];
+            window.renderBulkTagPicker('ps');
             
             document.getElementById('modal-ps-bulk').style.display = 'flex';
         };
@@ -7828,9 +8629,10 @@
             let rem2Input = document.getElementById('ps-bulk-rem2').value.trim();
             let fuDate = window.toSheetDate(document.getElementById('ps-bulk-fudate').value);
             let fuTime = document.getElementById('ps-bulk-futime').value;
+            let bulkTags = window._bulkTagsSelected['ps'] || [];
 
-            if(tofuInput === "" && classProg === "" && rem2Input === "" && fuDate === "" && fuTime === "") {
-                alert("Tiada field diisi untuk diubah (TO FU / Class Progress / FU Date / FU Time / History FU) boss!"); return;
+            if(tofuInput === "" && classProg === "" && rem2Input === "" && fuDate === "" && fuTime === "" && bulkTags.length === 0) {
+                alert("Tiada field diisi untuk diubah (TO FU / Class Progress / FU Date / FU Time / History FU / Tags) boss!"); return;
             }
 
             // 🌟 Safety confirm - terutama penting sebab default sekarang Select All boleh kena banyak rekod sekaligus
@@ -7865,6 +8667,32 @@
                             updateData["Remark 2"] = existingRem2 ? `${existingRem2} | ${rem2Input}` : rem2Input;
                         }
 
+                        // 🏷️ TAGS — merge (tambah baru, kekalkan lama)
+                        if(bulkTags.length > 0) {
+                            let existing = window.getRecordTags(existingData);
+                            let newTags = bulkTags.filter(t => !existing.includes(t));
+                            let merged = [...new Set([...existing, ...bulkTags])];
+                            updateData["Tags"] = merged;
+                            // 🌟 Log ke CRM HISTORY FU (bukan Remark 2)
+                            if(newTags.length > 0) {
+                                let now = new Date();
+                                let d = now.toISOString().split('T')[0];
+                                let tStr = now.toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit" });
+                                let tagEntry = `[${d} ${tStr}] Added Tags : ${newTags.join(', ')}`;
+                                let crmLinked = window.crmByPsDocId ? window.crmByPsDocId[id] : null;
+                                if(crmLinked && crmLinked.docId) {
+                                    let existingCrmHist = crmLinked["HISTORY FU"] || "";
+                                    let newCrmHist = tagEntry + (existingCrmHist ? "\n" + existingCrmHist : "");
+                                    batch.update(doc(db, "crm_leads", crmLinked.docId), { "HISTORY FU": newCrmHist });
+                                    [crmState.adminData, crmState.data].forEach(arr => {
+                                        let ci = arr.findIndex(r => r.docId === crmLinked.docId);
+                                        if(ci > -1) arr[ci]["HISTORY FU"] = newCrmHist;
+                                    });
+                                    opCount++;
+                                }
+                            }
+                        }
+
                         if(Object.keys(updateData).length > 0) {
                             batch.update(doc(db, "ps_students", id), updateData);
                             // Suntik memori
@@ -7879,6 +8707,7 @@
                 document.getElementById('modal-ps-bulk').style.display = 'none';
                 window.psBulkManualSelection = null; // 🌟 reset lepas apply
                 window.psBulkFilters = {}; // 🌟 reset Setup Filter lepas apply
+                window._bulkTagsSelected['ps'] = []; // 🏷️ reset tags
                 
                 document.querySelectorAll('.ps-bulk-cb').forEach(cb => cb.checked = false);
                 let allCb = document.querySelector('input[title="Select All Page"]');
@@ -7886,7 +8715,7 @@
 
                 if(isAdmin) window.renderAdminPSTable(); else window.renderPSTable();
                 
-                setTimeout(() => alert(`✅ ${docIds.length} rekod telah berjaya di-Bulk Edit!`), 50);
+                window.showToast(`✅ ${docIds.length} rekod telah berjaya di-Bulk Edit!`);
             } catch(e) { alert("Gagal Bulk Edit: " + e.message); }
             
             if(btn) { btn.innerText = "🚀 APPLY BULK EDIT"; btn.disabled = false; }
@@ -8191,22 +9020,42 @@
         // ==========================================
         // FUNGSI COPY COLLECTION WHATSAPP (PS MASTER)
         // ==========================================
+        window._showCopyToast = function(msg) {
+            let old = document.getElementById('copy-toast');
+            if(old) old.remove();
+            let t = document.createElement('div');
+            t.id = 'copy-toast';
+            t.innerText = msg;
+            t.style = 'position:fixed;bottom:30px;left:50%;transform:translateX(-50%);background:#00e676;color:#000;padding:10px 28px;border-radius:30px;font-weight:bold;font-size:1rem;z-index:99999;box-shadow:0 4px 15px rgba(0,0,0,0.4);pointer-events:none;transition:opacity 0.4s;';
+            document.body.appendChild(t);
+            setTimeout(() => { t.style.opacity = '0'; setTimeout(() => t.remove(), 400); }, 1500);
+        };
+
         window.populatePSCopyDropdown = async function() {
             let sel = document.getElementById('copy-ps-staff');
             if(!sel) return;
             
             try {
-                // 🌟 FIX KEBAL: Paksa sistem tarik 'fresh' dari database staf terus! 
-                // Tak payah tunggu boss buka tab System Setup lagi.
                 const snap = await getDocs(collection(db, "staff_list"));
                 let senaraiNamaPendek = [];
                 snap.forEach(doc => senaraiNamaPendek.push(doc.data().name));
-
-                // Susun A-Z supaya cantik
                 senaraiNamaPendek.sort((a, b) => a.localeCompare(b));
 
+                // Kira total tunggakan per staf dari psState.adminData
+                let totalPerStaf = {};
+                (psState.adminData || []).forEach(r => {
+                    let s = r["Staff Name"] || "";
+                    let bal = parseFloat(String(r["Latest Balance"] || "0").replace(/,/g, '')) || 0;
+                    if(!totalPerStaf[s]) totalPerStaf[s] = 0;
+                    totalPerStaf[s] += bal;
+                });
+
                 let html = `<option value="">- Pilih Staf -</option>`;
-                senaraiNamaPendek.forEach(s => html += `<option value="${s}">${s}</option>`);
+                senaraiNamaPendek.forEach(s => {
+                    let total = totalPerStaf[s] || 0;
+                    let label = total > 0 ? `${s} — RM ${total.toFixed(2)}` : `${s} — RM 0`;
+                    html += `<option value="${s}">${label}</option>`;
+                });
 
                 sel.innerHTML = html;
             } catch(e) {
@@ -8249,8 +9098,6 @@
                 alert(`Tiada rekod tunggakan (Latest Balance > RM0) untuk ${staffName}.`);
                 return;
             }
-
-            // Susun data ikut Latest Balance (Paling Tinggi ke Rendah / Descending)
             validData.sort((a, b) => {
                 let balA = parseFloat(String(a["Latest Balance"] || "0").replace(/,/g, '')) || 0;
                 let balB = parseFloat(String(b["Latest Balance"] || "0").replace(/,/g, '')) || 0;
@@ -8286,7 +9133,7 @@
             let finalTxt = `*Collection Status Request*\nQǐng bāngmáng kàn kàn\nPlease help Xièxiè SFOs 🫶\n\n_*[${refHeader}]*_\nTotal : *RM ${totalBal.toFixed(2)}*\n---------------------------\n\n${listText.trim()}`;
 
             navigator.clipboard.writeText(finalTxt).then(() => {
-                alert(`✅ BOOM! Berjaya copy status collection untuk ${staffName}.\n\nJumlah Tunggakan: RM ${totalBal.toFixed(2)}\n\n(Boleh terus Paste di WhatsApp)`);
+                window._showCopyToast("Copied!");
             }).catch(err => alert("Gagal copy: " + err));
         };
 
@@ -8911,12 +9758,15 @@
                 let leadIdDisp = row["Lead ID"] || "-";
 
                 let rawPhone = row["CONTACT"] || row["contact"] || "-";
-                let waBtnHtml = `📞 ${rawPhone}`; 
+                let waBtnHtml = `<span class="text-gray-400 text-xs">📞 ${rawPhone}</span>`;
                 if(rawPhone !== "-") {
                     let cp = rawPhone.replace(/[^0-9]/g, '');
                     if(cp.startsWith('0')) cp = '60' + cp.substring(1);
                     if(cp) {
-                        waBtnHtml = `<a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow transition" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                        waBtnHtml = `<div class="flex items-center gap-1.5">
+                            <a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-1 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow transition" onclick="event.stopPropagation()">💬 WA</a>
+                            <button onclick="event.stopPropagation();window.copyPhone('${rawPhone}')" class="bg-[#333] hover:bg-[#555] text-gray-200 px-2 py-1 rounded text-[10px] font-bold shadow transition border border-[#555]">📋 ${rawPhone}</button>
+                        </div>`;
                     }
                 }
 
@@ -9248,6 +10098,15 @@
                 if(window.psMobileFilterState === 'Absent' && att !== "absent") return false;
                 if(window.psMobileFilterState === 'Half' && att !== "half") return false;
                 if(window.psMobileFilterState === 'AttendTakEnroll' && !(att === "attended" && enr === "no")) return false;
+
+                // 🏷️ Tags Filter (Mobile) — Include / Exclude
+                let incTagsPS = window._mobileTagsFilterInclude || [];
+                let excTagsPS = window._mobileTagsFilterExclude || [];
+                if(incTagsPS.length > 0 || excTagsPS.length > 0) {
+                    let rowTags = window.getRecordTags(row);
+                    if(incTagsPS.length > 0 && !incTagsPS.some(t => rowTags.includes(t))) return false;
+                    if(excTagsPS.length > 0 && excTagsPS.some(t => rowTags.includes(t))) return false;
+                }
                 
                 // Guna Excel Filters (cth: Class, Staff Name)
                 for(let colKey in currentFilters) {
@@ -9303,9 +10162,21 @@
                     activeFiltersSummary.push(`<span class="text-[#00e676] font-bold">${key}:</span> <span class="text-gray-300 break-words">${currentFilters[key].join(', ')}</span>`);
                 }
             }
+            // 🏷️ Tambah Tags filter dalam summary (Include / Exclude)
+            let incTagsSummary = window._mobileTagsFilterInclude || [];
+            let excTagsSummary = window._mobileTagsFilterExclude || [];
+            if(incTagsSummary.length > 0) {
+                activeFiltersSummary.push(`<span class="text-[#00e676] font-bold">🏷️ Include:</span> <span class="text-gray-300 break-words">${incTagsSummary.join(', ')}</span>`);
+            }
+            if(excTagsSummary.length > 0) {
+                activeFiltersSummary.push(`<span class="text-[#ff5252] font-bold">🚫 Exclude:</span> <span class="text-gray-300 break-words">${excTagsSummary.join(', ')}</span>`);
+            }
             if (activeFiltersSummary.length > 0) {
                 html += `<div class="mx-3 mt-1 mb-3 p-2 bg-[#222] border border-[#444] rounded-lg text-[10px] shadow-sm leading-relaxed">
-                    <div class="text-[#00c6ff] font-bold mb-1 border-b border-[#333] pb-1 uppercase tracking-wider">Tapis Aktif</div>
+                    <div class="flex justify-between items-center mb-1 border-b border-[#333] pb-1">
+                        <span class="text-[#00c6ff] font-bold uppercase tracking-wider">Tapis Aktif — ${mapped.length} rekod</span>
+                        <button onclick="window.clearAllPSMobileFilters(${isAdmin})" class="text-red-400 hover:text-red-300 text-[9px] font-bold">✕ Clear Semua</button>
+                    </div>
                     ${activeFiltersSummary.join('<div class="my-0.5"></div>')}
                 </div>`;
             }
@@ -9317,11 +10188,14 @@
                 let staffBadge = isAdmin ? `<div class="bg-[#bb86fc] text-black px-1 rounded text-[8px] font-bold mt-1.5 text-center truncate w-[50px] shadow-sm">${row["Staff Name"] || "Unknown"}</div>` : "";
 
                 let rawPhone = row["Phone Number"] || row["Phone"] || row["Contact"] || row["contact"] || "-";
-                let waBtnHtml = `<span class="text-gray-300 text-xs">📞 ${rawPhone}</span>`; 
+                let waBtnHtml = `<span class="text-gray-400 text-xs">📞 ${rawPhone}</span>`;
                 if(rawPhone !== "-") {
                     let cp = rawPhone.replace(/[^0-9]/g, '');
                     if(cp.startsWith('0')) cp = '60' + cp.substring(1);
-                    if(cp) waBtnHtml = `<a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-0.5 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow transition" onclick="event.stopPropagation()">💬 ${rawPhone}</a>`;
+                    if(cp) waBtnHtml = `<div class="flex items-center gap-1.5">
+                        <a href="https://wa.me/${cp}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-1 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow transition" onclick="event.stopPropagation()">💬 WA</a>
+                        <button onclick="event.stopPropagation();window.copyPhone('${rawPhone}')" class="bg-[#333] hover:bg-[#555] text-gray-200 px-2 py-1 rounded text-[10px] font-bold shadow transition border border-[#555]">📋 ${rawPhone}</button>
+                    </div>`;
                 }
 
                 let classDate = row["Date"] || "-";
@@ -9381,6 +10255,7 @@
                             <span class="bg-[#333] text-gray-200 px-1.5 py-0.5 rounded text-[9px] font-bold border border-[#555]">${classFullDisp}</span>
                         </div>
                         ${histPreview ? `<div class="text-[10px] text-gray-500 italic truncate mt-0.5">📋 ${histPreview}</div>` : ''}
+                        ${window.renderTagsPillsHtml(row)}
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-6">
                         <button onclick="window.openCRMModalFromPS(${isAdmin}, ${actualIdx})" class="w-6 h-6 rounded bg-[#3f51b5] text-white flex items-center justify-center text-[10px]">✏️</button>
@@ -10033,6 +10908,7 @@
             { key: 'Student Name', label: 'Student Name', color: '#00c6ff' },
             { key: 'Phone', label: 'Phone' },
             { key: 'TO FU', label: 'Action (TO FU)', color: '#00e676' },
+            { key: 'Tags', label: 'Tags', color: '#f59e0b', isTagsCol: true },
             { key: 'FU Date', label: 'FU Date' },
             { key: 'FU Time', label: 'FU Time' },
             { key: 'History FU', label: 'History FU' },
@@ -10146,12 +11022,14 @@
                         enrollState.adminData = [];
                         cacheSnap.forEach(doc => enrollState.adminData.push({ docId: doc.id, ...doc.data() }));
                         adminEnrollPage = 1; window.renderAdminEnrollTable();
+                        window.populateEnrollCopyDropdown();
                     }
                 } catch(_) {}
 
                 const snap = await getDocs(col_);
                 enrollState.adminData = []; snap.forEach(doc => enrollState.adminData.push({ docId: doc.id, ...doc.data() }));
                 adminEnrollPage = 1; window.renderAdminEnrollTable();
+                window.populateEnrollCopyDropdown();
             } catch(e) { alert("Gagal tarik Admin: " + e.message); }
         };
 
@@ -10229,6 +11107,14 @@
                     let cSty = col.color ? `color:${col.color}; font-weight:bold;` : "";
                     let tdContent = ""; // 🌟 Kena declare tdContent dulu kat sini
 
+                    // 🌟 TAGS — render as pills
+                    if (col.isTagsCol) {
+                        let tags = Array.isArray(row["Tags"]) ? row["Tags"] : (row["Tags"] ? String(row["Tags"]).split(',').map(t=>t.trim()).filter(Boolean) : []);
+                        let tagsHtml = tags.length > 0 ? tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:bold;white-space:nowrap;">${t}</span>`).join(' ') : '-';
+                        html += `<td style="padding:5px;"><div class="scroll-cell" style="display:flex;flex-wrap:wrap;gap:3px;">${tagsHtml}</div></td>`;
+                        return;
+                    }
+
                     if (col.key === 'Phone' && val !== "-") {
                         let phone = val.replace(/[^0-9]/g, '');
                         if(phone.startsWith('0')) phone = '60' + phone.substring(1);
@@ -10281,6 +11167,16 @@
                 let name = String(row["Student Name"] || "").toLowerCase();
                 let inv = String(row["Invoice Number"] || "").toLowerCase();
                 if(searchText && !name.includes(searchText) && !inv.includes(searchText)) return false;
+
+                // 🏷️ Tags Filter (Mobile) — Include / Exclude
+                let incTagsEnr = window._mobileTagsFilterInclude || [];
+                let excTagsEnr = window._mobileTagsFilterExclude || [];
+                if(incTagsEnr.length > 0 || excTagsEnr.length > 0) {
+                    let rowTags = window.getRecordTags(row);
+                    if(incTagsEnr.length > 0 && !incTagsEnr.some(t => rowTags.includes(t))) return false;
+                    if(excTagsEnr.length > 0 && excTagsEnr.some(t => rowTags.includes(t))) return false;
+                }
+
                 return true;
             });
 
@@ -10288,12 +11184,31 @@
             mapped.slice(0, 100).forEach(row => {
                 let actualIdx = stateArr.indexOf(row);
                 let name = row["Student Name"] || "Unknown";
+                let staffName = row["Staff Name"] || row["Inviter"] || "";
                 let crmLink = `https://kunkwan.my/system/crm/efo_search?kunkwan_id=${encodeURIComponent(name)}`;
                 
                 let crmRec = window.crmByEnrollDocId ? window.crmByEnrollDocId[row.docId] : null;
                 let crmTofu   = crmRec ? (crmRec["TO FU"] || "") : (row["TO FU"] || "");
                 let crmDocId  = crmRec ? crmRec.docId : "";
-                
+                let histPreview = crmRec ? ((crmRec["HISTORY FU"] || crmRec["history_fu"] || "").split("\n")[0].trim()) : "";
+
+                // Phone — dari CRM linked atau dari rekod enroll
+                let rawPhoneEnroll = (crmRec ? (crmRec["CONTACT"] || crmRec["contact"] || "") : "") || row["Phone"] || row["phone"] || row["Contact"] || row["contact"] || "-";
+                let waBtnEnroll = `<span class="text-gray-400 text-xs">📞 ${rawPhoneEnroll}</span>`;
+                if(rawPhoneEnroll !== "-") {
+                    let cpE = rawPhoneEnroll.replace(/[^0-9]/g, '');
+                    if(cpE.startsWith('0')) cpE = '60' + cpE.substring(1);
+                    if(cpE) waBtnEnroll = `<div class="flex items-center gap-1.5">
+                        <a href="https://wa.me/${cpE}" target="_blank" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-2 py-1 rounded text-[10px] no-underline flex items-center gap-1 font-bold shadow transition" onclick="event.stopPropagation()">💬 WA</a>
+                        <button onclick="event.stopPropagation();window.copyPhone('${rawPhoneEnroll}')" class="bg-[#333] hover:bg-[#555] text-gray-200 px-2 py-1 rounded text-[10px] font-bold shadow transition border border-[#555]">📋 ${rawPhoneEnroll}</button>
+                    </div>`;
+                }
+
+                // Staff badge — tunjuk kalau admin view
+                let staffBadge = isAdmin && staffName
+                    ? `<div class="bg-[#00c6ff] text-black px-1.5 rounded text-[8px] font-bold mt-1.5 text-center truncate max-w-[56px] shadow-sm">${staffName}</div>`
+                    : "";
+
                 let cbSection = "";
                 if(crmTofu && crmTofu !== "-") {
                     let tasks = crmTofu.split('\n').filter(t => t.trim() !== "");
@@ -10307,6 +11222,7 @@
                                 class="w-4 h-4 accent-[#00e676] cursor-pointer shrink-0"
                                 onchange="window.toggleMultilineTofu('${crmDocId}','enroll',${isAdmin},${tIdx},this.checked)">
                             <label for="${cbId}" class="text-[11px] font-bold cursor-pointer select-none flex-1 ${isDone ? 'line-through text-gray-500' : 'text-[#00e676]'}">${displayTask}</label>
+                            ${isDone ? '<span class="text-[9px] text-gray-500 shrink-0">✅ Settled</span>' : '<span class="text-[9px] text-gray-600 shrink-0">→ CRM</span>'}
                         </div>`;
                     });
                 } else if(!crmDocId) {
@@ -10314,155 +11230,170 @@
                 }
 
                 html += `
-                <div class="flex items-start p-3 border-b border-[#222] hover:bg-[#1a1a1a] transition relative pr-8">
+                <div class="border-b border-[#222] hover:bg-[#1a1a1a] transition">
+                <div class="flex items-start p-3 relative pr-8">
+                    <input type="checkbox" class="enroll-mob-bulk-cb accent-purple-500 w-5 h-5 absolute top-3 right-2" value="${row.docId}" onchange="window.enrollMobileUpdateCounter(${isAdmin})">
+                    <div class="flex flex-col items-center mr-3 shrink-0">
+                        <div class="w-[46px] h-[46px] rounded-full bg-gradient-to-br from-[#0072ff] to-[#00c6ff] text-white flex items-center justify-center font-bold text-lg">${name[0]||"?"}</div>
+                        ${staffBadge}
+                    </div>
                     <div class="flex-1 min-w-0 pr-1">
-                        <div class="flex justify-between items-baseline mb-1">
+                        <div class="flex justify-between items-baseline mb-0.5">
                             <h4 class="text-[#00c6ff] font-bold text-base m-0 truncate">${name}</h4>
-                            <span class="text-[#ffeb3b] text-[10px] font-bold bg-[#333] px-1 rounded">${row["Invoice Number"]||"-"}</span>
+                            <span class="text-[#ffeb3b] text-[10px] font-bold bg-[#333] px-1.5 py-0.5 rounded">${row["Invoice Number"]||"-"}</span>
                         </div>
-                        <a href="${crmLink}" target="_blank" class="bg-[#111] border border-[#00c6ff] text-[#00c6ff] px-2 py-1 rounded text-[10px] font-bold no-underline inline-block mb-2 shadow-sm hover:bg-[#00c6ff] hover:text-black transition">ℹ️ Info Student</a>
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="bg-[#0072ff] text-white px-1.5 py-0.5 rounded text-[9px] font-bold">${row["Class Progress"]||"-"}</span>
+                            <a href="${crmLink}" target="_blank" class="bg-[#111] border border-[#00c6ff] text-[#00c6ff] px-2 py-0.5 rounded text-[9px] font-bold no-underline shadow-sm hover:bg-[#00c6ff] hover:text-black transition" onclick="event.stopPropagation()">ℹ️ Info</a>
+                        </div>
+                        <div class="mb-1.5">${waBtnEnroll}</div>
+                        ${histPreview ? `<div class="text-[10px] text-gray-500 italic truncate mt-0.5 mb-1">📋 ${histPreview}</div>` : ''}
+                        ${window.renderTagsPillsHtml(row)}
                         ${cbSection}
                     </div>
-                    <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-3">
-                        <button onclick="window.openCRMModalFromEnroll(${isAdmin}, ${actualIdx})" class="w-8 h-8 rounded-full bg-[#0072ff] text-white flex items-center justify-center text-[12px] shadow-lg">✏️</button>
+                    <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-5">
+                        <button onclick="window.openCRMModalFromEnroll(${isAdmin}, ${actualIdx})" class="w-7 h-7 rounded bg-[#0072ff] text-white flex items-center justify-center text-[10px] shadow-lg">✏️</button>
                     </div>
+                </div>
                 </div>`;
             });
             listContainer.innerHTML = html || `<div class="text-center p-10 text-gray-500">Tiada hasil padanan.</div>`;
+            window.enrollMobileUpdateCounter(isAdmin);
         };
 
         // --- IMPORT EXCEL ---
         window.prosesImportEnrollExcel = async function(inputId, statusId, btn) {
-            const fail = document.getElementById(inputId).files[0];
+            const failList = document.getElementById(inputId).files;
             const status = document.getElementById(statusId);
-            if(!fail) { alert("Sila pilih fail Excel boss!"); return; }
+            if(!failList || failList.length === 0) { alert("Sila pilih fail Excel boss!"); return; }
             
-            status.innerText = "⏳ Membaca Excel (Mencari Kolum di Baris 2)...";
+            status.innerText = `⏳ Membaca ${failList.length} fail Excel...`;
             btn.disabled = true;
 
-            const reader = new FileReader();
-            reader.onload = async function(e) {
-                try {
-                    const data = new Uint8Array(e.target.result);
-                    const workbook = XLSX.read(data, {type: 'array'});
-                    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-                    const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
+            let grandAdded = 0, grandUpdated = 0;
+            let allStaffUpload = [];
 
-                    let headerRowIndex = 1; // Row 2 di Excel (Index 1)
-                    let headers = rows[headerRowIndex];
-                    if(!headers || headers.length === 0) { alert("Header tak wujud di Baris 2!"); btn.disabled = false; return; }
+            async function prosesSatuFailEnroll(fail, fileIndex) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = async function(e) {
+                        try {
+                            const data = new Uint8Array(e.target.result);
+                            const workbook = XLSX.read(data, {type: 'array'});
+                            const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+                            const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
-                    let idxInv = -1, idxStaff = -1;
-                    headers.forEach((h, c) => {
-                        let colName = String(h).trim().toLowerCase();
-                        if(colName === 'invoice number') idxInv = c;
-                        if(colName === 'inviter') idxStaff = c;
-                    });
-
-                    if(idxInv === -1) { alert("Kolum 'Invoice Number' tak jumpa!"); btn.disabled = false; return; }
-
-                    let validRows = [];
-                    for(let i = headerRowIndex + 1; i < rows.length; i++) {
-                        let rowArray = rows[i];
-                        let invNum = String(rowArray[idxInv] || "").trim();
-                        if(invNum) {
-                            let rowData = {};
-                            headers.forEach((h, c) => { rowData[h || `Col_${c}`] = String(rowArray[c] || "").trim(); });
-                            validRows.push({ inv: invNum, staffNameExcel: String(rowArray[idxStaff] || "").trim(), data: rowData });
-                        }
-                    }
-
-                    status.innerText = "⏳ Memadankan nama & menyemak rekod di Firebase...";
-                    
-                    let batch = writeBatch(db);
-                    let opCount = 0; let bAdded = 0; let bUpdated = 0;
-
-                    for(let row of validRows) {
-                        let rowData = row.data;
-                        let finalStaff = row.staffNameExcel;
-
-                        // Padankan nama panjang excel kepada nama sistem (pendek)
-                        if (typeof senaraiStafAdmin !== 'undefined' && finalStaff) {
-                            let fLow = finalStaff.toLowerCase();
-                            let matched = senaraiStafAdmin.find(s => String(s.fullName||"").toLowerCase() === fLow || String(s.name).toLowerCase() === fLow);
-                            if(matched) finalStaff = matched.name;
-                        }
-                        rowData["Staff Name"] = finalStaff;
-
-                        // Cari duplicate guna Invoice Number (Query)
-                        const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Invoice Number", "==", row.inv));
-                        const snap = await getDocs(q);
-
-                        if(!snap.empty) {
-                            // Update overwrite
-                            let oldDoc = snap.docs[0];
-                            let oldData = oldDoc.data();
-                            // Lindungi data manual kita
-                            rowData["TO FU"] = oldData["TO FU"] || "";
-                            rowData["FU Date"] = oldData["FU Date"] || "";
-                            rowData["FU Time"] = oldData["FU Time"] || "";
-                            rowData["Class Progress"] = oldData["Class Progress"] || "";
-                            rowData["History FU"] = oldData["History FU"] || "";
-                            rowData["Timestamp Masuk"] = new Date().toISOString(); // 🌟 Refresh timestamp setiap kali import/update
-                            
-                            batch.update(doc(db, "ps_enroll", oldDoc.id), rowData);
-                            bUpdated++;
-                        } else {
-                            rowData["Timestamp Masuk"] = new Date().toISOString();
-                            let newRef = doc(collection(db, "ps_enroll"));
-                            batch.set(newRef, rowData);
-                            bAdded++;
-                        }
-                        opCount++;
-
-                        if(opCount >= 450) { await batch.commit(); batch = writeBatch(db); opCount = 0; }
-                    }
-                    if(opCount > 0) await batch.commit();
-
-                    // =========================================
-                    // 🌟 MAGIK CCTV LOG: Simpan Sejarah Upload Enroll
-                    // =========================================
-                    try {
-                        let senaraiStafUpload = [];
-                        // Kumpul semua nama staf dari fail Excel yang baru di-upload
-                        validRows.forEach(r => {
-                            let fStaff = r.staffNameExcel;
-                            if (typeof senaraiStafAdmin !== 'undefined' && fStaff) {
-                                let fLow = fStaff.toLowerCase();
-                                let matched = senaraiStafAdmin.find(s => String(s.fullName||"").toLowerCase() === fLow || String(s.name).toLowerCase() === fLow);
-                                if(matched) fStaff = matched.name;
+                            let headerRowIndex = 1; // Row 2 di Excel (Index 1)
+                            let headers = rows[headerRowIndex];
+                            if(!headers || headers.length === 0) {
+                                status.innerText = `❌ Fail ${fileIndex+1} (${fail.name}): Header tak wujud di Baris 2!`;
+                                resolve({ bAdded: 0, bUpdated: 0, staffList: [] });
+                                return;
                             }
-                            if(fStaff && !senaraiStafUpload.includes(fStaff)) senaraiStafUpload.push(fStaff);
-                        });
 
-                        // Kalau takde nama staf, kita labelkan dia Admin
-                        if(senaraiStafUpload.length === 0) senaraiStafUpload.push("Admin (Pukal)");
+                            let idxInv = -1, idxStaff = -1;
+                            headers.forEach((h, c) => {
+                                let colName = String(h).trim().toLowerCase();
+                                if(colName === 'invoice number') idxInv = c;
+                                if(colName === 'inviter') idxStaff = c;
+                            });
 
-                        // Tembak log ke Firebase
-                        let logUpdates = {};
-                        senaraiStafUpload.forEach(s => {
-                            if (s.trim() !== "") logUpdates[s] = new Date().toISOString();
-                        });
-                        
-                        await setDoc(doc(db, "system_settings", "enroll_upload_logs"), logUpdates, { merge: true });
-                        
-                        // Segar semula jadual log kat skrin
-                        if (typeof window.renderEnrollUploadLogs === 'function') window.renderEnrollUploadLogs();
-                    } catch(logErr) { console.error("Gagal simpan log Enroll:", logErr); }
-                    // =========================================
+                            if(idxInv === -1) {
+                                status.innerText = `❌ Fail ${fileIndex+1} (${fail.name}): Kolum 'Invoice Number' tak jumpa!`;
+                                resolve({ bAdded: 0, bUpdated: 0, staffList: [] });
+                                return;
+                            }
 
-                    status.innerText = `✅ SIAP! ${bAdded} Baru, ${bUpdated} Update.`;
-                    btn.disabled = false;
-                    window.loadAdminEnrollData(true);
-                    
-                    // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
-                    if (typeof window.bulkAutoCreateCRM === 'function') {
-                        window.bulkAutoCreateCRM('enroll', true, true);
-                    }
+                            let validRows = [];
+                            for(let i = headerRowIndex + 1; i < rows.length; i++) {
+                                let rowArray = rows[i];
+                                let invNum = String(rowArray[idxInv] || "").trim();
+                                if(invNum) {
+                                    let rowData = {};
+                                    headers.forEach((h, c) => { rowData[h || `Col_${c}`] = String(rowArray[c] || "").trim(); });
+                                    validRows.push({ inv: invNum, staffNameExcel: String(rowArray[idxStaff] || "").trim(), data: rowData });
+                                }
+                            }
 
-                } catch(err) { alert("Ralat: " + err.message); btn.disabled = false; }
-            };
-            reader.readAsArrayBuffer(fail);
+                            status.innerText = `⏳ Fail ${fileIndex+1}/${failList.length} (${fail.name}): Semak ${validRows.length} rekod...`;
+                            
+                            let batch = writeBatch(db);
+                            let opCount = 0; let bAdded = 0; let bUpdated = 0;
+                            let staffList = [];
+
+                            for(let row of validRows) {
+                                let rowData = row.data;
+                                let finalStaff = row.staffNameExcel;
+
+                                if (typeof senaraiStafAdmin !== 'undefined' && finalStaff) {
+                                    let fLow = finalStaff.toLowerCase();
+                                    let matched = senaraiStafAdmin.find(s => String(s.fullName||"").toLowerCase() === fLow || String(s.name).toLowerCase() === fLow);
+                                    if(matched) finalStaff = matched.name;
+                                }
+                                rowData["Staff Name"] = finalStaff;
+
+                                if(finalStaff && !staffList.includes(finalStaff)) staffList.push(finalStaff);
+
+                                const q = fbQuery(collection(db, "ps_enroll"), fbWhere("Invoice Number", "==", row.inv));
+                                const snap = await getDocs(q);
+
+                                if(!snap.empty) {
+                                    let oldDoc = snap.docs[0];
+                                    let oldData = oldDoc.data();
+                                    rowData["TO FU"] = oldData["TO FU"] || "";
+                                    rowData["FU Date"] = oldData["FU Date"] || "";
+                                    rowData["FU Time"] = oldData["FU Time"] || "";
+                                    rowData["Class Progress"] = oldData["Class Progress"] || "";
+                                    rowData["History FU"] = oldData["History FU"] || "";
+                                    rowData["Timestamp Masuk"] = new Date().toISOString();
+                                    batch.update(doc(db, "ps_enroll", oldDoc.id), rowData);
+                                    bUpdated++;
+                                } else {
+                                    rowData["Timestamp Masuk"] = new Date().toISOString();
+                                    let newRef = doc(collection(db, "ps_enroll"));
+                                    batch.set(newRef, rowData);
+                                    bAdded++;
+                                }
+                                opCount++;
+                                if(opCount >= 450) { await batch.commit(); batch = writeBatch(db); opCount = 0; }
+                            }
+                            if(opCount > 0) await batch.commit();
+
+                            resolve({ bAdded, bUpdated, staffList });
+                        } catch(err) { reject(err); }
+                    };
+                    reader.readAsArrayBuffer(fail);
+                });
+            }
+
+            try {
+                for(let i = 0; i < failList.length; i++) {
+                    const result = await prosesSatuFailEnroll(failList[i], i);
+                    grandAdded += result.bAdded;
+                    grandUpdated += result.bUpdated;
+                    result.staffList.forEach(s => { if(!allStaffUpload.includes(s)) allStaffUpload.push(s); });
+                }
+
+                // =========================================
+                // 🌟 MAGIK CCTV LOG: Simpan Sejarah Upload Enroll
+                // =========================================
+                try {
+                    if(allStaffUpload.length === 0) allStaffUpload.push("Admin (Pukal)");
+                    let logUpdates = {};
+                    allStaffUpload.forEach(s => { if (s.trim() !== "") logUpdates[s] = new Date().toISOString(); });
+                    await setDoc(doc(db, "system_settings", "enroll_upload_logs"), logUpdates, { merge: true });
+                    if (typeof window.renderEnrollUploadLogs === 'function') window.renderEnrollUploadLogs();
+                } catch(logErr) { console.error("Gagal simpan log Enroll:", logErr); }
+
+                status.innerText = `✅ SIAP! ${failList.length} fail — ${grandAdded} Baru, ${grandUpdated} Update.`;
+                btn.disabled = false;
+                window.loadAdminEnrollData(true);
+                
+                // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
+                if (typeof window.bulkAutoCreateCRM === 'function') {
+                    window.bulkAutoCreateCRM('enroll', true, true);
+                }
+            } catch(err) { alert("Ralat: " + err.message); btn.disabled = false; }
         };
 
         // --- MODAL EDIT LOGIC ---
@@ -10494,6 +11425,20 @@
                 }
             });
             window.updateEnrollPreview();
+
+            // 🏷️ Load Tags
+            window.loadPSModalTagsDirect(data, 'enroll');
+
+            // 🔗 Status PS — populate collapsible  
+            let statusDiv = document.getElementById('enroll-status-link-display');
+            if(statusDiv) {
+                let fields = ['Collection Status', 'Class Progress', 'Invoice Number', 'Invoice Amount', 'Latest Balance', 'Type', 'EFO Info'];
+                statusDiv.innerHTML = `<div class="grid grid-cols-2 gap-2 mt-1">` + fields.map(f => {
+                    let v = data[f] || '-';
+                    return `<div class="bg-[#111] rounded p-1.5 border border-[#333]"><div class="text-[9px] text-gray-500 uppercase tracking-wide">${f}</div><div class="text-xs font-bold text-white mt-0.5">${v}</div></div>`;
+                }).join('') + `</div>`;
+            }
+
             document.getElementById('modal-enroll').style.display = 'flex';
         };
 
@@ -10530,7 +11475,8 @@
                 "Class Progress": document.getElementById('enroll-classprog').value,
                 "FU Date": window.toSheetDate(document.getElementById('enroll-fudate').value),
                 "FU Time": document.getElementById('enroll-futime').value,
-                "History FU": currentHistory
+                "History FU": currentHistory,
+                "Tags": (document.getElementById('enroll-tags-value')?.value || '').split(',').map(t=>t.trim()).filter(Boolean)
             };
 
             try {
@@ -10643,8 +11589,22 @@
             document.querySelectorAll('.enroll-bulk-cb').forEach(cb => cb.checked = el.checked);
         };
 
+        // 🌟 Update counter untuk mobile enroll bulk
+        window.enrollMobileUpdateCounter = function(isAdmin) {
+            let checked = document.querySelectorAll('.enroll-mob-bulk-cb:checked');
+            let countEl = document.getElementById(`enroll-mob-cb-count-${isAdmin}`);
+            let deselectBtn = document.getElementById(`enroll-mob-deselect-${isAdmin}`);
+            if(countEl) { countEl.innerText = checked.length + " dipilih"; countEl.classList.toggle('hidden', checked.length === 0); }
+            if(deselectBtn) deselectBtn.classList.toggle('hidden', checked.length === 0);
+        };
+
+        window.enrollMobileDeselectAll = function(isAdmin) {
+            document.querySelectorAll('.enroll-mob-bulk-cb').forEach(cb => cb.checked = false);
+            window.enrollMobileUpdateCounter(isAdmin);
+        };
+
         window.openEnrollBulkEdit = function(isAdmin) {
-            let checkedBoxes = document.querySelectorAll('.enroll-bulk-cb:checked');
+            let checkedBoxes = [...document.querySelectorAll('.enroll-bulk-cb:checked'), ...document.querySelectorAll('.enroll-mob-bulk-cb:checked')];
             if(checkedBoxes.length === 0) {
                 alert("Sila 'Tick' kotak di sebelah kiri jadual untuk student yang nak diubah."); return;
             }
@@ -10656,13 +11616,15 @@
             document.getElementById('enroll-bulk-history').value = "";
             document.getElementById('enroll-bulk-fudate').value = new Date().toISOString().split('T')[0];
             document.getElementById('enroll-bulk-futime').value = "";
+            window._bulkTagsSelected['enroll'] = [];
+            window.renderBulkTagPicker('enroll');
             
             document.getElementById('modal-enroll-bulk').style.display = 'flex';
         };
 
         window.saveEnrollBulkData = async function() {
-            let checkedBoxes = document.querySelectorAll('.enroll-bulk-cb:checked');
-            let docIds = Array.from(checkedBoxes).map(cb => cb.value);
+            let checkedBoxes = [...document.querySelectorAll('.enroll-bulk-cb:checked'), ...document.querySelectorAll('.enroll-mob-bulk-cb:checked')];
+            let docIds = [...new Set(Array.from(checkedBoxes).map(cb => cb.value))];
             if(docIds.length === 0) return;
 
             let btn = document.querySelector('#modal-enroll-bulk button[onclick="window.saveEnrollBulkData()"]');
@@ -10673,11 +11635,21 @@
             let histInput = document.getElementById('enroll-bulk-history').value.trim();
             let fuDate = window.toSheetDate(document.getElementById('enroll-bulk-fudate').value);
             let fuTime = document.getElementById('enroll-bulk-futime').value;
+            let bulkTags = window._bulkTagsSelected['enroll'] || [];
+
+            if(tofuInput === "" && classProg === "" && histInput === "" && fuDate === "" && fuTime === "" && bulkTags.length === 0) {
+                alert("Tiada field diisi untuk diubah boss!"); 
+                if(btn) { btn.innerText = "🚀 APPLY BULK EDIT"; btn.disabled = false; }
+                return; 
+            }
 
             let isAdmin = !document.getElementById('adm-view-enroll').classList.contains('hidden');
             let stateArr = isAdmin ? enrollState.adminData : enrollState.data;
 
             try {
+                let batch = writeBatch(db);
+                let opCount = 0;
+
                 for(let id of docIds) {
                     let rowIndex = stateArr.findIndex(r => r.docId === id);
                     if(rowIndex > -1) {
@@ -10695,23 +11667,55 @@
                             updateData["History FU"] = existingHist ? `${existingHist}\n${histInput}` : histInput;
                         }
 
+                        // 🏷️ TAGS — merge (tambah baru, kekalkan lama)
+                        if(bulkTags.length > 0) {
+                            let existing = window.getRecordTags(existingData);
+                            let newTags = bulkTags.filter(t => !existing.includes(t));
+                            let merged = [...new Set([...existing, ...bulkTags])];
+                            updateData["Tags"] = merged;
+                            // 🌟 Log ke CRM HISTORY FU (bukan History FU enroll)
+                            if(newTags.length > 0) {
+                                let now = new Date();
+                                let d = now.toISOString().split('T')[0];
+                                let tStr = now.toLocaleTimeString('en-US', { hour12: false, hour: "2-digit", minute: "2-digit" });
+                                let tagEntry = `[${d} ${tStr}] Added Tags : ${newTags.join(', ')}`;
+                                let crmLinked = window.crmByEnrDocId ? window.crmByEnrDocId[id] : null;
+                                if(crmLinked && crmLinked.docId) {
+                                    let existingCrmHist = crmLinked["HISTORY FU"] || "";
+                                    let newCrmHist = tagEntry + (existingCrmHist ? "\n" + existingCrmHist : "");
+                                    batch.update(doc(db, "crm_leads", crmLinked.docId), { "HISTORY FU": newCrmHist });
+                                    [crmState.adminData, crmState.data].forEach(arr => {
+                                        let ci = arr.findIndex(r => r.docId === crmLinked.docId);
+                                        if(ci > -1) arr[ci]["HISTORY FU"] = newCrmHist;
+                                    });
+                                    opCount++;
+                                }
+                            }
+                        }
+
                         if(Object.keys(updateData).length > 0) {
-                            await updateDoc(doc(db, "ps_enroll", id), updateData);
+                            batch.update(doc(db, "ps_enroll", id), updateData);
                             // Suntik memori
                             stateArr[rowIndex] = { ...stateArr[rowIndex], ...updateData };
+                            opCount++;
+                            if(opCount >= 450) { await batch.commit(); batch = writeBatch(db); opCount = 0; }
                         }
                     }
                 }
+                if(opCount > 0) await batch.commit();
                 
                 document.getElementById('modal-enroll-bulk').style.display = 'none';
+                window._bulkTagsSelected['enroll'] = []; // 🏷️ reset tags
                 
                 document.querySelectorAll('.enroll-bulk-cb').forEach(cb => cb.checked = false);
+                document.querySelectorAll('.enroll-mob-bulk-cb').forEach(cb => cb.checked = false);
+                window.enrollMobileUpdateCounter(isAdmin);
                 let allCb = document.querySelector('input[title="Select All Page Enroll"]');
                 if(allCb) allCb.checked = false;
 
                 if(isAdmin) window.renderAdminEnrollTable(); else window.renderEnrollTable();
                 
-                setTimeout(() => alert(`✅ ${docIds.length} rekod Enroll telah berjaya di-Bulk Edit!`), 50);
+                window.showToast(`✅ ${docIds.length} rekod Enroll telah berjaya di-Bulk Edit!`);
             } catch(e) { alert("Gagal Bulk Edit: " + e.message); }
             
             if(btn) { btn.innerText = "🚀 APPLY BULK EDIT"; btn.disabled = false; }
@@ -10723,10 +11727,31 @@
             if(!sel) return;
             try {
                 const snap = await getDocs(collection(db, "staff_list"));
+                let staffList = []; // [{ name, fullName }]
+                snap.forEach(doc => staffList.push({ name: doc.data().name, fullName: (doc.data().fullName || "").toLowerCase().trim() }));
+                staffList.sort((a, b) => a.name.localeCompare(b.name));
+
+                // Kira total Latest Balance per nama sistem (pendek)
+                // Match guna Staff Name ATAU Inviter, semak nama pendek DAN nama penuh
+                let totalPerStaf = {};
+                (enrollState.adminData || []).forEach(r => {
+                    let rawName = String(r["Staff Name"] || r["Inviter"] || "").trim();
+                    if(!rawName) return;
+                    let rawLow = rawName.toLowerCase();
+                    // Cuba match ke nama sistem
+                    let matched = staffList.find(s => s.name.toLowerCase() === rawLow || (s.fullName && s.fullName === rawLow));
+                    let sysName = matched ? matched.name : rawName;
+                    let bal = parseFloat(String(r["Latest Balance"] || "0").replace(/[^0-9.-]/g, '')) || 0;
+                    if(!totalPerStaf[sysName]) totalPerStaf[sysName] = 0;
+                    totalPerStaf[sysName] += bal;
+                });
+
                 let html = `<option value="">- Pilih Staf -</option>`;
-                let staffs = [];
-                snap.forEach(doc => staffs.push(doc.data().name));
-                staffs.sort().forEach(s => html += `<option value="${s}">${s}</option>`);
+                staffList.forEach(s => {
+                    let total = totalPerStaf[s.name] || 0;
+                    let label = total > 0 ? `${s.name} — RM ${total.toFixed(2)}` : `${s.name} — RM 0`;
+                    html += `<option value="${s.name}">${label}</option>`;
+                });
                 sel.innerHTML = html;
             } catch(e) { console.error(e); }
         };
@@ -10804,7 +11829,7 @@
             let finalTxt = `*Collection Status Request*\nQǐng bāngmáng kàn kàn\nPlease help Xièxiè SFOs 🫶\n\n_*[${displayName}]*_\nTotal : *RM ${totalBal.toFixed(2)}*\n---------------------------\n\n${listText.trim()}`;
             
             navigator.clipboard.writeText(finalTxt).then(() => {
-                alert(`✅ BOOM! Berjaya copy collection Enroll untuk ${staffName}.\nTotal: RM ${totalBal.toFixed(2)}`);
+                window._showCopyToast("Copied!");
                 if(btn) btn.innerText = originalText;
             }).catch(err => {
                 alert("Gagal copy: " + err);
@@ -10900,6 +11925,23 @@
         // ==========================================
         // 🌟 BUKA WHATSAPP DARI MODAL
         // ==========================================
+        window.copyPhone = function(raw) {
+            let cp = String(raw || '').replace(/[^0-9]/g, '');
+            if(cp.startsWith('0')) cp = '60' + cp.substring(1);
+            if(!cp) return;
+            navigator.clipboard.writeText(cp).then(() => {
+                window.showToast('📋 ' + cp + ' disalin!', 'success', 1500);
+            }).catch(() => {
+                // fallback
+                let ta = document.createElement('textarea');
+                ta.value = cp; ta.style.position = 'fixed'; ta.style.opacity = '0';
+                document.body.appendChild(ta); ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                window.showToast('📋 ' + cp + ' disalin!', 'success', 1500);
+            });
+        };
+
         window.bukaWA = function(phoneVal) {
             if(!phoneVal || phoneVal === "-") return;
             // Baca nombor buang simbol je, kod negara 65/62 selamat
