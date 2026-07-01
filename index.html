@@ -221,7 +221,17 @@
                         <button id="btnImportLeadsStaff" class="bg-[#E91E63] hover:bg-[#C2185B] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload CSV</button>
                         <span id="statusLeadsStaff" class="text-xs font-bold text-[#E91E63] ml-2"></span>
                         <button onclick="window.openAddCRMModal(false)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-auto md:ml-4 flex items-center gap-1">➕ Add Lead</button>
-                    </div> <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
+                        <button onclick="document.getElementById('text-import-staff-box').classList.toggle('hidden')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">📋 Import by Text</button>
+                    </div>
+                    <div id="text-import-staff-box" class="hidden flex flex-col gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#673AB7]">
+                        <span class="text-[#bb86fc] font-bold text-sm">📋 Paste Leads (CSV Text, baris pertama mesti header):</span>
+                        <textarea id="textLeadsStaff" rows="6" placeholder="LEADS INBOUND,LEADS INBOUND TIME,NAME,CONTACT,Staff Name,STATUS,SOURCE,STATE,...&#10;25/06/2026,22:15,Mega,+60 16-747 1387,Atie,In Progress,Facebook,Penang,..." class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono"></textarea>
+                        <div class="flex items-center gap-2">
+                            <button id="btnImportLeadsStaffText" onclick="window.prosesImportCRMText('textLeadsStaff', 'statusLeadsStaffText', 'btnImportLeadsStaffText', true, '')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Proses Teks</button>
+                            <span id="statusLeadsStaffText" class="text-xs font-bold text-[#bb86fc]"></span>
+                        </div>
+                    </div>
+                    <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
                         <span class="text-[#00c6ff] font-bold text-sm min-w-[120px]">🤖 Beta Test AI:</span>
                         <input type="file" id="failChatWA" accept=".txt, .zip" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
                         <button onclick="window.prosesChatKeFirebase('failChatWA', 'statusAIImport')" class="bg-[#00c6ff] hover:bg-[#009ee0] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Save</button>
@@ -451,6 +461,7 @@
             <button id="btn-adm-hunt" onclick="window.switchAdminTab('hunt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Hunt CS</button>
             <button id="btn-adm-ps" onclick="window.switchAdminTab('ps')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
             <button id="btn-adm-enroll" onclick="window.switchAdminTab('enroll')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📝 PS Enroll</button>
+            <button id="btn-adm-tags" onclick="window.openGlobalTagsModal()" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🏷️ Tags</button>
             <button id="btn-adm-logs" onclick="window.switchAdminTab('logs')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📋 Daily Logs</button>
             <button id="btn-adm-setup" onclick="window.switchAdminTab('setup')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🛠️ System Setup</button>
             <button id="btn-adm-tgt" onclick="window.switchAdminTab('tgt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Edit Targets</button>
@@ -493,6 +504,19 @@
                         <input type="file" id="failLeadsAdminTab" accept=".csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1">
                         <button id="btnImportLeadsAdminTab" class="bg-[#E91E63] hover:bg-[#C2185B] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload CSV</button>
                         <span id="statusLeadsAdminTab" class="text-xs font-bold text-[#E91E63] ml-2"></span>
+                        <button onclick="document.getElementById('text-import-admin-box').classList.toggle('hidden')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">📋 Import by Text</button>
+                    </div>
+
+                    <div id="text-import-admin-box" class="hidden flex flex-col gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#673AB7]">
+                        <span class="text-[#bb86fc] font-bold text-sm">📋 Paste Leads (CSV Text, baris pertama mesti header):</span>
+                        <select id="text-lead-staff-admintab" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs md:w-40">
+                            <option value="" disabled selected>- Pilih Staf (jika CSV tiada column Staff Name) -</option>
+                        </select>
+                        <textarea id="textLeadsAdminTab" rows="6" placeholder="LEADS INBOUND,LEADS INBOUND TIME,NAME,CONTACT,Staff Name,STATUS,SOURCE,STATE,...&#10;25/06/2026,22:15,Mega,+60 16-747 1387,Atie,In Progress,Facebook,Penang,..." class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono"></textarea>
+                        <div class="flex items-center gap-2">
+                            <button id="btnImportLeadsAdminTabText" onclick="window.prosesImportCRMText('textLeadsAdminTab', 'statusLeadsAdminTabText', 'btnImportLeadsAdminTabText', false, 'text-lead-staff-admintab')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Proses Teks</button>
+                            <span id="statusLeadsAdminTabText" class="text-xs font-bold text-[#bb86fc]"></span>
+                        </div>
                     </div>
 
                     <div class="flex flex-col md:flex-row gap-2 mb-4 bg-[#111] p-3 rounded-lg border border-[#333] items-start md:items-center">
@@ -1680,6 +1704,29 @@
         </div>
     </div>
 
+    <!-- 🏷️ MODAL GLOBAL TAGS MANAGER -->
+    <div id="modal-global-tags" class="modal-overlay" style="z-index: 10002;">
+        <div class="modal-box border-t-4 border-[#f59e0b] w-[520px] max-w-[95%]">
+            <div class="flex justify-between items-center border-b border-[#444] pb-3 mb-4">
+                <h3 class="text-white m-0 font-bold text-xl">🏷️ Urus Global Tags</h3>
+                <button onclick="document.getElementById('modal-global-tags').style.display='none'" class="bg-transparent border-none text-[#aaa] text-2xl cursor-pointer hover:text-white">&times;</button>
+            </div>
+            <p class="text-xs text-gray-400 mb-4">Tags yang disimpan di sini akan <b class="text-[#f59e0b]">tersedia untuk semua staf</b> dalam semua tab (PS Master, PS Enroll, CRM).</p>
+            <div class="flex gap-2 mb-4">
+                <input type="text" id="global-tag-input" placeholder="Nama tag baru... (cth: HOT LEAD)" class="flex-1 bg-[#222] text-white p-2 rounded border border-[#f59e0b] outline-none text-sm" onkeydown="if(event.key==='Enter'){event.preventDefault();window.addGlobalTag();}">
+                <button onclick="window.addGlobalTag()" class="bg-[#f59e0b] hover:bg-[#fbbf24] text-black font-bold py-2 px-4 rounded text-sm">+ Tambah</button>
+            </div>
+            <input type="text" id="global-tag-search" placeholder="🔍 Cari tag..." oninput="window.renderGlobalTagsList()" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#333] outline-none text-xs mb-3">
+            <div id="global-tags-list" class="bg-[#111] border border-[#333] rounded-lg p-3 min-h-[120px] max-h-[300px] overflow-y-auto">
+                <div class="text-gray-500 text-xs text-center py-4">⏳ Loading...</div>
+            </div>
+            <div class="mt-4 flex justify-between items-center">
+                <span id="global-tags-count" class="text-xs text-gray-500"></span>
+                <button onclick="document.getElementById('modal-global-tags').style.display='none'" class="bg-[#333] hover:bg-[#444] text-white font-bold py-2 px-6 rounded text-sm">Tutup</button>
+            </div>
+        </div>
+    </div>
+
     <script type="module">
     import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-app.js";
     import { initializeFirestore, persistentLocalCache, persistentMultipleTabManager, collection, getDocs, getDocsFromCache, doc, getDoc, addDoc, updateDoc, query as fbQuery, where as fbWhere, setDoc, deleteDoc, writeBatch } from "https://www.gstatic.com/firebasejs/10.8.1/firebase-firestore.js";
@@ -1962,26 +2009,8 @@
         // ==========================================
         // ENJIN IMPORT LEADS CRM - UNIVERSAL (CSV VERSION - FIX OVERWRITE)
         // ==========================================
-        window.prosesImportCRM = async function(inputId, statusId, btnId, isStaffView, dropId) {
-            const fail = document.getElementById(inputId).files[0];
-            const status = document.getElementById(statusId);
-            let btn = document.getElementById(btnId);
-            
-            let selectedStaff = "";
-            if (isStaffView) {
-                selectedStaff = currentUser;
-                if(!selectedStaff) { alert("Sila login semula."); return; }
-            } else {
-                let drop = document.getElementById(dropId);
-                if(drop) selectedStaff = drop.value;
-            }
-            
-            if(!fail) { alert("Sila pilih fail CSV Leads boss!"); return; } 
-            
-            status.innerText = "⏳ Sedang menyemak rekod & Lead ID di Firebase...";
-            status.style.color = "#ff9800";
-            btn.disabled = true;
-
+        // 🌟 CORE ENGINE (DIKONGSI OLEH CSV FILE & PASTE TEXT)
+        window._coreProsesImportCRM = async function(parsedRows, status, btn, isStaffView, selectedStaff, onDone) {
             const formatPhone60 = (p) => {
                 let n = String(p || "").replace(/[^0-9]/g, '');
                 if (!n) return "";
@@ -2013,100 +2042,166 @@
                 });
             } catch(e) { console.error("Gagal tarik existing CRM:", e); }
 
+            let bAdded = 0, bUpdated = 0, ralat = 0;
+            status.innerText = `⏳ Memproses ${parsedRows.length} rekod leads...`;
+
+            for (let i = 0; i < parsedRows.length; i++) {
+                let rowData = parsedRows[i];
+
+                // 🌟 SEDUT STAFF NAME DARI DATA
+                let staffName = rowData["Staff Name"] ? String(rowData["Staff Name"]).trim() : "";
+                if (!staffName) {
+                    if (selectedStaff) staffName = selectedStaff; 
+                    else { ralat++; continue; } 
+                }
+                rowData["Staff Name"] = staffName;
+
+                let rCleanContact = formatPhone60(rowData["CONTACT"] || rowData.contact);
+                if(rCleanContact) rowData["CONTACT"] = rCleanContact; 
+
+                let csvLeadId = rowData["Lead ID"] ? String(rowData["Lead ID"]).trim() : "";
+                let foundExisting = null;
+
+                // 🌟 LOGIK CARI (Hanya guna Lead ID & Phone)
+                if (csvLeadId && existingMap[`id_${csvLeadId}`]) foundExisting = existingMap[`id_${csvLeadId}`];
+                else if (rCleanContact && rCleanContact !== "-" && existingMap[`phone_${rCleanContact}`]) foundExisting = existingMap[`phone_${rCleanContact}`];
+
+                try { 
+                    let now = new Date();
+                    let tStr = now.toISOString().split('T')[0];
+                    let tTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
+                    let tDateFormatted = window.toSheetDate ? window.toSheetDate(tStr) : tStr.split('-').reverse().join('/');
+
+                    if (foundExisting) {
+                        // 🌟 MAGIK SMART IMPORT: Data Lama Menang (TERMASUK HISTORY FU)
+                        Object.keys(foundExisting).forEach(key => {
+                            // Pengecualian: Kita KECUALIKAN 'Staff Name', 'LEADS INBOUND', 'LEADS INBOUND TIME' supaya import baru sentiasa overwrite
+                            if (key !== "ALL CHAT (JSON)" && key !== "Staff Name" && key !== "LEADS INBOUND" && key !== "LEADS INBOUND TIME") {
+                                let dataLama = foundExisting[key];
+                                let adaIsiLama = dataLama !== undefined && dataLama !== null && String(dataLama).trim() !== "" && String(dataLama).trim() !== "-";
+                                
+                                if (adaIsiLama) {
+                                    // 🌟 Ini akan pastikan HISTORY FU dan data lain dari Firebase menimpa data CSV
+                                    rowData[key] = dataLama;
+                                }
+                            }
+                        });
+
+                        rowData["Timestamp Masuk"] = now.toISOString(); // 🌟 Refresh timestamp setiap kali import/update
+                        rowData["Lead ID"] = foundExisting["Lead ID"]; 
+                        rowData["LEADS INBOUND"] = tDateFormatted;
+                        rowData["LEADS INBOUND TIME"] = tTime;
+                        
+                        await updateDoc(doc(db, "crm_leads", foundExisting.docId), rowData); 
+                        bUpdated++;
+                    } else {
+                        // ADD LEAD BARU (Termasuk History FU dari CSV sebab dia orang baru)
+                        rowData["Timestamp Masuk"] = now.toISOString(); 
+                        rowData["LEADS INBOUND"] = tDateFormatted;
+                        rowData["LEADS INBOUND TIME"] = tTime;
+
+                        if (!csvLeadId) {
+                            maxLeadNumber++;
+                            csvLeadId = "L" + String(maxLeadNumber).padStart(5, '0'); 
+                        }
+                        rowData["Lead ID"] = csvLeadId;
+                        let newDocRef = await addDoc(collection(db, "crm_leads"), rowData); 
+                        bAdded++;
+                        
+                        existingMap[`id_${csvLeadId}`] = { docId: newDocRef.id, ...rowData };
+                        if (rCleanContact) existingMap[`phone_${rCleanContact}`] = { docId: newDocRef.id, ...rowData };
+                    }
+                } catch (e) { ralat++; }
+            }
+            
+            // 🌟 FIX: UPDATE KAUNTER SUPAYA ADD LEAD SETERUSNYA TAK BERTINDIH
+            try {
+                await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: maxLeadNumber }, { merge: true });
+            } catch(e) { console.error("Gagal kemaskini kaunter:", e); }
+
+            let ralatText = ralat > 0 ? ` (${ralat} lompang)` : "";
+            status.innerText = `✅ SIAP! ${bAdded} BARU, ${bUpdated} UPDATE.${ralatText}`; 
+            status.style.color = "#00e676";
+            
+            if(btn) btn.disabled = false;
+
+            // Auto Refresh
+            if(isStaffView && document.getElementById('view-crm') && !document.getElementById('view-crm').classList.contains('hidden')) {
+                if (typeof window.loadCRMData === 'function') window.loadCRMData(true);
+            } else if (document.getElementById('adm-view-crm') && !document.getElementById('adm-view-crm').classList.contains('hidden')) {
+                if (typeof window.loadAdminCRMData === 'function') window.loadAdminCRMData(true);
+            }
+
+            if (typeof onDone === 'function') onDone();
+        };
+
+        window.prosesImportCRM = async function(inputId, statusId, btnId, isStaffView, dropId) {
+            const fail = document.getElementById(inputId).files[0];
+            const status = document.getElementById(statusId);
+            let btn = document.getElementById(btnId);
+            
+            let selectedStaff = "";
+            if (isStaffView) {
+                selectedStaff = currentUser;
+                if(!selectedStaff) { alert("Sila login semula."); return; }
+            } else {
+                let drop = document.getElementById(dropId);
+                if(drop) selectedStaff = drop.value;
+            }
+            
+            if(!fail) { alert("Sila pilih fail CSV Leads boss!"); return; } 
+            
+            status.innerText = "⏳ Sedang menyemak rekod & Lead ID di Firebase...";
+            status.style.color = "#ff9800";
+            btn.disabled = true;
+
             Papa.parse(fail, {
                 header: true, 
                 skipEmptyLines: true,
                 complete: async function(results) {
-                    let bAdded = 0, bUpdated = 0, ralat = 0;
-                    status.innerText = `⏳ Memproses ${results.data.length} rekod leads...`;
-                    
-                    for (let i = 0; i < results.data.length; i++) {
-                        let rowData = results.data[i];
-                        
-                        // 🌟 SEDUT STAFF NAME DARI CSV
-                        let staffName = rowData["Staff Name"] ? String(rowData["Staff Name"]).trim() : "";
-                        if (!staffName) {
-                            if (selectedStaff) staffName = selectedStaff; 
-                            else { ralat++; continue; } 
-                        }
-                        rowData["Staff Name"] = staffName;
-                        
-                        let rCleanContact = formatPhone60(rowData["CONTACT"] || rowData.contact);
-                        if(rCleanContact) rowData["CONTACT"] = rCleanContact; 
-                        
-                        let csvLeadId = rowData["Lead ID"] ? String(rowData["Lead ID"]).trim() : "";
-                        let foundExisting = null;
+                    await window._coreProsesImportCRM(results.data, status, btn, isStaffView, selectedStaff, () => {
+                        document.getElementById(inputId).value = ""; 
+                    });
+                }
+            });
+        };
 
-                        // 🌟 LOGIK CARI (Hanya guna Lead ID & Phone)
-                        if (csvLeadId && existingMap[`id_${csvLeadId}`]) foundExisting = existingMap[`id_${csvLeadId}`];
-                        else if (rCleanContact && rCleanContact !== "-" && existingMap[`phone_${rCleanContact}`]) foundExisting = existingMap[`phone_${rCleanContact}`];
+        // ==========================================
+        // 🌟 ENJIN IMPORT LEADS CRM - PASTE TEXT (CSV TEXT VERSION)
+        // ==========================================
+        window.prosesImportCRMText = async function(textareaId, statusId, btnId, isStaffView, dropId) {
+            const rawText = document.getElementById(textareaId).value;
+            const status = document.getElementById(statusId);
+            let btn = document.getElementById(btnId);
 
-                        try { 
-                            let now = new Date();
-                            let tStr = now.toISOString().split('T')[0];
-                            let tTime = String(now.getHours()).padStart(2, '0') + ':' + String(now.getMinutes()).padStart(2, '0');
-                            let tDateFormatted = window.toSheetDate ? window.toSheetDate(tStr) : tStr.split('-').reverse().join('/');
+            let selectedStaff = "";
+            if (isStaffView) {
+                selectedStaff = currentUser;
+                if(!selectedStaff) { alert("Sila login semula."); return; }
+            } else {
+                let drop = document.getElementById(dropId);
+                if(drop) selectedStaff = drop.value;
+            }
 
-                            if (foundExisting) {
-                                // 🌟 MAGIK SMART IMPORT: Data Lama Menang (TERMASUK HISTORY FU)
-                                Object.keys(foundExisting).forEach(key => {
-                                    // Pengecualian: Kita KECUALIKAN 'Staff Name', 'LEADS INBOUND', 'LEADS INBOUND TIME' supaya import baru sentiasa overwrite
-                                    if (key !== "ALL CHAT (JSON)" && key !== "Staff Name" && key !== "LEADS INBOUND" && key !== "LEADS INBOUND TIME") {
-                                        let dataLama = foundExisting[key];
-                                        let adaIsiLama = dataLama !== undefined && dataLama !== null && String(dataLama).trim() !== "" && String(dataLama).trim() !== "-";
-                                        
-                                        if (adaIsiLama) {
-                                            // 🌟 Ini akan pastikan HISTORY FU dan data lain dari Firebase menimpa data CSV
-                                            rowData[key] = dataLama;
-                                        }
-                                    }
-                                });
+            if(!rawText || !rawText.trim()) { alert("Sila paste data leads (CSV text) boss!"); return; }
 
-                                rowData["Timestamp Masuk"] = now.toISOString(); // 🌟 Refresh timestamp setiap kali import/update
-                                rowData["Lead ID"] = foundExisting["Lead ID"]; 
-                                rowData["LEADS INBOUND"] = tDateFormatted;
-                                rowData["LEADS INBOUND TIME"] = tTime;
-                                
-                                await updateDoc(doc(db, "crm_leads", foundExisting.docId), rowData); 
-                                bUpdated++;
-                            } else {
-                                // ADD LEAD BARU (Termasuk History FU dari CSV sebab dia orang baru)
-                                rowData["Timestamp Masuk"] = now.toISOString(); 
-                                rowData["LEADS INBOUND"] = tDateFormatted;
-                                rowData["LEADS INBOUND TIME"] = tTime;
+            status.innerText = "⏳ Sedang menyemak rekod & Lead ID di Firebase...";
+            status.style.color = "#ff9800";
+            btn.disabled = true;
 
-                                if (!csvLeadId) {
-                                    maxLeadNumber++;
-                                    csvLeadId = "L" + String(maxLeadNumber).padStart(5, '0'); 
-                                }
-                                rowData["Lead ID"] = csvLeadId;
-                                let newDocRef = await addDoc(collection(db, "crm_leads"), rowData); 
-                                bAdded++;
-                                
-                                existingMap[`id_${csvLeadId}`] = { docId: newDocRef.id, ...rowData };
-                                if (rCleanContact) existingMap[`phone_${rCleanContact}`] = { docId: newDocRef.id, ...rowData };
-                            }
-                        } catch (e) { ralat++; }
+            Papa.parse(rawText.trim(), {
+                header: true,
+                skipEmptyLines: true,
+                complete: async function(results) {
+                    if (!results.data || results.data.length === 0) {
+                        status.innerText = "❌ Tak dapat baca data. Pastikan baris pertama header (nama column).";
+                        status.style.color = "#ff5252";
+                        btn.disabled = false;
+                        return;
                     }
-                    
-                    // 🌟 FIX: UPDATE KAUNTER SUPAYA ADD LEAD SETERUSNYA TAK BERTINDIH
-                    try {
-                        await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: maxLeadNumber }, { merge: true });
-                    } catch(e) { console.error("Gagal kemaskini kaunter:", e); }
-
-                    let ralatText = ralat > 0 ? ` (${ralat} lompang)` : "";
-                    status.innerText = `✅ SIAP! ${bAdded} BARU, ${bUpdated} UPDATE.${ralatText}`; 
-                    status.style.color = "#00e676";
-                    
-                    document.getElementById(inputId).value = ""; 
-                    btn.disabled = false;
-
-                    // Auto Refresh
-                    if(isStaffView && !document.getElementById('view-crm').classList.contains('hidden')) {
-                        if (typeof window.loadCRMData === 'function') window.loadCRMData(true);
-                    } else if (document.getElementById('adm-view-crm') && !document.getElementById('adm-view-crm').classList.contains('hidden')) {
-                        if (typeof window.loadAdminCRMData === 'function') window.loadAdminCRMData(true);
-                    }
+                    await window._coreProsesImportCRM(results.data, status, btn, isStaffView, selectedStaff, () => {
+                        document.getElementById(textareaId).value = "";
+                    });
                 }
             });
         };
@@ -3205,8 +3300,11 @@
 
             endD.setHours(23,59,59,999);
 
-            // 1. Tarik Users & Susun A-Z (Ascending)
-            let usersSnap = await getDocs(collection(db, "staff_list"));
+            // 1 & 2. Tarik Users + Targets SERENTAK (Promise.all — laju 2x)
+            let [usersSnap, tgtSnap] = await Promise.all([
+                getDocs(collection(db, "staff_list")),
+                getDocs(collection(db, "dmo_targets"))
+            ]);
             let users = []; 
             usersSnap.forEach(doc => {
                 let data = doc.data();
@@ -3216,9 +3314,6 @@
                 }
             });
             users.sort((a, b) => a.localeCompare(b)); // Kod ajaib susun A-Z
-
-            // 2. Tarik Targets
-            let tgtSnap = await getDocs(collection(db, "dmo_targets"));
             let targets = {}; let uniqueTasks = []; let staffPointsTarget = {};
             tgtSnap.forEach(doc => {
                 let d = doc.data(); let staff = d["Staff Name"]; let task = d["Task (DMO)"];
@@ -3292,15 +3387,16 @@
                 currD.setDate(currD.getDate() + 1);
             }
 
-            // Firebase 'in' query limit 10 item. Kita pecahkan kepada kumpulan 10.
+            // Firebase 'in' query limit 10 item. Fetch semua chunk SERENTAK (Promise.all)
             let logDataList = [];
+            let chunkPromises = [];
             for (let i = 0; i < senaraiTarikhDB.length; i += 10) {
                 let chunk = senaraiTarikhDB.slice(i, i + 10);
-                
                 let q = fbQuery(collection(db, "daily_logs"), fbWhere("Selected Date", "in", chunk));
-                let snap = await getDocs(q);
-                snap.forEach(doc => logDataList.push(doc.data()));
+                chunkPromises.push(getDocs(q));
             }
+            let chunkSnaps = await Promise.all(chunkPromises);
+            chunkSnaps.forEach(snap => snap.forEach(doc => logDataList.push(doc.data())));
 
             // Proses data log spesifik yang dah ditapis
             logDataList.forEach(d => {
@@ -3599,8 +3695,11 @@
             if(c) c.innerHTML = "<div class='text-center py-20 text-[#00c6ff] font-bold'>⏳ Membaca pangkalan data Targets...</div>";
             
             try {
-                // 1. Tarik Users
-                let usersSnap = await getDocs(collection(db, "staff_list"));
+                // 1 & 2. Tarik Users + Targets SERENTAK (Promise.all — laju 2x)
+                let [usersSnap, tgtSnap] = await Promise.all([
+                    getDocs(collection(db, "staff_list")),
+                    getDocs(collection(db, "dmo_targets"))
+                ]);
                 let users = []; 
                 usersSnap.forEach(doc => {
                     let data = doc.data();
@@ -3610,9 +3709,6 @@
                     }
                 });
                 users.sort((a, b) => a.localeCompare(b));
-
-                // 2. Tarik Targets
-                let tgtSnap = await getDocs(collection(db, "dmo_targets"));
                 let targets = {}; let uniqueTasks = [];
                 tgtSnap.forEach(doc => {
                     let d = doc.data(); let staff = d["Staff Name"]; let task = d["Task (DMO)"];
@@ -3937,6 +4033,8 @@
                 let selAIAdmin = document.getElementById('ai-lead-staff-admin'); 
                 if(selAIAdmin) selAIAdmin.innerHTML = htmlOpt;
                 if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; 
+                let selTextAdminTab = document.getElementById('text-lead-staff-admintab');
+                if(selTextAdminTab) selTextAdminTab.innerHTML = htmlOpt;
             } catch(e) { if(c) c.innerHTML = "<div class='text-red-500 text-sm'>Gagal muat senarai staf.</div>"; }
         };
 
@@ -4197,7 +4295,8 @@
           { key: 'REASON LEARN', label: 'Reason Learn' }, { key: 'CONCERN PS', label: 'Concern PS' }, 
           { key: 'Class', label: 'Class', color: '#00c6ff' }, { key: 'Class Date & Time', label: 'Class Date/Time' }, { key: 'Parents Detail', label: 'Parents Detail' },
           { key: 'ALL CHAT (JSON)', label: 'All Chat (JSON)', isChat: true },
-          { key: 'LAST CONTACTED (DATE)', label: 'Last C Date' }, { key: 'LAST CONTACTED (TIME)', label: 'Last C Time' }
+          { key: 'LAST CONTACTED (DATE)', label: 'Last C Date' }, { key: 'LAST CONTACTED (TIME)', label: 'Last C Time' },
+          { key: 'Tags', label: 'Tags', color: '#f59e0b', isTagsCol: true }
         ];
 
 
@@ -4579,6 +4678,10 @@
                       let imp = window.parseTimestampMasuk(row["Timestamp Masuk"]);
                       let display = col.isImportDate ? imp.date : imp.time;
                       html += `<td style="color:#9c27b0; font-weight:bold;"><div class="scroll-cell">${display}</div></td>`;
+                  } else if(col.isTagsCol) {
+                      let tags = window.getRecordTags ? window.getRecordTags(row) : [];
+                      let tagsHtml = tags.length > 0 ? tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:bold;white-space:nowrap;">${t}</span>`).join(' ') : '-';
+                      html += `<td style="padding:5px;"><div class="scroll-cell" style="display:flex;flex-wrap:wrap;gap:3px;">${tagsHtml}</div></td>`;
                   } else {
                       let val = row[col.key] || "-"; 
                       if (col.key === 'FOLLOW UP (DATE)' || col.key === 'LAST CONTACTED (DATE)') val = window.formatDateToDDMMYYYY(val);
@@ -4840,6 +4943,10 @@
                       let imp = window.parseTimestampMasuk(row["Timestamp Masuk"]);
                       let display = col.isImportDate ? imp.date : imp.time;
                       html += `<td style="color:#9c27b0; font-weight:bold;"><div class="scroll-cell">${display}</div></td>`;
+                  } else if(col.isTagsCol) {
+                      let tags = window.getRecordTags ? window.getRecordTags(row) : [];
+                      let tagsHtml = tags.length > 0 ? tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:bold;white-space:nowrap;">${t}</span>`).join(' ') : '-';
+                      html += `<td style="padding:5px;"><div class="scroll-cell" style="display:flex;flex-wrap:wrap;gap:3px;">${tagsHtml}</div></td>`;
                   } else {
                       let val = row[col.key] || "-"; 
                       if (col.key === 'FOLLOW UP (DATE)' || col.key === 'LAST CONTACTED (DATE)') val = window.formatDateToDDMMYYYY(val);
@@ -7804,6 +7911,94 @@
         window.closePSModal = function() { document.getElementById('modal-ps').style.display = 'none'; };
 
         // ============================================
+        // 🏷️ GLOBAL TAGS MASTER SYSTEM (Firestore: global_tags collection)
+        // ============================================================
+        window._globalTagsMaster = []; // cache
+
+        window.loadGlobalTagsMaster = async function() {
+            try {
+                const snap = await getDocs(collection(db, "global_tags"));
+                window._globalTagsMaster = [];
+                snap.forEach(d => {
+                    let name = d.data().name || d.id;
+                    if(name) window._globalTagsMaster.push({ id: d.id, name: name.trim() });
+                });
+                window._globalTagsMaster.sort((a,b) => a.name.localeCompare(b.name));
+            } catch(e) { console.warn("global_tags load error:", e); }
+        };
+
+        window.openGlobalTagsModal = async function() {
+            document.getElementById('modal-global-tags').style.display = 'flex';
+            await window.loadGlobalTagsMaster();
+            window.renderGlobalTagsList();
+        };
+
+        window.renderGlobalTagsList = function() {
+            let list = document.getElementById('global-tags-list');
+            let count = document.getElementById('global-tags-count');
+            if(!list) return;
+            let search = (document.getElementById('global-tag-search')?.value || '').toLowerCase().trim();
+            let tags = window._globalTagsMaster.filter(t => !search || t.name.toLowerCase().includes(search));
+            if(count) count.textContent = `${window._globalTagsMaster.length} tag(s) dalam sistem`;
+            if(tags.length === 0) {
+                list.innerHTML = `<div class="text-gray-500 text-xs text-center py-6">${search ? 'Tiada tag sepadan.' : 'Belum ada tag. Tambah tag pertama anda!'}</div>`;
+                return;
+            }
+            list.innerHTML = tags.map(t => `
+                <div class="flex items-center justify-between py-1.5 px-2 rounded hover:bg-[#1a1a1a] group">
+                    <span id="tag-label-${t.id}" style="display:inline-flex;align-items:center;gap:6px;background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:3px 12px;border-radius:999px;font-size:11px;font-weight:bold;">${t.name}</span>
+                    <div class="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                        <button onclick="window.editGlobalTag('${t.id}','${t.name.replace(/'/g,"\\'")}',this)" class="text-[#00c6ff] text-xs font-bold hover:underline">Edit</button>
+                        <button onclick="window.deleteGlobalTag('${t.id}','${t.name.replace(/'/g,"\\'")}',this)" class="text-red-400 text-xs font-bold hover:underline">Padam</button>
+                    </div>
+                </div>`).join('');
+        };
+
+        window.addGlobalTag = async function() {
+            let inp = document.getElementById('global-tag-input');
+            let val = (inp?.value || '').trim().replace(/,/g,'');
+            if(!val) return;
+            // Check duplicate
+            if(window._globalTagsMaster.find(t => t.name.toLowerCase() === val.toLowerCase())) {
+                window.showToast('⚠️ Tag ini dah wujud!', 'error', 2000); return;
+            }
+            try {
+                let ref = await addDoc(collection(db, "global_tags"), { name: val });
+                window._globalTagsMaster.push({ id: ref.id, name: val });
+                window._globalTagsMaster.sort((a,b) => a.name.localeCompare(b.name));
+                inp.value = '';
+                window.renderGlobalTagsList();
+                window.showToast('✅ Tag ditambah!', 'success', 1500);
+            } catch(e) { window.showToast('❌ Gagal: ' + e.message, 'error', 2500); }
+        };
+
+        window.editGlobalTag = async function(id, oldName, btn) {
+            let newName = prompt('Edit nama tag:', oldName);
+            if(!newName || !newName.trim() || newName.trim() === oldName) return;
+            newName = newName.trim().replace(/,/g,'');
+            try {
+                await updateDoc(doc(db, "global_tags", id), { name: newName });
+                let idx = window._globalTagsMaster.findIndex(t => t.id === id);
+                if(idx > -1) window._globalTagsMaster[idx].name = newName;
+                window._globalTagsMaster.sort((a,b) => a.name.localeCompare(b.name));
+                window.renderGlobalTagsList();
+                window.showToast('✅ Tag dikemaskini!', 'success', 1500);
+            } catch(e) { window.showToast('❌ Gagal: ' + e.message, 'error', 2500); }
+        };
+
+        window.deleteGlobalTag = async function(id, name, btn) {
+            if(!confirm('Padam tag "' + name + '"? Tag ini akan dikeluarkan dari senarai pilihan (rekod sedia ada tidak terjejas).')) return;
+            try {
+                await deleteDoc(doc(db, "global_tags", id));
+                window._globalTagsMaster = window._globalTagsMaster.filter(t => t.id !== id);
+                window.renderGlobalTagsList();
+                window.showToast('🗑️ Tag dipadam!', 'success', 1500);
+            } catch(e) { window.showToast('❌ Gagal: ' + e.message, 'error', 2500); }
+        };
+
+        // Load global tags on startup (so all staff views get them)
+        window.loadGlobalTagsMaster();
+
         // 🏷️ TAGS SYSTEM — PS Master & PS Enroll
         // ============================================
 
@@ -7827,9 +8022,11 @@
             return [...tagSet].sort();
         };
 
-        // Helper: collect ALL tags from CRM + PS Master + PS Enroll (shared pool)
+        // Helper: collect ALL tags from GlobalTags Master + CRM + PS Master + PS Enroll (shared pool)
         window.collectAllTagsGlobal = function() {
             let tagSet = new Set();
+            // 🌟 FIX: Sertakan Global Tags Master (Firestore global_tags) — ini sumber kebenaran
+            (window._globalTagsMaster || []).forEach(t => tagSet.add(t.name));
             let allArrays = [
                 ...(typeof crmState !== 'undefined' ? (crmState.adminData||[]) : []),
                 ...(typeof crmState !== 'undefined' ? (crmState.data||[]) : []),
@@ -7884,7 +8081,7 @@
             inp.focus();
         };
 
-        // Remove tag from modal
+        // Remove tag from modal — 🌟 FIX: auto-save terus ke Firestore
         window.psRemoveTag = function(type, idx) {
             let hiddenId = type === 'ps' ? 'ps-tags-value' : 'enroll-tags-value';
             let current = (document.getElementById(hiddenId)?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
@@ -7893,6 +8090,11 @@
             window.renderModalTags(type, current);
             // 🏷️ Log ke History FU
             if(removed) window._appendTagChangeToHistory(type, 'Removed Tags', [removed]);
+            // 🌟 FIX: Auto-save ke Firestore supaya remove tags terus tersimpan
+            let docIdEl = document.getElementById(type === 'ps' ? 'ps-docid' : 'enroll-docid');
+            if(docIdEl && docIdEl.value) {
+                window.savePSTags(type, docIdEl.value, removed ? 'Removed Tags' : '', removed ? [removed] : []);
+            }
         };
 
         // 🏷️ Helper: Append tag change entry to CRM History FU textarea
@@ -8087,24 +8289,44 @@
                     });
                 }
 
-                // ── 3. Log entry ke CRM HISTORY FU (textarea + Firebase) ──
-                if(logEntry && crmDocId) {
-                    // Update textarea dalam modal
-                    let histEl = document.getElementById('crm-history');
-                    if(histEl) {
-                        let cur = histEl.value.trim();
-                        histEl.value = cur ? (logEntry + "\n" + cur) : logEntry;
-                    }
-                    // Save ke Firebase CRM collection
-                    let crmArr = [...(crmState.adminData||[]), ...(crmState.data||[])];
-                    let crmRec = crmArr.find(r => r.docId === crmDocId);
-                    let existingCrmHist = crmRec ? (crmRec["HISTORY FU"] || "") : "";
-                    let newCrmHist = logEntry + (existingCrmHist ? "\n" + existingCrmHist : "");
-                    await updateDoc(doc(db, "crm_leads", crmDocId), { "HISTORY FU": newCrmHist });
+                // ── 3. Log entry ke CRM HISTORY FU (textarea + Firebase) + update Tags pada Lead sendiri ──
+                if(crmDocId) {
+                    // 🌟 FIX: Tags pada PS/Enroll mesti sync balik ke crm_leads juga, bukan setakat log je
+                    await updateDoc(doc(db, "crm_leads", crmDocId), { "Tags": tags });
                     [crmState.adminData, crmState.data].forEach(arr => {
-                        let i = arr.findIndex(r => r.docId === crmDocId);
-                        if(i > -1) arr[i]["HISTORY FU"] = newCrmHist;
+                        let i = (arr||[]).findIndex(r => r.docId === crmDocId);
+                        if(i > -1) arr[i]["Tags"] = tags;
                     });
+
+                    if(logEntry) {
+                        // Update textarea dalam modal
+                        let histEl = document.getElementById('crm-history');
+                        if(histEl) {
+                            let cur = histEl.value.trim();
+                            histEl.value = cur ? (logEntry + "\n" + cur) : logEntry;
+                        }
+                        // Save ke Firebase CRM collection
+                        let crmArr = [...(crmState.adminData||[]), ...(crmState.data||[])];
+                        let crmRec = crmArr.find(r => r.docId === crmDocId);
+                        let existingCrmHist = crmRec ? (crmRec["HISTORY FU"] || "") : "";
+                        let newCrmHist = logEntry + (existingCrmHist ? "\n" + existingCrmHist : "");
+                        await updateDoc(doc(db, "crm_leads", crmDocId), { "HISTORY FU": newCrmHist });
+                        [crmState.adminData, crmState.data].forEach(arr => {
+                            let i = arr.findIndex(r => r.docId === crmDocId);
+                            if(i > -1) arr[i]["HISTORY FU"] = newCrmHist;
+                        });
+                    }
+
+                    // 🌟 Refresh pill Tags pada CRM section dalam modal (kalau ada elemen 'crm-tags-container')
+                    if(typeof window._renderCRMSectionTags === 'function' && document.getElementById('crm-tags-container')) {
+                        window._renderCRMSectionTags('crm-tags-container', 'crm-tags-value', tags);
+                    }
+                    // Refresh table/list view supaya column Tags pada Lead terus nampak update
+                    if (document.getElementById('view-crm') && !document.getElementById('view-crm').classList.contains('hidden')) {
+                        if (typeof window.loadCRMData === 'function') window.loadCRMData(true);
+                    } else if (document.getElementById('adm-view-crm') && !document.getElementById('adm-view-crm').classList.contains('hidden')) {
+                        if (typeof window.loadAdminCRMData === 'function') window.loadAdminCRMData(true);
+                    }
                 }
 
                 window.showToast('🏷️ Tags disimpan' + (linkedDocId ? ' & sync!' : '!'), 'success', 1500);
@@ -10981,6 +11203,10 @@
             if (!forceRefresh && enrollState.data.length > 0) { window.renderEnrollTable(); return; }
             document.getElementById('enroll-table-body').innerHTML = `<tr><td colspan="30" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data...</td></tr>`;
             try {
+                // 🌟 FIX: Pastikan senaraiStafAdmin dah loaded sebelum buat query nama
+                if (!senaraiStafAdmin || senaraiStafAdmin.length === 0) {
+                    await window.renderUrusStaf();
+                }
                 let queryNames = [currentUser];
                 if (typeof senaraiStafAdmin !== 'undefined') {
                     let matched = senaraiStafAdmin.find(s => s.name === currentUser);
