@@ -187,15 +187,61 @@
                 <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333] w-full shadow-lg">
                     
                     <div class="bg-[#111] p-4 rounded-lg border border-[#222] mb-5">
-                        <div class="text-[#00c6ff] text-xs font-bold mb-3 uppercase tracking-wider">Daily Metrics (Read Only)</div>
-                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-400">Leads:</span><span class="text-white font-bold" id="disp-leads">0</span></div>
-                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-400">Fulltalk:</span><span class="text-white font-bold" id="disp-fulltalk">0</span></div>
-                        <div class="flex justify-between text-sm mb-3"><span class="text-gray-400">Invite:</span><span class="text-white font-bold" id="disp-invite">0</span></div>
+                        <div class="text-[#00c6ff] text-xs font-bold mb-2 uppercase tracking-wider">🗣️ Full Talks💪🏻</div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <input type="number" id="rp-ft-done" oninput="window.saveReportDaily()" placeholder="0" class="w-20 bg-[#333] text-white p-2 rounded-lg border border-[#555] outline-none text-center font-bold">
+                            <span class="text-gray-500 font-bold">/</span>
+                            <input type="number" id="rp-ft-target" oninput="window.saveReportTargets()" placeholder="0" class="w-20 bg-[#333] text-[#00c6ff] p-2 rounded-lg border border-[#555] outline-none text-center font-bold">
+                        </div>
+                        <div class="text-[10px] text-gray-500 italic mb-4">(Talk Controllingly💪🏻)</div>
 
-                        <div class="text-[#00c6ff] text-xs font-bold mb-3 uppercase tracking-wider mt-5">Monthly Tracking</div>
-                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-400">Invitation:</span><span class="text-white font-bold" id="disp-m-inv">0 / 150</span></div>
-                        <div class="flex justify-between text-sm mb-1"><span class="text-gray-400">Attend:</span><span class="text-white font-bold" id="disp-m-att">0 / 40</span></div>
-                        <div class="flex justify-between text-sm"><span class="text-gray-400">Sales (RM):</span><span class="text-white font-bold" id="disp-m-sale">RM 0 / 12500</span></div>
+                        <div class="text-[#00c6ff] text-xs font-bold mb-2 uppercase tracking-wider">ℹ️ Invitations😱</div>
+                        <div class="flex items-center gap-2 mb-1">
+                            <input type="number" id="rp-inv-done" oninput="window.saveReportDaily()" title="Auto-kira dari jumlah lead PS Master ikut tarikh dipilih (boleh edit kalau tersalah)" placeholder="0" class="w-20 bg-[#333] text-white p-2 rounded-lg border border-[#555] outline-none text-center font-bold">
+                            <span class="text-gray-500 font-bold">/</span>
+                            <input type="number" id="rp-inv-target" oninput="window.saveReportTargets()" placeholder="0" class="w-20 bg-[#333] text-[#00c6ff] p-2 rounded-lg border border-[#555] outline-none text-center font-bold">
+                        </div>
+                        <div class="text-[10px] text-gray-500 italic mb-2">(Invite Urgency & Scarcity)😱</div>
+                        <div class="flex items-center gap-2 mb-2">
+                            <span class="text-[10px] text-gray-500">PS Code tarikh (ikut Timestamp):</span>
+                            <input type="date" id="rp-ps-date" onchange="window.renderReportPSCodes()" class="bg-[#333] text-[#00c6ff] px-2 py-1 rounded border border-[#555] outline-none text-xs font-bold">
+                        </div>
+                        <div id="rp-ps-amc" class="text-xs text-gray-300 mb-1">🅰️ -</div>
+                        <div id="rp-ps-oktb" class="text-xs text-gray-300 mb-4">🆗 -</div>
+
+                        <div class="text-[#00c6ff] text-xs font-bold mb-2 uppercase tracking-wider">❤️ AMA Lead🆓</div>
+                        <input type="number" id="rp-ama" oninput="window.saveReportDaily()" placeholder="0" class="w-20 bg-[#333] text-white p-2 rounded-lg border border-[#555] outline-none text-center font-bold mb-5">
+
+                        <div class="text-[#00c6ff] text-xs font-bold mb-3 uppercase tracking-wider mt-2 border-t border-[#333] pt-4">Monthly Tracking</div>
+                        <div class="flex items-center justify-between gap-2 mb-3">
+                            <span class="text-[10px] text-gray-500">Bulan & Tahun:</span>
+                            <input type="month" id="rp-m-period" onchange="window.renderMonthlyTracking()" class="bg-[#333] text-[#00c6ff] px-2 py-1 rounded border border-[#555] outline-none text-xs font-bold">
+                        </div>
+                        <div class="flex justify-between items-center text-sm mb-2 gap-2">
+                            <span class="text-gray-400">Invitations:</span>
+                            <div class="flex items-center gap-1">
+                                <input type="number" id="rp-m-inv-done" oninput="window.saveReportDaily()" title="Auto-kira dari jumlah lead PS Master ikut bulan & tahun dipilih (boleh edit kalau tersalah)" placeholder="0" class="w-16 bg-[#333] text-white p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                                <span class="text-gray-500">/</span>
+                                <input type="number" id="rp-m-inv-target" oninput="window.saveReportTargets()" class="w-16 bg-[#333] text-[#00c6ff] p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-sm mb-2 gap-2">
+                            <span class="text-gray-400">Attend:</span>
+                            <div class="flex items-center gap-1">
+                                <input type="number" id="rp-m-att-done" oninput="window.saveReportDaily()" title="Auto-kira dari jumlah PS Master dengan Attendance = Attended ikut bulan & tahun dipilih (boleh edit kalau tersalah)" placeholder="0" class="w-16 bg-[#333] text-white p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                                <span class="text-gray-500">/</span>
+                                <input type="number" id="rp-m-att-target" oninput="window.saveReportTargets()" class="w-16 bg-[#333] text-[#00c6ff] p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                            </div>
+                        </div>
+                        <div class="flex justify-between items-center text-sm gap-2">
+                            <span class="text-gray-400">Sales (RM):</span>
+                            <div class="flex items-center gap-1">
+                                <span class="text-gray-500 text-xs">RM</span>
+                                <input type="number" id="rp-m-sale-done" oninput="window.saveReportDaily()" placeholder="0" class="w-16 bg-[#333] text-white p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                                <span class="text-gray-500">/</span>
+                                <input type="number" id="rp-m-sale-target" oninput="window.saveReportTargets()" class="w-20 bg-[#333] text-[#00c6ff] p-1.5 rounded border border-[#555] outline-none text-center text-xs font-bold">
+                            </div>
+                        </div>
                     </div>
 
                     <div id="report-task-list" class="mb-6 space-y-2"></div>
@@ -206,6 +252,7 @@
                         <button onclick="window.copySummary(3)" class="bg-[#252525] hover:bg-[#333] border border-[#444] text-white font-bold py-2 px-1 rounded text-xs transition">📄 Round 3</button>
                     </div>
                     <button onclick="window.copyDailyReport()" class="w-full bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-3 px-4 rounded text-sm transition shadow-lg mt-1">📋 COPY DAILY REPORT</button>
+                    <button onclick="window.copyMrFooReport()" class="w-full bg-[#ffca28] hover:bg-[#ffb300] text-black font-bold py-3 px-4 rounded text-sm transition shadow-lg mt-2">📋 COPY MR FOO REPORT</button>
                 </div>
             </div>
 
@@ -2655,6 +2702,7 @@
             if(tab === 'report') {
                 window.renderReport(); 
                 window.renderReportUI(); 
+                window.loadReportPanel();
             }
             if(tab === 'crm') window.loadCRMData();
             if(tab === 'ps') window.loadPSData();
@@ -2736,6 +2784,7 @@
             if(!document.getElementById('view-report').classList.contains('hidden')) {
                 window.renderReport();
                 window.renderReportUI();
+                window.loadReportPanel();
             }
         }
 
@@ -3156,6 +3205,16 @@
             return txt.trim();
         }
 
+        // 🌟 Format khas "Mr Foo Report": "Task Name xN", hanya task yang ada nombor (done > 0), tanpa target
+        function getTaskListTextMrFoo() {
+            let txt = "";
+            taskListUnik.forEach(t => {
+                let done = userLogs.filter(l => l["Task Name"] === t).reduce((sum, l) => sum + (parseInt(l["Action"])||0), 0);
+                if (done > 0) txt += `${t} x${done}\n`;
+            });
+            return txt.trim();
+        }
+
         // Fungsi Butang Copy Round
         window.copySummary = function(r) {
             const tarikhRaw = document.getElementById('pilihTarikh').value;
@@ -3165,14 +3224,222 @@
             navigator.clipboard.writeText(txt).then(() => alert(`✅ Berjaya copy Report Round ${r}! Boleh paste di WhatsApp.`));
         };
 
+        // ==========================================
+        // 5b. REPORT PANEL BARU: Full Talks / Invitations / AMA Lead / Monthly Tracking
+        // ==========================================
+
+        // 🌟 Tukar apa-apa format tarikh (D/M/Y, Y-M-D, "10-Jul 2026", dll) jadi YYYY-MM-DD supaya senang banding
+        function normalizeDateStr(dStr) {
+            if(!dStr) return "";
+            let d = String(dStr).trim();
+            if(!d || d === "-") return "";
+
+            const mns = {"jan":"01","feb":"02","mar":"03","apr":"04","may":"05","jun":"06","jul":"07","aug":"08","sep":"09","oct":"10","nov":"11","dec":"12"};
+
+            // Format "10-Jul 2026" / "10-Jul-2026" / "10 Jul, 2026" (dari Excel serial auto-convert semasa import PS)
+            let mMatch = d.match(/^(\d{1,2})[\s\-\/]+([a-zA-Z]{3,})[\s\-\/,]+(\d{4})/);
+            if(mMatch) {
+                let day = mMatch[1].padStart(2, '0');
+                let mLower = mMatch[2].toLowerCase().substring(0,3);
+                let month = mns[mLower] || "";
+                if(!month) return "";
+                return `${mMatch[3]}-${month}-${day}`;
+            }
+
+            // Buang time part kalau ada (contoh "2026-07-10 14:30:00")
+            let dOnly = d.split(' ')[0].split('T')[0];
+
+            let p = dOnly.includes('/') ? dOnly.split('/') : dOnly.split('-');
+            if(p.length < 3) return "";
+            let day = p[0].trim().padStart(2, '0');
+            let month = p[1].trim().padStart(2, '0');
+            let year = p[2].trim();
+            if(day.length === 4) { year = p[0].trim(); day = p[2].trim().padStart(2, '0'); }
+            let mLower = month.toLowerCase().substring(0,3);
+            if(mns[mLower]) month = mns[mLower];
+            if(year.length === 2) year = "20" + year;
+            return `${year}-${month.padStart(2,'0')}-${day.padStart(2,'0')}`;
+        }
+
+        // 🌟 Ambil senarai PS Code dari PS Master staf sendiri, ikut tarikh PS Code (bukan tarikh report utama) & nama Class
+        window.getReportPSCodes = function(classMatchFn) {
+            const tarikh = document.getElementById('rp-ps-date')?.value || "";
+            if(!tarikh || !psState || !psState.data) return [];
+            return psState.data
+                .filter(row => {
+                    if(normalizeDateStr(row["Timestamp"]) !== tarikh) return false;
+                    return classMatchFn(String(row["Class"] || "").trim());
+                })
+                .map(row => row["Potential Student Code"] || "")
+                .filter(c => c && c !== "-");
+        };
+
+        // 🌟 Lukis semula senarai PS Code AMC / OKTB dalam panel report (sentiasa tarik data terbaru dari server)
+        // Sentiasa kira semula & isi field Invitations (macam PS Code) - staff boleh edit manual lepas tu kalau tersalah.
+        window.renderReportPSCodes = async function() {
+            const elAmc = document.getElementById('rp-ps-amc');
+            const elOktb = document.getElementById('rp-ps-oktb');
+            if(!elAmc || !elOktb) return;
+
+            // 🌟 Default sekali je ke tarikh hari ini (tak reset kalau staf dah pilih tarikh lain)
+            const dateInput = document.getElementById('rp-ps-date');
+            if(dateInput && !dateInput.value) {
+                dateInput.value = new Date().toISOString().split('T')[0];
+            }
+
+            elAmc.innerText = "🅰️ ⏳ Memuat...";
+            elOktb.innerText = "🆗 ⏳ Memuat...";
+            const elInvDone = document.getElementById('rp-inv-done');
+            if(elInvDone) elInvDone.value = "…";
+            try { await window.loadPSData(true); } catch(e) {}
+
+            let amc = window.getReportPSCodes(c => c.includes("Amazing Mandarin Conversation Class"));
+            let oktb = window.getReportPSCodes(c => c.includes("Online Kunkwan Tour & Briefing") || c.includes("OKTB1to1"));
+
+            elAmc.innerText = `🅰️ ${amc.length ? amc.join(", ") : "-"}`;
+            elOktb.innerText = `🆗 ${oktb.length ? oktb.join(", ") : "-"}`;
+
+            // 🌟 Invitations (Daily) = jumlah TOTAL lead PS Master ikut tarikh yang sama (bukan senarai PS Code, tapi jumlah)
+            if(elInvDone) {
+                const tarikh = dateInput?.value || "";
+                const totalLeadTarikhTu = (psState && psState.data) ? psState.data.filter(row => normalizeDateStr(row["Timestamp"]) === tarikh).length : 0;
+                elInvDone.value = totalLeadTarikhTu;
+            }
+        };
+
+        // 🌟 Monthly Tracking: Invitations & Attend auto-kira dari psState.data (PS Master) ikut bulan+tahun dipilih
+        // Sentiasa kira semula setiap kali dipanggil - staff boleh edit manual lepas tu kalau tersalah.
+        window.renderMonthlyTracking = async function() {
+            const periodInput = document.getElementById('rp-m-period');
+            const elMInv = document.getElementById('rp-m-inv-done');
+            const elMAtt = document.getElementById('rp-m-att-done');
+            if(!periodInput || !elMInv || !elMAtt) return;
+
+            // 🌟 Default sekali je ke bulan & tahun semasa (tak reset kalau staf dah pilih bulan lain)
+            if(!periodInput.value) {
+                const now = new Date();
+                periodInput.value = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}`;
+            }
+            const period = periodInput.value; // format YYYY-MM
+
+            elMInv.value = "…";
+            elMAtt.value = "…";
+            try { await window.loadPSData(true); } catch(e) {}
+
+            const rows = (psState && psState.data) ? psState.data : [];
+            const rowsBulanIni = rows.filter(row => {
+                const nd = normalizeDateStr(row["Timestamp"]);
+                return nd && nd.substring(0, 7) === period;
+            });
+
+            elMInv.value = rowsBulanIni.length;
+            elMAtt.value = rowsBulanIni.filter(row => String(row["Attendance"] || "").toLowerCase().trim() === "attended").length;
+        };
+
+        // 🌟 Simpan target (Full Talks, Invitations, Monthly Tracking) - default ikut yang boss set, kekal walau tukar tarikh
+        window.saveReportTargets = function() {
+            const data = {
+                ftTarget: document.getElementById('rp-ft-target')?.value || "",
+                invTarget: document.getElementById('rp-inv-target')?.value || "",
+                mInvTarget: document.getElementById('rp-m-inv-target')?.value || "",
+                mAttTarget: document.getElementById('rp-m-att-target')?.value || "",
+                mSaleTarget: document.getElementById('rp-m-sale-target')?.value || ""
+            };
+            try { localStorage.setItem(`report_targets_${currentUser}`, JSON.stringify(data)); } catch(e) {}
+        };
+
+        // 🌟 Simpan input harian (Full Talks, Invitations, AMA Lead, Monthly done) ikut staf + tarikh
+        window.saveReportDaily = function() {
+            const tarikh = document.getElementById('pilihTarikh')?.value || "";
+            const data = {
+                ftDone: document.getElementById('rp-ft-done')?.value || "",
+                invDone: document.getElementById('rp-inv-done')?.value || "",
+                ama: document.getElementById('rp-ama')?.value || "",
+                mInvDone: document.getElementById('rp-m-inv-done')?.value || "",
+                mAttDone: document.getElementById('rp-m-att-done')?.value || "",
+                mSaleDone: document.getElementById('rp-m-sale-done')?.value || ""
+                // 🌟 invDone/mInvDone/mAttDone auto-kira sebagai default, tapi staff boleh edit manual & nilai edit tu disimpan sini
+            };
+            try { localStorage.setItem(`report_daily_${currentUser}_${tarikh}`, JSON.stringify(data)); } catch(e) {}
+        };
+
+        // 🌟 Muat semula input harian + target bila tab Report dibuka / tarikh ditukar
+        window.loadReportPanel = function() {
+            const tarikh = document.getElementById('pilihTarikh')?.value || "";
+
+            // Default target (boleh boss tukar & ia akan kekal, tak reset ikut tarikh)
+            let targets = { ftTarget: "15", invTarget: "10", mInvTarget: "100", mAttTarget: "60", mSaleTarget: "8000" };
+            try {
+                const rawT = localStorage.getItem(`report_targets_${currentUser}`);
+                if(rawT) targets = { ...targets, ...JSON.parse(rawT) };
+            } catch(e) {}
+
+            let daily = { ftDone: "", invDone: "", ama: "", mInvDone: "", mAttDone: "", mSaleDone: "" };
+            try {
+                const rawD = localStorage.getItem(`report_daily_${currentUser}_${tarikh}`);
+                if(rawD) daily = { ...daily, ...JSON.parse(rawD) };
+            } catch(e) {}
+
+            const setVal = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+            setVal('rp-ft-done', daily.ftDone);
+            setVal('rp-ft-target', targets.ftTarget);
+            setVal('rp-inv-done', daily.invDone);
+            setVal('rp-inv-target', targets.invTarget);
+            setVal('rp-ama', daily.ama);
+            setVal('rp-m-inv-done', daily.mInvDone);
+            setVal('rp-m-att-done', daily.mAttDone);
+            setVal('rp-m-sale-done', daily.mSaleDone);
+            setVal('rp-m-inv-target', targets.mInvTarget);
+            setVal('rp-m-att-target', targets.mAttTarget);
+            setVal('rp-m-sale-target', targets.mSaleTarget);
+
+            // 🌟 Auto-kira Invitations (harian & bulanan) - staff boleh edit manual lepas ni kalau tersalah
+            window.renderReportPSCodes();
+            window.renderMonthlyTracking();
+        };
+
+        // 🌟 Enjin sepunya untuk bina teks report (Daily Report & Mr Foo Report guna base yang sama)
+        function buildReportText(titlePrefix, taskListTxt) {
+            const tarikhRaw = document.getElementById('pilihTarikh').value;
+            const tarikhParts = tarikhRaw ? tarikhRaw.split('-') : [];
+            const tarikh = tarikhParts.length === 3 ? `${tarikhParts[2]}/${tarikhParts[1]}/${tarikhParts[0]}` : "Tiada Tarikh";
+
+            const g = (id, fallback) => document.getElementById(id)?.value || fallback;
+            const ftDone = g('rp-ft-done', '0'), ftTarget = g('rp-ft-target', '15');
+            const invDone = g('rp-inv-done', '0'), invTarget = g('rp-inv-target', '10');
+            const ama = g('rp-ama', '0');
+            const mInvDone = g('rp-m-inv-done', '0'), mInvTarget = g('rp-m-inv-target', '100');
+            const mAttDone = g('rp-m-att-done', '0'), mAttTarget = g('rp-m-att-target', '60');
+            const mSaleDone = g('rp-m-sale-done', '0'), mSaleTarget = g('rp-m-sale-target', '8000');
+
+            let amc = window.getReportPSCodes(c => c.includes("Amazing Mandarin Conversation Class"));
+            let oktb = window.getReportPSCodes(c => c.includes("Online Kunkwan Tour & Briefing") || c.includes("OKTB1to1"));
+            let amcTxt = amc.length ? amc.join(", ") : "-";
+            let oktbTxt = oktb.length ? oktb.join(", ") : "-";
+
+            let txt = `*${titlePrefix} - ${currentUser} (${tarikh})*\n`;
+            txt += taskListTxt;
+            txt += `\n\n`;
+            txt += `🗣️Full Talks💪🏻:  ${ftDone}/${ftTarget}\n(Talk Controllingly💪🏻)\n\n`;
+            txt += `ℹ️ Invitations😱:  ${invDone}/${invTarget}\n(Invite Urgency & Scarcity)😱\n`;
+            txt += `🅰️${amcTxt}\n🆗${oktbTxt}\n\n`;
+            txt += `❤️ AMA Lead🆓: ${ama}\n\n`;
+            txt += `*Monthly Tracking*\nInv: ${mInvDone}/${mInvTarget}\nAtt: ${mAttDone}/${mAttTarget}\nSales: RM${mSaleDone}/${mSaleTarget}`;
+            return txt;
+        }
+
         // Fungsi Butang Copy Daily
         window.copyDailyReport = function() {
-            const tarikhRaw = document.getElementById('pilihTarikh').value;
-            const tarikh = tarikhRaw ? tarikhRaw : "Tiada Tarikh";
-            let txt = `*Daily Report - ${currentUser} (${tarikh})*\nLeads: 0\nFulltalk: 0\nInvite: 0\n\n`;
-            txt += getTaskListText('daily');
-            txt += `\n\n*Monthly Tracking*\nInv: 0/150\nAtt: 0/40\nSales: RM0/12500`;
+            let txt = buildReportText('Daily Report', getTaskListText('daily'));
+            txt += `\n\nNote:\n🆗for Online Kunkwan Tour & Briefing\n🅰️for Amazing Mandarin Conversation\n🏦for Kunkwan Tour & Briefing\n\n*DMO can be edited accordingly to your own Wajib do FB, IG, LinkedIn*\n\n*3 Leads = 1 invitation, perlu ganti kalau INV tak cukup 8*`;
             navigator.clipboard.writeText(txt).then(() => alert(`✅ Berjaya copy DAILY REPORT! Boleh paste di WhatsApp.`));
+        };
+
+        // Fungsi Butang Copy Mr Foo Report (format DMO: "Task Name xN", tanpa target, hanya yang ada nombor)
+        window.copyMrFooReport = function() {
+            let txt = buildReportText('Report', getTaskListTextMrFoo());
+            txt += `\n\nNote:\n🆗for Online Kunkwan Tour & Briefing\n🅰️for Amazing Mandarin Conversation\n🏦for Kunkwan Tour & Briefing\n\n*DMO can be edited accordingly to your own Wajib do FB, IG, LinkedIn*\n\n*3 Leads = 1 invitation, perlu ganti kalau INV tak cukup 8*`;
+            navigator.clipboard.writeText(txt).then(() => alert(`✅ Berjaya copy MR FOO REPORT! Boleh paste di WhatsApp.`));
         };
 
         // ==========================================
