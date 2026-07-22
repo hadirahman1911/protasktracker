@@ -388,6 +388,8 @@
                         <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
                             <button id="m-ps-sort-false" onclick="window.togglePSMobileSort('CLASS', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Class Date <span id="m-ps-sort-icon-false">↕️</span></button>
                             <button id="m-ps-sort-fu-false" onclick="window.togglePSMobileSort('FU', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-false">↕️</span></button>
+                            <button id="m-ps-daterange-btn-false" onclick="window.togglePSDateRangePanel(false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📆 Date Range ▼</button>
+                            <button id="m-ps-month-btn-false" onclick="window.togglePSMonthPanel(false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">🗓️ Month ▼</button>
                             <button id="m-ps-class-filter-false" onclick="window.toggleFilterMenu('Class', false, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
                             <button id="m-ps-tags-filter-false" onclick="window.openMobileTagsFilter(false, 'ps')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
                             <button id="m-ps-filter-All-false" onclick="window.setPSMobileFilter('All', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
@@ -405,6 +407,25 @@
                     </div>
                     <div class="fixed z-[99999]">
                         <div id="m-filter-menu-Class-false" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
+                        <div id="m-ps-daterange-panel-false" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-4 text-xs text-white" style="z-index: 99999;">
+                            <div class="font-bold text-[#00c6ff] mb-3">📆 Filter Class Date (Start - End)</div>
+                            <label class="block text-gray-400 mb-1">Start Date</label>
+                            <input type="date" id="ps-daterange-start-false" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-2">
+                            <label class="block text-gray-400 mb-1">End Date</label>
+                            <input type="date" id="ps-daterange-end-false" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                            <div class="flex gap-2">
+                                <button onclick="window.applyPSDateRange(false)" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                <button onclick="window.clearPSDateRange(false)" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                            </div>
+                        </div>
+                        <div id="m-ps-month-panel-false" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-4 text-xs text-white" style="z-index: 99999;">
+                            <div class="font-bold text-[#00c6ff] mb-3">🗓️ Filter Class Date — Bulan & Tahun</div>
+                            <input type="month" id="ps-month-filter-false" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                            <div class="flex gap-2">
+                                <button onclick="window.applyPSMonthFilter(false)" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                <button onclick="window.clearPSMonthFilter(false)" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                            </div>
+                        </div>
                     </div>
                     <div id="ps-mobile-list-false" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                 </div>
@@ -723,6 +744,8 @@
                             <div class="flex gap-2 overflow-x-auto pb-1" style="scrollbar-width: none;">
                                 <button id="m-ps-sort-true" onclick="window.togglePSMobileSort('CLASS', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 Class Date <span id="m-ps-sort-icon-true">↕️</span></button>
                                 <button id="m-ps-sort-fu-true" onclick="window.togglePSMobileSort('FU', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📅 FU Date <span id="m-ps-sort-fu-icon-true">↕️</span></button>
+                                <button id="m-ps-daterange-btn-true" onclick="window.togglePSDateRangePanel(true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">📆 Date Range ▼</button>
+                                <button id="m-ps-month-btn-true" onclick="window.togglePSMonthPanel(true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">🗓️ Month ▼</button>
                                 <button id="m-ps-class-filter-true" onclick="window.toggleFilterMenu('Class', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Class ▼</button>
                                 <button id="m-ps-staff-filter-true" onclick="window.toggleFilterMenu('Staff Name', true, this, true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1">Nama Staff ▼</button>
                                 <button id="m-ps-tags-filter-true" onclick="window.openMobileTagsFilter(true, 'ps')" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b] transition flex items-center gap-1">🏷️ Tags ▼</button>
@@ -742,6 +765,25 @@
                         <div class="fixed z-[99999]">
                             <div id="m-filter-menu-Class-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
                             <div id="m-filter-menu-Staff Name-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs max-h-[65vh] bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] overflow-y-auto p-3 text-xs font-normal text-left text-white" style="z-index: 99999;"></div>
+                            <div id="m-ps-daterange-panel-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-4 text-xs text-white" style="z-index: 99999;">
+                                <div class="font-bold text-[#00c6ff] mb-3">📆 Filter Class Date (Start - End)</div>
+                                <label class="block text-gray-400 mb-1">Start Date</label>
+                                <input type="date" id="ps-daterange-start-true" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-2">
+                                <label class="block text-gray-400 mb-1">End Date</label>
+                                <input type="date" id="ps-daterange-end-true" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                                <div class="flex gap-2">
+                                    <button onclick="window.applyPSDateRange(true)" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                    <button onclick="window.clearPSDateRange(true)" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                                </div>
+                            </div>
+                            <div id="m-ps-month-panel-true" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-[0_0_30px_rgba(0,0,0,0.8)] p-4 text-xs text-white" style="z-index: 99999;">
+                                <div class="font-bold text-[#00c6ff] mb-3">🗓️ Filter Class Date — Bulan & Tahun</div>
+                                <input type="month" id="ps-month-filter-true" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                                <div class="flex gap-2">
+                                    <button onclick="window.applyPSMonthFilter(true)" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                    <button onclick="window.clearPSMonthFilter(true)" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                                </div>
+                            </div>
                         </div>
                         <div id="ps-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                     </div>
@@ -8801,6 +8843,13 @@
             // Clear Tags filter button highlight
             let tagsBtn = document.getElementById(`m-ps-tags-filter-${isAdmin}`);
             if(tagsBtn) { tagsBtn.style.background = ''; tagsBtn.style.color = '#f59e0b'; }
+            // 📆🗓️ Clear Date Range & Month filter
+            if(window.psDateRangeFilter) window.psDateRangeFilter[isAdmin] = { start: "", end: "" };
+            if(window.psMonthFilterState) window.psMonthFilterState[isAdmin] = "";
+            const drS = document.getElementById(`ps-daterange-start-${isAdmin}`); if(drS) drS.value = "";
+            const drE = document.getElementById(`ps-daterange-end-${isAdmin}`); if(drE) drE.value = "";
+            const moI = document.getElementById(`ps-month-filter-${isAdmin}`); if(moI) moI.value = "";
+            if(typeof window.updatePSDateFilterBtnUI === 'function') window.updatePSDateFilterBtnUI(isAdmin);
             window.renderPSMobileList(isAdmin);
         };
 
@@ -9220,6 +9269,8 @@
             document.querySelectorAll('th').forEach(th => th.style.zIndex = (th.classList.contains('sticky-col') ? '30' : '20'));
             document.querySelectorAll('[id^="filter-menu-"]').forEach(el => el.classList.add('hidden'));
             document.querySelectorAll('[id^="m-filter-menu-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="m-ps-daterange-panel-"]').forEach(el => el.classList.add('hidden'));
+            document.querySelectorAll('[id^="m-ps-month-panel-"]').forEach(el => el.classList.add('hidden'));
 
             if(isHidden) {
                 menu.classList.remove('hidden');
@@ -10518,6 +10569,74 @@
             window.renderPSMobileList(isAdmin);
         };
 
+        // 🌟 Date Range & Month/Year filter untuk PS Master Mobile View (ikut Class Date - row["Date"])
+        window.psDateRangeFilter = { false: { start: "", end: "" }, true: { start: "", end: "" } };
+        window.psMonthFilterState = { false: "", true: "" };
+
+        window.togglePSDateRangePanel = function(isAdmin) {
+            const panel = document.getElementById(`m-ps-daterange-panel-${isAdmin}`);
+            if(!panel) return;
+            const monthPanel = document.getElementById(`m-ps-month-panel-${isAdmin}`);
+            if(monthPanel) monthPanel.classList.add('hidden');
+            document.querySelectorAll('[id^="m-filter-menu-"]').forEach(el => el.classList.add('hidden'));
+            panel.classList.toggle('hidden');
+        };
+        window.togglePSMonthPanel = function(isAdmin) {
+            const panel = document.getElementById(`m-ps-month-panel-${isAdmin}`);
+            if(!panel) return;
+            const drPanel = document.getElementById(`m-ps-daterange-panel-${isAdmin}`);
+            if(drPanel) drPanel.classList.add('hidden');
+            document.querySelectorAll('[id^="m-filter-menu-"]').forEach(el => el.classList.add('hidden'));
+            panel.classList.toggle('hidden');
+        };
+        window.updatePSDateFilterBtnUI = function(isAdmin) {
+            const drBtn = document.getElementById(`m-ps-daterange-btn-${isAdmin}`);
+            const moBtn = document.getElementById(`m-ps-month-btn-${isAdmin}`);
+            const dr = window.psDateRangeFilter[isAdmin];
+            const mo = window.psMonthFilterState[isAdmin];
+            const activeCls = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#3f51b5] text-white shadow-md transition flex items-center gap-1";
+            const idleCls = "whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-400 border border-[#555] transition flex items-center gap-1";
+            if(drBtn) drBtn.className = (dr && (dr.start || dr.end)) ? activeCls : idleCls;
+            if(moBtn) moBtn.className = mo ? activeCls : idleCls;
+        };
+        window.applyPSDateRange = function(isAdmin) {
+            const s = document.getElementById(`ps-daterange-start-${isAdmin}`)?.value || "";
+            const e = document.getElementById(`ps-daterange-end-${isAdmin}`)?.value || "";
+            window.psDateRangeFilter[isAdmin] = { start: s, end: e };
+            // 🌟 Elak konflik - kalau guna Date Range, kosongkan Month filter
+            window.psMonthFilterState[isAdmin] = "";
+            const mi = document.getElementById(`ps-month-filter-${isAdmin}`); if(mi) mi.value = "";
+            document.getElementById(`m-ps-daterange-panel-${isAdmin}`)?.classList.add('hidden');
+            window.updatePSDateFilterBtnUI(isAdmin);
+            window.renderPSMobileList(isAdmin);
+        };
+        window.clearPSDateRange = function(isAdmin) {
+            window.psDateRangeFilter[isAdmin] = { start: "", end: "" };
+            const si = document.getElementById(`ps-daterange-start-${isAdmin}`); if(si) si.value = "";
+            const ei = document.getElementById(`ps-daterange-end-${isAdmin}`); if(ei) ei.value = "";
+            document.getElementById(`m-ps-daterange-panel-${isAdmin}`)?.classList.add('hidden');
+            window.updatePSDateFilterBtnUI(isAdmin);
+            window.renderPSMobileList(isAdmin);
+        };
+        window.applyPSMonthFilter = function(isAdmin) {
+            const v = document.getElementById(`ps-month-filter-${isAdmin}`)?.value || "";
+            window.psMonthFilterState[isAdmin] = v;
+            // 🌟 Elak konflik - kalau guna Month filter, kosongkan Date Range
+            window.psDateRangeFilter[isAdmin] = { start: "", end: "" };
+            const si = document.getElementById(`ps-daterange-start-${isAdmin}`); if(si) si.value = "";
+            const ei = document.getElementById(`ps-daterange-end-${isAdmin}`); if(ei) ei.value = "";
+            document.getElementById(`m-ps-month-panel-${isAdmin}`)?.classList.add('hidden');
+            window.updatePSDateFilterBtnUI(isAdmin);
+            window.renderPSMobileList(isAdmin);
+        };
+        window.clearPSMonthFilter = function(isAdmin) {
+            window.psMonthFilterState[isAdmin] = "";
+            const mi = document.getElementById(`ps-month-filter-${isAdmin}`); if(mi) mi.value = "";
+            document.getElementById(`m-ps-month-panel-${isAdmin}`)?.classList.add('hidden');
+            window.updatePSDateFilterBtnUI(isAdmin);
+            window.renderPSMobileList(isAdmin);
+        };
+
         window.renderPSMobileList = function(isAdmin) {
             let listContainer = document.getElementById(`ps-mobile-list-${isAdmin}`);
             if(!listContainer) return;
@@ -10587,6 +10706,19 @@
                 if(window.psMobileFilterState === 'Absent' && att !== "absent") return false;
                 if(window.psMobileFilterState === 'Half' && att !== "half") return false;
                 if(window.psMobileFilterState === 'AttendTakEnroll' && !(att === "attended" && enr === "no")) return false;
+
+                // 📆 Date Range & 🗓️ Month/Year Filter (ikut Class Date - row["Date"])
+                let rowClassDateNorm = normalizeDateStr(row["Date"]);
+                let dr = window.psDateRangeFilter ? window.psDateRangeFilter[isAdmin] : null;
+                if(dr && (dr.start || dr.end)) {
+                    if(!rowClassDateNorm) return false;
+                    if(dr.start && rowClassDateNorm < dr.start) return false;
+                    if(dr.end && rowClassDateNorm > dr.end) return false;
+                }
+                let moFilter = window.psMonthFilterState ? window.psMonthFilterState[isAdmin] : "";
+                if(moFilter) {
+                    if(!rowClassDateNorm || rowClassDateNorm.substring(0, 7) !== moFilter) return false;
+                }
 
                 // 🏷️ Tags Filter (Mobile) — Include / Exclude
                 let incTagsPS = window._mobileTagsFilterInclude || [];
@@ -10691,6 +10823,12 @@
                 let classTime = row["Time"] || "";
                 let classFullDisp = (classDate === "-" && !classTime) ? "-" : `${classDate} ${classTime}`.trim();
 
+                // 🔗 Update Progress - redirect ke link Kunkwan App ikut PS Code
+                let psCodeVal = row["Potential Student Code"] || row["POTENTIAL STUDENT CODE"] || "";
+                let updateProgressBtnHtml = psCodeVal
+                    ? `<a href="https://app.kunkwan.my/public/lead_search?kunkwan_id=${encodeURIComponent(psCodeVal)}" target="_blank" rel="noopener" onclick="event.stopPropagation()" class="inline-flex items-center gap-1 bg-[#ff9800] hover:bg-[#f57c00] text-black px-2 py-1 rounded text-[10px] font-bold mt-1.5 no-underline shadow transition">🔗 Update Progress</a>`
+                    : "";
+
                 // 🌟 Tarik TO FU & status dari CRM Modal yang linked
                 let crmRec = window.crmByPsDocId ? window.crmByPsDocId[row.docId] : null;
                 let crmTofu   = crmRec ? (crmRec["TO FU"] || "") : (row["TO FU"] || "");
@@ -10745,6 +10883,7 @@
                         </div>
                         ${histPreview ? `<div class="text-[10px] text-gray-500 italic truncate mt-0.5">📋 ${histPreview}</div>` : ''}
                         ${window.renderTagsPillsHtml(row)}
+                        ${updateProgressBtnHtml}
                     </div>
                     <div class="flex flex-col gap-1.5 shrink-0 ml-1 mt-6">
                         <button onclick="window.openCRMModalFromPS(${isAdmin}, ${actualIdx})" class="w-6 h-6 rounded bg-[#3f51b5] text-white flex items-center justify-center text-[10px]">✏️</button>
