@@ -604,7 +604,7 @@
                         <div class="flex flex-wrap items-center gap-2">
                             <span class="text-[#00e676] font-bold text-sm w-full md:w-auto">🎯 Bulk Add Lead (Paste):</span>
                             <select id="bulk-paste-staff-crm" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
-                                <option value="" disabled selected>- Pilih Staf -</option>
+                                <option value="" selected>- Pilih Staf (Default) -</option>
                             </select>
                             <select id="bulk-paste-status" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
                                 <option value="New">New</option>
@@ -616,7 +616,8 @@
                             </select>
                             <input type="text" id="bulk-paste-source" placeholder="Tulis Source..." class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-32">
                         </div>
-                        <textarea id="bulk-paste-data-crm" rows="4" placeholder="Format setiap baris: Nama, Phone, Source (Pilihan jika tak tulis di kotak atas)&#10;Contoh:&#10;Ali, 0123456789, FB Ads&#10;Abu, +60 19-876 5432" class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono leading-relaxed"></textarea>
+                        <p class="text-[10px] text-gray-500 -mt-1">💡 Dropdown Staf di atas = default untuk semua baris. Kalau nak staf lain-lain ikut baris, tulis terus nama staf di kolum ke-4 (akan override dropdown).</p>
+                        <textarea id="bulk-paste-data-crm" rows="4" placeholder="Format setiap baris: Nama, Phone, Source, Staff Name (semua pilihan lepas Nama & Phone)&#10;Contoh:&#10;Ali, 0123456789, FB Ads, Aiman&#10;Abu, +60 19-876 5432&#10;Siti, 0111234567,, Farah" class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono leading-relaxed"></textarea>
                         <button onclick="window.prosesBulkPasteCRM()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-xs shadow w-full md:w-auto self-end">📥 Simpan Leads</button>
                     </div>
 
@@ -5083,7 +5084,6 @@
             let globalStatus = document.getElementById('bulk-paste-status').value;
             let globalSource = document.getElementById('bulk-paste-source').value.trim();
 
-            if(!staffName) { alert("❌ Sila pilih staf yang akan terima lead ini!"); return; }
             if(!rawData || rawData.trim() === "") { alert("❌ Sila paste data lead dulu boss!"); return; }
 
             // 🌟 DAPATKAN TARIKH & MASA SEMASA (Untuk LEADS INBOUND)
@@ -5093,8 +5093,9 @@
             // Pecahkan teks mengikut baris (Enter)
             let lines = rawData.split('\n');
             let validLeads = [];
+            let skippedNoStaff = []; // 🌟 baris yang tiada Staff Name (dropdown kosong & kolum ke-4 pun kosong)
 
-            lines.forEach(line => {
+            lines.forEach((line, idx) => {
                 let parts = line.split(',');
                 // Pastikan minima ada Nama dan Nombor Telefon
                 if(parts.length >= 2) {
@@ -5104,8 +5105,16 @@
                     // Logik Source: Kalau kotak "Source" diisi, guna tu. Kalau tak, baca koma ke-3.
                     let lineSource = parts.length > 2 ? parts[2].trim() : "";
                     let finalSource = globalSource !== "" ? globalSource : (lineSource !== "" ? lineSource : "-");
+
+                    // 🌟 Staff Name: kolum ke-4 (ikut baris) override dropdown default di atas
+                    let lineStaff = parts.length > 3 ? parts[3].trim() : "";
+                    let finalStaffName = lineStaff !== "" ? lineStaff : staffName;
                     
                     if(name && rawPhone) {
+                        if(!finalStaffName) {
+                            skippedNoStaff.push(`Baris ${idx + 1}: ${name}`);
+                            return;
+                        }
                         // Formula bersihkan nombor fon dan selit 60
                         let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
                         if(cleanPhone.startsWith('0')) cleanPhone = '60' + cleanPhone.substring(1);
@@ -5114,7 +5123,7 @@
                             NAME: name,
                             CONTACT: cleanPhone,
                             SOURCE: finalSource,
-                            "Staff Name": staffName,
+                            "Staff Name": finalStaffName,
                             STATUS: globalStatus,
                             "Timestamp Masuk": new Date().toISOString(),
                             "LEADS INBOUND": window.toSheetDate(todayStr), // 🌟 AUTO INJECT DATE
@@ -5124,12 +5133,19 @@
                 }
             });
 
+            // 🌟 Kalau ada baris yang tiada Staff Name langsung (dropdown kosong & kolum ke-4 kosong), bagitahu staff
+            if(skippedNoStaff.length > 0) {
+                let warnMsg = `⚠️ ${skippedNoStaff.length} baris dilangkau sebab tiada Staff Name (pilih dropdown default DI ATAS, atau tulis nama staf di kolum ke-4 baris tu):\n\n${skippedNoStaff.join('\n')}`;
+                if(validLeads.length === 0) { alert(warnMsg); return; }
+                if(!confirm(warnMsg + `\n\nTeruskan simpan ${validLeads.length} lead yang lain (yang ada staff)?`)) return;
+            }
+
             if(validLeads.length === 0) {
-                alert("⚠️ Tiada data sah dijumpai. Pastikan format betul: Nama, Phone, Source\n\nCth: Ali, 0123456789, Tik Tok");
+                alert("⚠️ Tiada data sah dijumpai. Pastikan format betul: Nama, Phone, Source, Staff Name\n\nCth: Ali, 0123456789, Tik Tok, Aiman");
                 return;
             }
 
-            if(!confirm(`Adakah anda pasti untuk menabur ${validLeads.length} leads baru kepada ${staffName}?`)) return;
+            if(!confirm(`Adakah anda pasti untuk menabur ${validLeads.length} leads baru?`)) return;
 
             let btn = document.querySelector('button[onclick="window.prosesBulkPasteCRM()"]');
             if(btn) { btn.innerText = "⏳ Menyimpan..."; btn.disabled = true; }
@@ -10264,12 +10280,17 @@
                 return { 
                     row, 
                     leadId: row["Lead ID"] || "", // 🌟 Ambil Lead ID untuk sorting
-                    fuVal: getSortableVal(row["FOLLOW UP (DATE)"], row["FOLLOW UP (TIME)"]) || 99999999
+                    fuVal: getSortableVal(row["FOLLOW UP (DATE)"], row["FOLLOW UP (TIME)"]) || 99999999,
+                    isHuntDone: String(row["HISTORY FU"] || "").includes("Action: Done CS") // 🌟 untuk sort Hunt CS: belum tick naik atas
                 };
             });
 
             // 4. Sorting Logic (TUKAR: INBOUND SORT SEKARANG GUNA LEAD ID)
             filtered.sort((a, b) => {
+                // 🌟 Filter Hunt CS: yang BELUM tick "Done CS" naik ke atas dulu, baru ikut sort biasa
+                if (window.crmMobileFilterState === 'HuntCS' && a.isHuntDone !== b.isHuntDone) {
+                    return a.isHuntDone ? 1 : -1;
+                }
                 if (window.crmMobileSortField === 'LEAD_ID') {
                     // Susun ikut Lead ID (String Comparison)
                     let vA = a.leadId;
@@ -10361,6 +10382,8 @@
                         </div>
                         
                         ${(function() {
+                            // 🌟 Untuk Hunt CS / Preloved, checkbox "Done CS" khas (prelovedUI) dah cukup - jangan papar checklist TO FU generik (elak duplicate "Done CS")
+                            if (isHuntCS || isPreloved) return "";
                             let crmTofu = row["TO FU"] || "";
                             let cbSection = "";
                             if(crmTofu && crmTofu !== "-") {
