@@ -819,9 +819,24 @@
 
             <div id="adm-view-setup" class="hidden max-w-4xl mx-auto space-y-6">
                 <div class="bg-[#1e1e1e] p-6 rounded-xl border border-[#333]">
-                    <h3 class="text-[#00c6ff] font-bold mb-2 m-0">1. Set PIN Admin</h3>
-                    <button id="btnSetPin" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full mt-2">Set PIN (1911)</button>
-                    <p id="statusPin" class="text-sm font-bold mt-2 text-green-500"></p>
+                    <h3 class="text-[#00c6ff] font-bold mb-2 m-0">1. Set PIN Keselamatan</h3>
+                    <p class="text-xs text-gray-400 mb-3">Admin PIN = untuk masuk mod Admin. Staff PIN = 1 PIN sama untuk SEMUA staf log masuk (staf pilih nama sendiri di dropdown, PIN ni sama untuk semua).</p>
+                    <label class="text-xs text-gray-400 block mb-1">Admin PIN (baru)</label>
+                    <input type="text" id="inp-admin-pin" placeholder="Cth: 1911" class="w-full bg-[#333] text-white p-2 rounded border border-[#555] outline-none mb-2">
+                    <button id="btnSetAdminPin" class="bg-blue-600 hover:bg-blue-500 text-white font-bold py-2 px-4 rounded w-full">Set Admin PIN</button>
+                    <p id="statusAdminPin" class="text-sm font-bold mt-2 text-green-500"></p>
+                    <hr class="border-[#333] my-4">
+                    <label class="text-xs text-gray-400 block mb-1">Staff PIN (sama untuk semua staf)</label>
+                    <input type="text" id="inp-staff-pin" placeholder="Cth: 2026" class="w-full bg-[#333] text-white p-2 rounded border border-[#555] outline-none mb-2">
+                    <button id="btnSetStaffPin" class="bg-teal-600 hover:bg-teal-500 text-white font-bold py-2 px-4 rounded w-full">Set Staff PIN</button>
+                    <p id="statusStaffPin" class="text-sm font-bold mt-2 text-green-500"></p>
+                </div>
+
+                <div class="bg-[#1e1e1e] p-6 rounded-xl border border-[#333]">
+                    <h3 class="text-[#ffca28] font-bold mb-2 m-0">🔥 Firebase Project</h3>
+                    <p class="text-xs text-gray-400 mb-2">Project semasa: <span id="firebase-project-id-display" class="text-white font-bold">-</span></p>
+                    <p class="text-xs text-gray-400 mb-3">Kalau nak tukar ke Firebase project lain, reset config di sini lepas tu setup semula dari skrin login ("🆕 First-Time Setup").</p>
+                    <button onclick="if(confirm('Reset Firebase config & log keluar? Anda perlu setup semula dari skrin login lepas ni.')){ localStorage.removeItem('kunkwan_firebase_config'); localStorage.removeItem('kunci_phantom_fighters'); localStorage.removeItem('kunkwan_role'); localStorage.removeItem('kunkwan_user'); window.location.href='login.html'; }" class="bg-[#444] hover:bg-red-600 text-white font-bold py-2 px-4 rounded w-full">🔄 Reset Firebase Config</button>
                 </div>
 
                 <div class="bg-[#1e1e1e] p-6 rounded-xl border border-[#333]">
@@ -1823,7 +1838,11 @@
 
 
         // For Firebase JS SDK v7.20.0 and later, measurementId is optional
-        const firebaseConfig = {
+        // 🌟 KUNKWAN_FB_CONFIG_KEY: config Firebase dikongsi dengan login.html melalui localStorage.
+        // Kalau leader baru dah setup Firebase project sendiri (via login.html), config tu akan dipakai di sini juga.
+        // Kalau tiada, guna default (Kunkwan sedia ada) supaya team sedia ada tak terjejas.
+        const KUNKWAN_FB_CONFIG_KEY = 'kunkwan_firebase_config';
+        const DEFAULT_FIREBASE_CONFIG = {
           apiKey: "AIzaSyBJFRQMXVuZESchN_IhK0Q_srSyt_9p6sk",
           authDomain: "kunkwan.firebaseapp.com",
           projectId: "kunkwan",
@@ -1832,6 +1851,17 @@
           appId: "1:760197937241:web:81580c494c9741127c9948",
           measurementId: "G-3LTQ04H1CY"
         };
+        function getActiveFirebaseConfig() {
+            try {
+                const raw = localStorage.getItem(KUNKWAN_FB_CONFIG_KEY);
+                if (raw) {
+                    const parsed = JSON.parse(raw);
+                    if (parsed && parsed.apiKey && parsed.projectId) return parsed;
+                }
+            } catch (e) {}
+            return DEFAULT_FIREBASE_CONFIG;
+        }
+        const firebaseConfig = getActiveFirebaseConfig();
 
         const app = initializeApp(firebaseConfig);
         // 🌟 Persistent cache — data load dari IndexedDB (cache) dulu sebelum server
@@ -2070,11 +2100,31 @@
 
 
         // Butang Set PIN di System Setup
-        document.getElementById('btnSetPin').addEventListener('click', async () => {
-            const status = document.getElementById('statusPin'); status.innerText = "⏳ Memproses...";
-            try { await setDoc(doc(db, "system_settings", "security"), { admin_pin: "1911" }); status.innerText = "✅ PIN ditetapkan ke 1911!"; } 
-            catch (e) { status.innerText = "❌ Gagal: " + e.message; status.style.color = "red"; }
+        document.getElementById('btnSetAdminPin')?.addEventListener('click', async () => {
+            const status = document.getElementById('statusAdminPin');
+            const val = document.getElementById('inp-admin-pin').value.trim();
+            if(!val) { status.innerText = "❌ Sila taip PIN dulu!"; status.className = "text-sm font-bold mt-2 text-red-500"; return; }
+            status.innerText = "⏳ Memproses..."; status.className = "text-sm font-bold mt-2 text-yellow-500";
+            try {
+                await setDoc(doc(db, "system_settings", "security"), { admin_pin: val }, { merge: true });
+                status.innerText = `✅ Admin PIN ditetapkan ke "${val}"!`; status.className = "text-sm font-bold mt-2 text-green-500";
+            } catch(e) { status.innerText = "❌ Ralat: " + e.message; status.className = "text-sm font-bold mt-2 text-red-500"; }
         });
+        document.getElementById('btnSetStaffPin')?.addEventListener('click', async () => {
+            const status = document.getElementById('statusStaffPin');
+            const val = document.getElementById('inp-staff-pin').value.trim();
+            if(!val) { status.innerText = "❌ Sila taip PIN dulu!"; status.className = "text-sm font-bold mt-2 text-red-500"; return; }
+            status.innerText = "⏳ Memproses..."; status.className = "text-sm font-bold mt-2 text-yellow-500";
+            try {
+                await setDoc(doc(db, "system_settings", "security"), { pin_sistem: val }, { merge: true });
+                status.innerText = `✅ Staff PIN ditetapkan ke "${val}"!`; status.className = "text-sm font-bold mt-2 text-green-500";
+            } catch(e) { status.innerText = "❌ Ralat: " + e.message; status.className = "text-sm font-bold mt-2 text-red-500"; }
+        });
+        // 🌟 Papar Project ID Firebase semasa dalam System Setup
+        (() => {
+            const el = document.getElementById('firebase-project-id-display');
+            if(el) el.innerText = firebaseConfig.projectId || "-";
+        })();
 
         
 
@@ -4076,7 +4126,11 @@
         window.renderTargetEditor = function() {
             let c = document.getElementById('target-editor-container');
             if(!adminState.users || adminState.users.length === 0) {
-                c.innerHTML = "<div class='p-4 text-gray-500 text-center'>Sila tunggu data dimuatkan...</div>"; return;
+                c.innerHTML = `<div class='p-6 text-center'>
+                    <div class="text-gray-300 font-bold mb-2">⚠️ Tiada staf dijumpai lagi</div>
+                    <p class="text-gray-500 text-xs mb-4">Ni Firebase project baru / belum ada staff ditambah. Sila tambah staf dulu di <b>System Setup → Urus Staf</b>, lepas tu balik sini untuk set target.</p>
+                    <button onclick="window.switchAdminTab('setup')" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 px-6 rounded text-sm">🛠️ Pergi ke Urus Staf</button>
+                </div>`; return;
             }
 
             let hR1 = ["9:00 AM","10:00 AM","11:00 AM","12:00 PM", "1:00 PM"];
@@ -11587,7 +11641,8 @@
           let currSortCol = isAdmin ? adminEnrollSortCol : teamEnrollSortCol;
           let currSortAsc = isAdmin ? adminEnrollSortAsc : teamEnrollSortAsc;
           let currentFilters = isAdmin ? adminEnrollFilters : teamEnrollFilters;
-          let renderFunc = isAdmin ? 'window.renderAdminEnrollTable()' : 'window.renderEnrollTable()';
+          // 🌟 FIX FOKUS: search input guna skipHeaderRegen=true supaya taip tak putus-putus (header tak di-rebuild tiap huruf)
+          let renderFunc = isAdmin ? 'window.renderAdminEnrollTable(true)' : 'window.renderEnrollTable(true)';
           let quickSearchValues = {};
           let searchWrapper = isAdmin ? '#enroll-desktop-wrapper-true' : '#enroll-desktop-wrapper-false';
           document.querySelectorAll(searchWrapper + ' .enroll-quick-search').forEach(input => {
@@ -11608,10 +11663,12 @@
               let selectedArr = currentFilters[col.key] || [];
               let btnText = selectedArr.length > 0 ? `<span class="text-[#00e676] font-bold">${selectedArr.length} Selected</span>` : "All";
               let btnBg = selectedArr.length > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
+              // 🌟 FIX: restore nilai yang staff dah taip supaya kotak search tak reset kosong bila header regenerate
+              let searchVal = quickSearchValues[col.key] ? ` value="${quickSearchValues[col.key].replace(/"/g, '&quot;')}"` : "";
 
               html += `<th style="${colSty} overflow: visible; position: sticky; top: 0; background-color: #1e1e1e; padding: 5px; min-width: 140px; z-index: 20;">
                   <div class="th-content">${col.label} <span class="sort-icon" onclick="window.${fSort}('${col.key}')">${getIcon(col.key)}</span></div>
-                  <input type="text" data-col="${col.key}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="enroll-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner">
+                  <input type="text" data-col="${col.key}" oninput="${renderFunc}" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="enroll-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
                   <div class="text-left relative">
                       <button onclick="window.toggleEnrollFilterMenu('${col.key}', ${isAdmin}, this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                           ${btnText} <span class="text-[8px] ml-1">▼</span>
@@ -11689,9 +11746,13 @@
         };
 
         // --- LUKIS TABLE DESKTOP ---
-        function _renderEnrollTableGeneric(isAdmin) {
+        function _renderEnrollTableGeneric(isAdmin, skipHeaderRegen) {
             let headId = isAdmin ? 'admin-enroll-head' : 'team-enroll-head';
-            document.getElementById(headId).innerHTML = window.generateEnrollHeader(isAdmin); // 🌟 Regen header
+            // 🌟 FIX FOCUS HILANG: bila taip dalam kotak search (skipHeaderRegen=true), JANGAN regenerate header -
+            // elak kotak input tu di-replace (yang menyebabkan cursor/fokus terkeluar lepas setiap huruf ditaip)
+            if(!skipHeaderRegen) {
+                document.getElementById(headId).innerHTML = window.generateEnrollHeader(isAdmin); // 🌟 Regen header
+            }
             let stateData = isAdmin ? enrollState.adminData : enrollState.data;
             let sortCol = isAdmin ? adminEnrollSortCol : teamEnrollSortCol;
             let sortAsc = isAdmin ? adminEnrollSortAsc : teamEnrollSortAsc;
@@ -11786,8 +11847,8 @@
             // 🚫 DAH BUANG RE-RENDER HEADER DI SINI JUGA!
         }
 
-        window.renderEnrollTable = function() { _renderEnrollTableGeneric(false); window.renderEnrollMobileList(false); };
-        window.renderAdminEnrollTable = function() { _renderEnrollTableGeneric(true); window.renderEnrollMobileList(true); };
+        window.renderEnrollTable = function(skipHeaderRegen) { _renderEnrollTableGeneric(false, skipHeaderRegen); window.renderEnrollMobileList(false); };
+        window.renderAdminEnrollTable = function(skipHeaderRegen) { _renderEnrollTableGeneric(true, skipHeaderRegen); window.renderEnrollMobileList(true); };
 
         window.prevEnrollTeam = function() { if(teamEnrollPage > 1) { teamEnrollPage--; window.renderEnrollTable(); } };
         window.nextEnrollTeam = function() { teamEnrollPage++; window.renderEnrollTable(); };
@@ -11938,10 +11999,18 @@
                             const worksheet = workbook.Sheets[workbook.SheetNames[0]];
                             const rows = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: "" });
 
-                            let headerRowIndex = 1; // Row 2 di Excel (Index 1)
-                            let headers = rows[headerRowIndex];
-                            if(!headers || headers.length === 0) {
-                                status.innerText = `❌ Fail ${fileIndex+1} (${fail.name}): Header tak wujud di Baris 2!`;
+                            // 🌟 Auto-detect baris header (scan 5 baris pertama, cari baris yang ada "Invoice Number")
+                            // Elak masalah kalau template Excel letak header di Baris 1 vs Baris 2
+                            let headerRowIndex = -1;
+                            let headers = null;
+                            for(let scanRow = 0; scanRow < Math.min(5, rows.length); scanRow++) {
+                                let candidateHeaders = rows[scanRow];
+                                if(!candidateHeaders || candidateHeaders.length === 0) continue;
+                                let hasInvoiceCol = candidateHeaders.some(h => String(h).trim().toLowerCase() === 'invoice number');
+                                if(hasInvoiceCol) { headerRowIndex = scanRow; headers = candidateHeaders; break; }
+                            }
+                            if(headerRowIndex === -1) {
+                                status.innerText = `❌ Fail ${fileIndex+1} (${fail.name}): Kolum 'Invoice Number' tak jumpa dalam 5 baris pertama!`;
                                 resolve({ bAdded: 0, bUpdated: 0, staffList: [] });
                                 return;
                             }
