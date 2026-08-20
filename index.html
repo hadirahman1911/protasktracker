@@ -93,6 +93,21 @@
         /* MODAL & CHAT */
         .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999; display: none; align-items: center; justify-content: center; }
         .modal-box { background: #222; padding: 20px; border-radius: 12px; width: 90%; max-width: 600px; border: 1px solid #444; text-align: left; max-height: 85vh; overflow-y: auto; }
+        /* 🌟 CRM (Beta) - Status Manager & Master-Detail Modal */
+        .swatch { width:22px; height:22px; border-radius:6px; cursor:pointer; border:2px solid transparent; transition:.15s; display:inline-block; }
+        .swatch.selected { border-color:#fff; transform:scale(1.1); }
+        .drag-row { transition: opacity .15s; }
+        .drag-row.drag-over > div:first-child { border-color:#00c6ff; box-shadow: 0 0 0 1px #00c6ff inset; }
+        .beta-tab-btn.active { background:#00c6ff; color:#000; }
+        .beta-tab-btn { transition: all .15s; }
+        .beta-fld label { display:block; font-size:9px; text-transform:uppercase; letter-spacing:.03em; color:#6b7280; font-weight:700; margin-bottom:4px; }
+        .beta-fld input[type=text], .beta-fld input[type=date], .beta-fld input[type=time], .beta-fld input[type=email], .beta-fld textarea, .beta-fld select {
+            width:100%; background:#1a1a1a; color:#fff; border:1px solid #333; border-radius:8px; padding:8px 10px; font-size:13px; outline:none; transition: border-color .15s; box-sizing: border-box;
+        }
+        .beta-fld input:focus, .beta-fld textarea:focus, .beta-fld select:focus { border-color:#00c6ff; }
+        .beta-fld textarea { resize:vertical; }
+        .beta-status-pill { transition: all .15s; }
+        .active-beta-chip { background:#bb86fc !important; color:#000 !important; border-color:#bb86fc !important; }
         
         .chat-container { background: #121212; padding: 10px; max-height: 65vh; overflow-y: auto; display: flex; flex-direction: column; gap: 8px; border-top: 1px solid #333; }
         .chat-bubble { width: 100%; padding: 10px 12px; border-radius: 6px; font-size: 0.85rem; line-height: 1.4; text-align: left; box-sizing: border-box; }
@@ -396,6 +411,7 @@
                             <button id="m-ps-filter-Absent-false" onclick="window.setPSMobileFilter('Absent', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                             <button id="m-ps-filter-Half-false" onclick="window.setPSMobileFilter('Half', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
                             <button id="m-ps-filter-AttendTakEnroll-false" onclick="window.setPSMobileFilter('AttendTakEnroll', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Attend Tak Enroll</button>
+                            <button id="m-ps-filter-KWC-false" onclick="window.setPSMobileFilter('KWC', false)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition" title="Attended, Class Date 30 hari lepas dan lebih lama (bukan recent)">KWC</button>
                         </div>
                         <div class="flex items-center justify-between mt-2">
                             <div class="flex items-center gap-2">
@@ -526,6 +542,7 @@
             <button id="btn-adm-perf" onclick="window.switchAdminTab('perf')" class="adm-tab bg-[#0072ff] text-white">📊 Performance</button>
             <button id="btn-adm-sch" onclick="window.switchAdminTab('sch')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📅 Schedule</button>
             <button id="btn-adm-crm" onclick="window.switchAdminTab('crm')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">👥 CRM Master</button>
+            <button id="btn-adm-betacrm" onclick="window.switchAdminTab('betacrm')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]" style="border:1px dashed #00e676;">🧪 CRM (Beta)</button>
             <button id="btn-adm-hunt" onclick="window.switchAdminTab('hunt')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎯 Hunt CS</button>
             <button id="btn-adm-ps" onclick="window.switchAdminTab('ps')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">🎓 PS Master</button>
             <button id="btn-adm-enroll" onclick="window.switchAdminTab('enroll')" class="adm-tab bg-[#333] text-gray-400 hover:bg-[#444]">📝 PS Enroll</button>
@@ -754,6 +771,7 @@
                                 <button id="m-ps-filter-Absent-true" onclick="window.setPSMobileFilter('Absent', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Absent</button>
                                 <button id="m-ps-filter-Half-true" onclick="window.setPSMobileFilter('Half', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Half</button>
                                 <button id="m-ps-filter-AttendTakEnroll-true" onclick="window.setPSMobileFilter('AttendTakEnroll', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition">Attend Tak Enroll</button>
+                                <button id="m-ps-filter-KWC-true" onclick="window.setPSMobileFilter('KWC', true)" class="whitespace-nowrap px-4 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] hover:bg-[#333] transition" title="Attended, Class Date 30 hari lepas dan lebih lama (bukan recent)">KWC</button>
                             </div>
                             <div class="flex items-center justify-between mt-2">
                                 <div class="flex items-center gap-2">
@@ -789,6 +807,178 @@
                         <div id="ps-mobile-list-true" class="flex flex-col max-h-[60vh] overflow-y-auto"></div>
                     </div>
 
+                </div>
+            </div>
+
+            <!-- ============================================ -->
+            <!-- 🧪 CRM (BETA) — Tab gabungan CRM + PS Master + PS Enroll -->
+            <!-- Skeleton Phase 3: data BENAR dari Firestore, UI asas dulu (sort/filter penuh = Phase 7) -->
+            <!-- ============================================ -->
+            <div id="adm-view-betacrm" class="hidden">
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#00e676]/30" style="border-style: dashed;">
+                    <h3 class="text-[#00e676] font-bold mb-1 flex items-center gap-2 m-0">🧪 CRM (Beta) — Gabungan CRM + PS Master + PS Enroll
+                        <span class="text-[9px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 px-2 py-0.5 rounded-full normal-case">Sedang Ditest</span>
+                        <button onclick="window.loadCRMBetaData(true)" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white py-1 px-3 rounded text-xs ml-auto">🔄 Refresh</button>
+                    </h3>
+                    <p class="text-[10px] text-gray-500 mb-3 m-0">Data SAMA dengan tab CRM Master / PS Master / PS Enroll — cuma dipaparkan gabung dalam satu tempat. Tab lama tak terjejas. Sebarang lead yang di-import di sini terus muncul juga di CRM Master (satu collection sama, <code class="bg-[#111] px-1 rounded">crm_leads</code>).</p>
+
+                    <!-- 📥 IMPORT & TAMBAH LEAD (guna fungsi sedia ada, collection sama dgn CRM Master) -->
+                    <div class="flex flex-col gap-2 mb-3 bg-[#111] p-3 rounded-lg border border-[#333]">
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                            <span class="text-[#E91E63] font-bold text-xs min-w-[105px]">📥 Import CSV:</span>
+                            <select id="csv-lead-staff-beta" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs md:w-36">
+                                <option value="" disabled selected>- Pilih Staf -</option>
+                            </select>
+                            <input type="file" id="failLeadsBeta" accept=".csv" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1">
+                            <button id="btnImportLeadsBeta" class="bg-[#E91E63] hover:bg-[#C2185B] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload CSV</button>
+                            <span id="statusLeadsBeta" class="text-xs font-bold text-[#E91E63]"></span>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                            <span class="text-[#00c6ff] font-bold text-xs min-w-[105px]">🤖 AI WA Import:</span>
+                            <select id="ai-lead-staff-beta" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs md:w-36">
+                                <option value="" disabled selected>- Pilih Staf -</option>
+                            </select>
+                            <input type="file" id="failChatWABeta" accept=".txt, .zip" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                            <button onclick="window.prosesChatKeFirebase('failChatWABeta', 'statusAIImportBeta', true)" class="bg-[#00c6ff] hover:bg-[#009ee0] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Proses & Save</button>
+                            <span id="statusAIImportBeta" class="text-xs font-bold text-[#00e676]"></span>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                            <button onclick="document.getElementById('text-import-beta-box').classList.toggle('hidden')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">📋 Import by Text</button>
+                            <button onclick="window.openAddCRMModal(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-auto flex items-center gap-1">➕ Add Lead</button>
+                            <span class="text-[10px] text-gray-500">💡 Nak Bulk Paste (senarai ramai lead sekali)? Ada kat tab <b class="text-white">CRM Master</b> — data sama, terus reflect kat sini.</span>
+                        </div>
+                        <div id="text-import-beta-box" class="hidden flex flex-col gap-2 bg-[#0c0c0c] p-3 rounded-lg border border-[#673AB7]">
+                            <select id="text-lead-staff-beta" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs md:w-52">
+                                <option value="" disabled selected>- Pilih Staf (jika CSV tiada column Staff Name) -</option>
+                            </select>
+                            <textarea id="textLeadsBeta" rows="5" placeholder="LEADS INBOUND,LEADS INBOUND TIME,NAME,CONTACT,Staff Name,STATUS,SOURCE,STATE,..." class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono"></textarea>
+                            <div class="flex items-center gap-2">
+                                <button id="btnImportLeadsBetaText" onclick="window.prosesImportCRMText('textLeadsBeta', 'statusLeadsBetaText', 'btnImportLeadsBetaText', false, 'text-lead-staff-beta')" class="bg-[#673AB7] hover:bg-[#5e35b1] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Proses Teks</button>
+                                <span id="statusLeadsBetaText" class="text-xs font-bold text-[#bb86fc]"></span>
+                            </div>
+                        </div>
+                        <!-- 🌟 Import PS Master & PS Enroll (Excel) - dipindahkan sekali ke Beta ikut request -->
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center border-t border-[#333] pt-2 mt-1">
+                            <span class="text-[#bb86fc] font-bold text-xs min-w-[105px]">📥 Import PS (Excel):</span>
+                            <input type="file" id="failPSBeta" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                            <button onclick="window.prosesImportPSExcel('failPSBeta', 'statusPSBeta', this, false).then(()=>window.loadCRMBetaData(true))" class="bg-[#bb86fc] hover:bg-[#9965f4] text-black font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
+                            <span id="statusPSBeta" class="text-xs font-bold text-[#bb86fc]"></span>
+                        </div>
+                        <div class="flex flex-col md:flex-row gap-2 items-start md:items-center">
+                            <span class="text-[#00c6ff] font-bold text-xs min-w-[105px]">📥 Import PS Enroll (Excel):</span>
+                            <input type="file" id="failEnrollBeta" accept=".xlsx, .xls, .csv" multiple class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs flex-1 md:flex-none md:w-64">
+                            <button onclick="window.prosesImportEnrollExcel('failEnrollBeta', 'statusEnrollBeta', this).then(()=>window.loadCRMBetaData(true))" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white font-bold py-1.5 px-4 rounded text-xs shadow">Upload Excel</button>
+                            <span id="statusEnrollBeta" class="text-xs font-bold text-[#00c6ff]"></span>
+                        </div>
+                        <!-- 🌟 Bulk Add Lead (Paste) - reuse function CRM Master via wrapper (elak duplicate ID) -->
+                        <div class="flex flex-col gap-2 border-t border-[#333] pt-2 mt-1">
+                            <span class="text-[#00e676] font-bold text-xs">🎯 Bulk Add Lead (Paste):</span>
+                            <select id="bulk-paste-staff-beta" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs md:w-40">
+                                <option value="" selected>- Pilih Staf (Default) -</option>
+                            </select>
+                            <textarea id="bulk-paste-data-beta" rows="3" placeholder="Format: Nama, Phone, Source, Staff Name&#10;Cth: Ali, 0123456789, FB Ads, Aiman" class="bg-[#222] text-white p-2 rounded border border-[#555] outline-none text-xs w-full font-mono"></textarea>
+                            <button onclick="window.prosesBulkPasteCRMBeta()" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-1.5 px-4 rounded text-xs shadow w-full md:w-auto self-end">📥 Simpan Leads</button>
+                        </div>
+                    </div>
+
+                    <!-- 🛠️ BULK EDIT BAR (muncul bila ada row dipilih) -->
+                    <div id="betacrm-bulk-bar" class="hidden bg-[#1a3a2a] border border-[#00e676] p-3 rounded-lg mb-3 flex flex-col md:flex-row items-start md:items-center justify-between shadow-lg">
+                        <div class="mb-2 md:mb-0"><span id="betacrm-bulk-count" class="text-[#00e676] font-bold text-lg">0</span> <span class="text-gray-300 text-sm">lead(s) dipilih.</span></div>
+                        <div class="flex gap-2 items-center flex-wrap">
+                            <select id="betacrm-bulk-status" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs"><option value="">- Tukar Status -</option></select>
+                            <select id="betacrm-bulk-invite" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs"><option value="">- Tukar Invite Status -</option></select>
+                            <select id="betacrm-bulk-attend" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs"><option value="">- Tukar Attend Status -</option></select>
+                            <select id="betacrm-bulk-staff" class="bg-[#222] text-white p-1.5 rounded border border-[#555] outline-none text-xs"><option value="">- Reassign Staf -</option></select>
+                            <button onclick="window.applyBetaCRMBulkEdit()" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold px-4 py-1.5 rounded text-xs shadow">✅ Apply</button>
+                            <button onclick="window.clearBetaCRMBulkSelection()" class="bg-[#444] hover:bg-[#555] text-white font-bold px-3 py-1.5 rounded text-xs">✕ Batal</button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-2 mb-3 flex-wrap">
+                        <button id="betacrm-view-desktop-btn" onclick="window.setBetaCRMView('desktop')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#0072ff] text-white">🖥️ Desktop View</button>
+                        <button id="betacrm-view-mobile-btn" onclick="window.setBetaCRMView('mobile')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#333] text-gray-400">📱 Mobile View</button>
+                        <button onclick="window.openBetaCRMBulkEdit()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition">🛠️ Bulk Edit</button>
+                        <input type="text" id="betacrm-search" oninput="window.renderCRMBetaTable(true); window.renderCRMBetaMobileList();" placeholder="🔍 Search Name, Contact atau Lead ID..." class="flex-1 bg-[#111] text-white px-4 py-2 rounded-lg outline-none border border-[#333] focus:border-[#00e676] text-sm max-w-md">
+                    </div>
+
+                    <!-- DESKTOP VIEW -->
+                    <div id="betacrm-desktop-wrapper">
+                        <div class="crm-table-wrapper">
+                            <table class="crm-table">
+                                <thead id="betacrm-table-head"></thead>
+                                <tbody id="betacrm-table-body"><tr><td colspan="34" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data...</td></tr></tbody>
+                            </table>
+                        </div>
+                        <div class="pagination-bar">
+                            <button class="btn-page" onclick="window.prevBetaCRM()">⬅ Prev</button>
+                            <span id="betacrm-page-info" class="font-bold text-sm">Page 1</span>
+                            <button class="btn-page" onclick="window.nextBetaCRM()">Next ➡</button>
+                        </div>
+                    </div>
+
+                    <!-- MOBILE VIEW -->
+                    <div id="betacrm-mobile-wrapper" style="display:none;" class="w-full max-w-lg mx-auto bg-[#121212] rounded-xl border border-[#333] overflow-hidden mt-2 shadow-2xl">
+                        <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
+                            <!-- Baris 1: Sort -->
+                            <div class="flex gap-2 overflow-x-auto pb-1.5" style="scrollbar-width:none;">
+                                <button id="betam-sort-LEAD_ID" onclick="window.toggleBetaCRMMobileSort('LEAD_ID')" class="betam-sort-btn active-beta-chip whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">↕️ Lead ID</button>
+                                <button id="betam-sort-CLASS_DATE" onclick="window.toggleBetaCRMMobileSort('CLASS_DATE')" class="betam-sort-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📅 Class Date</button>
+                                <button id="betam-sort-FU_DATE" onclick="window.toggleBetaCRMMobileSort('FU_DATE')" class="betam-sort-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📅 FU Date</button>
+                            </div>
+                            <!-- Baris 2: Status chips (CRM) -->
+                            <div class="flex gap-2 overflow-x-auto pb-1.5 mt-1.5" style="scrollbar-width:none;">
+                                <button id="betam-filter-All" onclick="window.setBetaMobileFilter('All')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
+                                <button id="betam-filter-TOFU" onclick="window.setBetaMobileFilter('TOFU')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">TO FU</button>
+                                <button id="betam-filter-Nurturing" onclick="window.setBetaMobileFilter('Nurturing')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Nurturing</button>
+                                <button id="betam-filter-Preloved" onclick="window.setBetaMobileFilter('Preloved')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Preloved</button>
+                                <button id="betam-filter-HuntCS" onclick="window.setBetaMobileFilter('HuntCS')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Hunt CS</button>
+                            </div>
+                            <!-- Baris 3: PS-based chips (PS Master) -->
+                            <div class="flex gap-2 overflow-x-auto pb-1.5 mt-1.5" style="scrollbar-width:none;">
+                                <button id="betam-filter-Absent" onclick="window.setBetaMobileFilter('Absent')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Absent</button>
+                                <button id="betam-filter-Half" onclick="window.setBetaMobileFilter('Half')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Half</button>
+                                <button id="betam-filter-AttendTakEnroll" onclick="window.setBetaMobileFilter('AttendTakEnroll')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Attend Tak Enroll</button>
+                                <button id="betam-filter-KWC" onclick="window.setBetaMobileFilter('KWC')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">KWC</button>
+                            </div>
+                            <!-- Baris 4: Date Range / Month / Class / Staff / Tags dropdown -->
+                            <div class="flex gap-2 overflow-x-auto pb-1.5 mt-1.5 relative" style="scrollbar-width:none;">
+                                <button onclick="window.toggleBetaMobilePanel('daterange')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📆 Date Range ▼</button>
+                                <button onclick="window.toggleBetaMobilePanel('month')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">🗓️ Month ▼</button>
+                                <button onclick="window.toggleBetaMobileDropdown('class')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">Class ▼</button>
+                                <button onclick="window.toggleBetaMobileDropdown('staff')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">Staff ▼</button>
+                                <button onclick="window.toggleBetaMobileDropdown('tags')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b]">🏷️ Tags ▼</button>
+                                <button onclick="window.clearAllBetaMobileFilters()" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold text-red-400 border border-red-400/40">✕ Clear Semua</button>
+
+                                <div id="betam-panel-daterange" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-2xl p-4 text-xs text-white" style="z-index:99999;">
+                                    <div class="font-bold text-[#00c6ff] mb-3">📆 Filter Class Date (Start - End)</div>
+                                    <label class="block text-gray-400 mb-1">Start Date</label>
+                                    <input type="date" id="betam-daterange-start" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-2">
+                                    <label class="block text-gray-400 mb-1">End Date</label>
+                                    <input type="date" id="betam-daterange-end" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                                    <div class="flex gap-2">
+                                        <button onclick="window.applyBetaMobileDateRange()" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                        <button onclick="window.clearBetaMobileDateRange()" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                                    </div>
+                                </div>
+                                <div id="betam-panel-month" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[85vw] max-w-xs bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-2xl p-4 text-xs text-white" style="z-index:99999;">
+                                    <div class="font-bold text-[#00c6ff] mb-3">🗓️ Filter Class Date — Bulan & Tahun</div>
+                                    <input type="month" id="betam-month" class="w-full bg-[#1a1a1a] text-white p-2 rounded border border-[#555] outline-none mb-3">
+                                    <div class="flex gap-2">
+                                        <button onclick="window.applyBetaMobileMonth()" class="flex-1 bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 rounded">Apply</button>
+                                        <button onclick="window.clearBetaMobileMonth()" class="flex-1 bg-[#444] hover:bg-[#555] text-white font-bold py-2 rounded">Clear</button>
+                                    </div>
+                                </div>
+                                <div id="betam-dropdown-class" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-xs max-h-[50vh] overflow-y-auto bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-2xl" style="z-index:99999;"></div>
+                                <div id="betam-dropdown-staff" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-xs max-h-[50vh] overflow-y-auto bg-[#2a2a2a] border border-[#00c6ff] rounded-xl shadow-2xl" style="z-index:99999;"></div>
+                                <div id="betam-dropdown-tags" class="hidden fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[80vw] max-w-xs max-h-[50vh] overflow-y-auto bg-[#2a2a2a] border border-[#f59e0b] rounded-xl shadow-2xl" style="z-index:99999;"></div>
+                            </div>
+                            <div class="flex items-center gap-2 mt-2">
+                                <span id="betacrm-mob-cb-count" class="hidden text-xs font-bold text-[#00e676] bg-[#0f2a1c] border border-[#00e676] px-2.5 py-1 rounded-full">0 dipilih</span>
+                                <button id="betacrm-mob-deselect" onclick="window.clearBetaCRMBulkSelection()" class="hidden text-xs font-bold text-gray-300 bg-[#222] border border-[#555] px-2.5 py-1 rounded-full">✕ Nyahpilih</button>
+                            </div>
+                        </div>
+                        <div id="betacrm-mobile-list" class="flex flex-col max-h-[65vh] overflow-y-auto"></div>
+                    </div>
                 </div>
             </div>
 
@@ -956,6 +1146,16 @@
                     </div>
                 </div>
 
+
+                <!-- ============================================ -->
+                <!-- 🗂️ STATUS MANAGER (untuk CRM Beta - Status / Invite Status / Attend Status) -->
+                <!-- ============================================ -->
+                <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333] mt-4">
+                    <h3 class="text-[#00c6ff] font-bold m-0 flex items-center gap-2">🗂️ Status Manager <span class="text-[9px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 px-2 py-0.5 rounded-full normal-case">Untuk CRM (Beta)</span></h3>
+                    <p class="text-xs text-gray-400 mt-1 mb-0">Urus pilihan untuk 3 field status kat Lead: <b class="text-[#60a5fa]">Status</b>, <b class="text-[#a78bfa]">Invite Status</b>, <b class="text-[#4ade80]">Attend Status</b>. Tambah/edit/padam/seret-susun/tukar warna — auto sync ke dropdown CRM (Beta) sebaik simpan.</p>
+                    <p class="text-[10px] text-yellow-500 mt-2 mb-0">⚠️ Nota: <b>Invite Status</b> & <b>Attend Status</b> = field baru dalam <code class="bg-[#111] px-1 rounded">crm_leads</code>, staf <b>set manual</b> je (bukan auto-sync dari Attendance PS Master).</p>
+                    <div id="status-manager-cards" class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4"></div>
+                </div>
 
             </div>
 
@@ -1301,6 +1501,213 @@
                 <div id="crm-modal-chat-content" class="chat-container flex-1 overflow-y-auto p-3 md:p-4 pb-10">
                     </div>
             </div>
+
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- 🧪 MODAL CRM (BETA) — Master-Detail Lead View -->
+    <!-- ============================================ -->
+    <div id="modal-crm-beta" class="modal-overlay" style="z-index: 9999;">
+        <div class="text-white" style="background:#161616; border:1px solid #2a2a2a; border-radius:16px; width:98%; max-width:1750px; height:94vh; overflow:hidden; display:flex; flex-direction:row;">
+
+            <!-- ================= LEFT: FORM (scrollable) ================= -->
+            <div class="flex flex-col" style="width:70%; min-width:0; border-right:1px solid #2a2a2a;">
+            <input type="hidden" id="betacrm-docid">
+            <input type="hidden" id="betacrm-tags-value">
+
+            <!-- HEADER -->
+            <div class="relative p-5 border-b border-[#2a2a2a] shrink-0" style="background:linear-gradient(90deg,#1a1a1a,#161616);">
+                <button onclick="window.closeCRMBetaModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white text-xl leading-none">✕</button>
+                <div class="flex items-start gap-4">
+                    <div id="betacrm-avatar" class="w-14 h-14 rounded-full bg-[#00c6ff] text-black font-bold text-2xl flex items-center justify-center shrink-0">?</div>
+                    <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                            <div class="relative inline-flex items-center">
+                                <input type="text" id="betacrm-name" placeholder="Nama Lead" title="Klik untuk edit nama" class="text-xl font-bold bg-[#1a1a1a] border border-dashed border-[#444] hover:border-[#00c6ff] focus:border-[#00c6ff] focus:bg-[#111] outline-none text-white px-2 py-0.5 rounded-lg transition" style="min-width:160px;" oninput="window._betaSyncAvatarInitial()">
+                                <span class="absolute -right-1 -top-1 text-[9px] bg-[#00c6ff] text-black rounded-full w-4 h-4 flex items-center justify-center pointer-events-none" title="Boleh edit">✏️</span>
+                            </div>
+                            <span id="betacrm-leadid-badge" class="text-[10px] font-bold bg-[#333] text-gray-300 px-2 py-0.5 rounded-full">-</span>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2 text-sm text-gray-400 flex-wrap">
+                            <div class="relative inline-flex items-center">
+                                <input type="text" id="betacrm-contact" placeholder="Contact" title="Klik untuk edit no. telefon" class="bg-[#1a1a1a] border border-dashed border-[#444] hover:border-[#00c6ff] focus:border-[#00c6ff] focus:bg-[#111] outline-none text-gray-200 text-xs px-2 py-1 rounded-lg w-36 transition">
+                                <span class="absolute -right-1 -top-1 text-[8px] bg-[#00c6ff] text-black rounded-full w-3.5 h-3.5 flex items-center justify-center pointer-events-none">✏️</span>
+                            </div>
+                            <button onclick="window._betaOpenWA()" class="bg-[#25d366] text-black text-[10px] font-bold px-2 py-1 rounded-full">💬 WA</button>
+                            <button onclick="window.betaCRMCopyInviteDetails()" class="bg-[#333] hover:bg-[#444] text-gray-200 text-[10px] font-bold px-2 py-1 rounded-full">📋 Copy Invite Details</button>
+                        </div>
+                        <div class="flex items-center gap-2 mt-2.5 flex-wrap">
+                            <span class="text-xs text-gray-500">Current:</span>
+                            <span id="betacrm-staff-display" class="text-xs font-bold text-[#00c6ff]">-</span>
+                            <span class="text-gray-600">→</span>
+                            <select id="betacrm-edit-staff" class="bg-[#1a1a1a] text-white border border-[#333] rounded-lg px-2 py-1 text-xs outline-none">
+                                <option value="">- Kekalkan Staf -</option>
+                            </select>
+                            <span class="text-[10px] text-gray-600">Reassign to new staff</span>
+                        </div>
+                        <div class="flex flex-wrap items-center gap-1.5 mt-3">
+                            <div id="betacrm-tags-container" class="flex flex-wrap gap-1.5"></div>
+                            <div class="relative">
+                                <input type="text" id="betacrm-tag-input" placeholder="+ Tag" oninput="window._renderBetaTagPicker()" onkeydown="if(event.key==='Enter'){event.preventDefault();window._addBetaTagAndSave();}" class="text-[10px] bg-transparent border border-dashed border-[#444] rounded-full px-2 py-0.5 outline-none w-20 focus:w-32 transition-all">
+                            </div>
+                        </div>
+                        <div id="betacrm-tag-picker" class="flex flex-wrap gap-1.5 mt-1.5"></div>
+                    </div>
+                </div>
+
+                <!-- STATUS ROW -->
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-4">
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wide text-gray-500 font-bold block mb-1">Status</label>
+                        <select id="betacrm-status" onchange="window.paintStatusSelectLive('betacrm-status'); window.autoAppendStatusChange ? window.autoAppendStatusChange(this.value) : null; window._betaApplyStatusDefaults(true);" class="beta-status-pill w-full text-xs font-bold rounded-lg px-2 py-2 outline-none border"></select>
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wide text-gray-500 font-bold block mb-1">Invite Status</label>
+                        <select id="betacrm-invite-status" onchange="window._betaInviteManuallyChanged=true; window.paintStatusSelectLive('betacrm-invite-status'); window.calcBetaInviteProgress();" class="beta-status-pill w-full text-xs font-bold rounded-lg px-2 py-2 outline-none border"></select>
+                        <!-- 🌟 % KELENGKAPAN DATA -->
+                        <div class="mt-1.5">
+                            <div class="flex items-center justify-between mb-1">
+                                <span class="text-[8px] uppercase tracking-wide text-gray-500 font-bold">Kelengkapan Data</span>
+                                <span id="betacrm-progress-label" class="text-[9px] font-bold">0%</span>
+                            </div>
+                            <div class="w-full h-1.5 bg-[#111] rounded-full overflow-hidden border border-[#333]">
+                                <div id="betacrm-progress-bar" class="h-full rounded-full transition-all duration-300" style="width:0%; background:linear-gradient(90deg,#a78bfa,#00c6ff,#00e676);"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="text-[9px] uppercase tracking-wide text-gray-500 font-bold block mb-1">Attend Status</label>
+                        <select id="betacrm-attend-status" onchange="window.paintStatusSelectLive('betacrm-attend-status')" class="beta-status-pill w-full text-xs font-bold rounded-lg px-2 py-2 outline-none border"></select>
+                        <p class="text-[9px] text-gray-600 mt-1.5">💡 Default auto-cadang ikut Status/Attendance — staf boleh override & Save bila-bila masa.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- QUICK STATS -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-4 border-b border-[#2a2a2a] shrink-0" style="background:#131313;">
+                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
+                    <div class="text-[9px] text-gray-500 uppercase font-bold">Class Attended</div>
+                    <div id="betacrm-stat-attended" class="text-lg font-bold text-[#00e676]">0×</div>
+                    <div id="betacrm-stat-lastclass" class="text-[9px] text-gray-600">-</div>
+                </div>
+                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
+                    <div class="text-[9px] text-gray-500 uppercase font-bold">Total Invoice</div>
+                    <div id="betacrm-stat-invoice" class="text-lg font-bold text-[#ffca28]">RM0</div>
+                    <div id="betacrm-stat-invoicecount" class="text-[9px] text-gray-600">0 invois</div>
+                </div>
+                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
+                    <div class="text-[9px] text-gray-500 uppercase font-bold">Lead Masuk</div>
+                    <div id="betacrm-stat-inbound" class="text-sm font-bold text-white">-</div>
+                    <div id="betacrm-stat-source" class="text-[9px] text-gray-600">-</div>
+                </div>
+                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
+                    <div class="text-[9px] text-gray-500 uppercase font-bold">FU Akan Datang</div>
+                    <div id="betacrm-stat-nextfu" class="text-sm font-bold text-[#ff9800]">-</div>
+                </div>
+            </div>
+
+            <!-- TABS -->
+            <div class="flex gap-1.5 px-4 pt-3 border-b border-[#2a2a2a] overflow-x-auto shrink-0" style="background:#131313;">
+                <button onclick="window.switchBetaTab('timeline')" id="betacrm-tabbtn-timeline" class="beta-tab-btn active shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📋 Timeline & FU</button>
+                <button onclick="window.switchBetaTab('class')" id="betacrm-tabbtn-class" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📚 Class History</button>
+                <button onclick="window.switchBetaTab('invoice')" id="betacrm-tabbtn-invoice" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">🧾 Invoice</button>
+                <button onclick="window.switchBetaTab('info')" id="betacrm-tabbtn-info" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📇 Info Lanjut</button>
+            </div>
+
+            <!-- TAB CONTENT -->
+            <div class="p-4 flex-1 overflow-y-auto" style="background:#161616;">
+
+                <!-- ===== TIMELINE & FU ===== -->
+                <div id="betacrm-tab-timeline">
+                    <div class="bg-[#1a1a1a] border border-[#00c6ff]/30 rounded-xl p-3.5 mb-4">
+                        <div class="text-[#00c6ff] text-xs font-bold mb-3">➕ Log Follow Up Baru</div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <div class="beta-fld">
+                                <label>TO FU (Action)</label>
+                                <input type="text" id="betacrm-tofu" autocomplete="off" oninput="window.handleTofuInput(this, window.updatePreviewFUBeta)" onfocus="window.openTofuDropdown(this, window.updatePreviewFUBeta)" onclick="window.openTofuDropdown(this, window.updatePreviewFUBeta)" placeholder="Pilih task / #TaskBaru...">
+                            </div>
+                            <div class="beta-fld">
+                                <label>FU Date / Time</label>
+                                <div class="flex gap-1.5">
+                                    <input type="date" id="betacrm-fu-date" class="flex-1" onchange="window.updatePreviewFUBeta()">
+                                    <input type="time" id="betacrm-fu-time" class="flex-1" onchange="window.updatePreviewFUBeta()">
+                                    <button onclick="window.setCurrentDateTime('betacrm')" class="bg-[#333] hover:bg-[#444] text-gray-200 text-[10px] font-bold px-2.5 rounded-lg shrink-0">🕐 Now</button>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="beta-fld mt-3">
+                            <label>Outcome (Remarks untuk TO FU ni)</label>
+                            <textarea id="betacrm-outcome" rows="2" oninput="window.updatePreviewFUBeta()" placeholder="Cth: Dah call, prospek minta call balik petang..."></textarea>
+                        </div>
+                        <div class="beta-fld mt-3">
+                            <label>👁️ Preview History (Auto-generated)</label>
+                            <input type="text" id="betacrm-preview-fu" readonly class="bg-[#111] border border-dashed border-[#00c6ff] text-[#00c6ff] font-bold text-[11px]">
+                        </div>
+                        <div class="flex justify-end mt-3">
+                            <button onclick="window.appendPreviewToHistory('betacrm'); window.renderBetaTimelineList();" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold px-5 py-2 rounded-lg text-xs transition">💾 Simpan ke Timeline</button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-xs font-bold text-gray-400">🕓 Riwayat (Timeline)</div>
+                        <button onclick="window._betaToggleRawHistory()" class="text-[10px] text-gray-500 hover:text-white underline">✏️ Edit History FU Manual (Raw)</button>
+                    </div>
+                    <div id="betacrm-raw-history-box" class="hidden beta-fld mb-3">
+                        <label>History FU (Boleh Edit Manual)</label>
+                        <textarea id="betacrm-history" rows="6" class="font-mono text-[11px]" onchange="window.renderBetaTimelineList()"></textarea>
+                        <p class="text-[10px] text-gray-600 mt-1">⚠️ Edit di sini akan override paparan Timeline visual di atas.</p>
+                    </div>
+
+                    <div id="betacrm-timeline-list" class="space-y-2"></div>
+                </div>
+
+                <!-- ===== CLASS HISTORY ===== -->
+                <div id="betacrm-tab-class" class="hidden">
+                    <div id="betacrm-class-list" class="space-y-2"></div>
+                </div>
+
+                <!-- ===== INVOICE HISTORY ===== -->
+                <div id="betacrm-tab-invoice" class="hidden">
+                    <div id="betacrm-invoice-list" class="space-y-2"></div>
+                </div>
+
+                <!-- ===== INFO LANJUT ===== -->
+                <div id="betacrm-tab-info" class="hidden">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="beta-fld"><label>Source</label><input type="text" id="betacrm-source" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>State</label><input type="text" id="betacrm-state" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>Umur</label><input type="text" id="betacrm-umur" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>Occupation</label><input type="text" id="betacrm-occupation" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>Email</label><input type="text" id="betacrm-email" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>First Time Belajar?</label><input type="text" id="betacrm-first-time" placeholder="Cth: Ya / Tidak, pernah belajar" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld sm:col-span-2"><label>Reason Learn</label><input type="text" id="betacrm-reason-learn" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld sm:col-span-2"><label>Concern PS (Remarks)</label><textarea id="betacrm-concern-ps" rows="2" oninput="window.calcBetaInviteProgress()"></textarea></div>
+                        <div class="beta-fld"><label>Class</label><input type="text" id="betacrm-class" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>Class Date & Time</label><input type="text" id="betacrm-class-datetime" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld sm:col-span-2"><label>Parents Detail</label><input type="text" id="betacrm-parents"></div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- FOOTER -->
+            <div class="p-4 border-t border-[#2a2a2a] flex justify-end gap-2 shrink-0" style="background:#131313;">
+                <button id="btn-save-crm-beta" onclick="window.saveCRMBetaData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold px-6 py-2.5 rounded-lg text-sm transition">💾 SAVE LEAD</button>
+            </div>
+            </div>
+            <!-- ================= /LEFT ================= -->
+
+            <!-- ================= RIGHT: WHATSAPP CHAT (persistent, sebelah) ================= -->
+            <div class="flex flex-col" style="width:30%; min-width:260px; background:#121212;">
+                <div class="bg-[#075e54] p-3 text-white flex justify-between items-center shrink-0 shadow-md z-10">
+                    <h3 class="m-0 text-sm flex items-center gap-2 font-bold">💬 Rekod Perbualan</h3>
+                    <button onclick="window._betaToggleRawChat()" class="bg-[#0b7a6b] hover:bg-[#08695c] text-white text-[10px] font-bold px-2 py-1 rounded-full border-none cursor-pointer">Raw JSON</button>
+                </div>
+                <div id="betacrm-chat-list" class="chat-container flex-1"></div>
+                <textarea id="betacrm-chat-raw" class="hidden font-mono text-[11px] w-full bg-[#1a1a1a] text-white border-t border-[#333] p-2 shrink-0" rows="5"></textarea>
+            </div>
+            <!-- ================= /RIGHT ================= -->
 
         </div>
     </div>
@@ -2055,6 +2462,234 @@
             }
         };
 
+        // ==========================================
+        // 🗂️ STATUS MANAGER (untuk CRM Beta - Status / Invite Status / Attend Status)
+        // Disimpan di system_settings/status_manager -> { status:[...], inviteStatus:[...], attendStatus:[...] }
+        // supaya SEMUA select (CRM Beta, filter dsb) tarik dari SATU sumber.
+        // ==========================================
+        window.STATUS_CATEGORIES = [
+            { key: 'status', label: 'Status', accent: '#60a5fa', desc: 'Status utama lead (New → Closed).' },
+            { key: 'inviteStatus', label: 'Invite Status', accent: '#a78bfa', desc: 'Status jemputan kelas. Manual set oleh staf.' },
+            { key: 'attendStatus', label: 'Attend Status', accent: '#4ade80', desc: 'Status kehadiran. Manual set oleh staf — BUKAN auto dari Attendance PS Master.' }
+        ];
+        window.SWATCHES = ['#60a5fa','#a78bfa','#4ade80','#f59e0b','#ef4444','#00c6ff','#ec4899','#94a3b8'];
+        window.DEFAULT_STATUS_CONFIG = {
+            status: [
+                { label:'New', color:'#60a5fa' },
+                { label:'In Progress', color:'#f59e0b' },
+                { label:'Nurturing', color:'#a78bfa' },
+                { label:'Closed', color:'#4ade80' }
+            ],
+            inviteStatus: [
+                { label:'Invite', color:'#00c6ff' },
+                { label:'In Progress', color:'#f59e0b' },
+                { label:'Not Interested', color:'#ef4444' }
+            ],
+            attendStatus: [
+                { label:'Attended', color:'#4ade80' },
+                { label:'In Progress', color:'#f59e0b' },
+                { label:'Not Interested', color:'#ef4444' }
+            ]
+        };
+        window.statusConfig = JSON.parse(JSON.stringify(window.DEFAULT_STATUS_CONFIG)); // diganti dengan Firestore data bila loadStatusConfig() siap
+        window.tagPickerColorState = {}; // { catKey: selectedColorHex } untuk form "tambah baru"
+        window.colorEditTarget = null;
+
+        window.loadStatusConfig = async function() {
+            try {
+                const snap = await getDoc(doc(db, "system_settings", "status_manager"));
+                if(snap.exists()) {
+                    let d = snap.data();
+                    window.statusConfig = {
+                        status: Array.isArray(d.status) ? d.status : window.DEFAULT_STATUS_CONFIG.status,
+                        inviteStatus: Array.isArray(d.inviteStatus) ? d.inviteStatus : window.DEFAULT_STATUS_CONFIG.inviteStatus,
+                        attendStatus: Array.isArray(d.attendStatus) ? d.attendStatus : window.DEFAULT_STATUS_CONFIG.attendStatus
+                    };
+                } else {
+                    window.statusConfig = JSON.parse(JSON.stringify(window.DEFAULT_STATUS_CONFIG));
+                }
+            } catch(e) {
+                console.error("Gagal tarik Status Manager config:", e);
+                window.statusConfig = JSON.parse(JSON.stringify(window.DEFAULT_STATUS_CONFIG));
+            }
+            window.STATUS_CATEGORIES.forEach(cat => {
+                if(!window.tagPickerColorState[cat.key]) window.tagPickerColorState[cat.key] = window.SWATCHES[0];
+            });
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+        };
+
+        window.saveStatusConfig = async function() {
+            try {
+                await setDoc(doc(db, "system_settings", "status_manager"), window.statusConfig, { merge: true });
+            } catch(e) {
+                console.error("Gagal simpan Status Manager config:", e);
+                if(typeof window.showToast === 'function') window.showToast('❌ Gagal simpan Status Manager: ' + e.message, 'error', 3000);
+            }
+        };
+
+        // ---------- RENDER: Status Manager cards (System Setup) ----------
+        window.renderStatusManager = function() {
+            let wrap = document.getElementById('status-manager-cards');
+            if(!wrap) return;
+            wrap.innerHTML = window.STATUS_CATEGORIES.map(cat => window.renderStatusCard(cat)).join('');
+        };
+
+        window.renderStatusCard = function(cat) {
+            let options = window.statusConfig[cat.key] || [];
+            let rows = options.map((opt, idx) => {
+                let editingColor = window.colorEditTarget && window.colorEditTarget.cat === cat.key && window.colorEditTarget.idx === idx;
+                let colorPopover = editingColor ? `
+                    <div class="flex items-center gap-1.5 bg-[#0a0a0a] border border-[#333] rounded-lg p-2 ml-6 -mt-1 mb-1.5">
+                        ${window.SWATCHES.map(c => `<span onclick="window.setOptionColor('${cat.key}', ${idx}, '${c}')" class="swatch ${opt.color===c?'selected':''}" style="background:${c}"></span>`).join('')}
+                        <button onclick="window.closeColorPopover()" class="text-[10px] text-gray-500 hover:text-white ml-1">✕</button>
+                    </div>` : '';
+                return `
+                <div class="drag-row" draggable="true"
+                     ondragstart="window.dragStartOption(event,'${cat.key}',${idx})"
+                     ondragover="event.preventDefault(); this.classList.add('drag-over')"
+                     ondragleave="this.classList.remove('drag-over')"
+                     ondrop="window.dragDropOption(event,'${cat.key}',${idx})">
+                    <div class="flex items-center gap-2 bg-[#111] border border-[#2a2a2a] rounded-lg px-2.5 py-2">
+                        <span class="text-gray-600 hover:text-gray-300 cursor-grab select-none text-sm" title="Seret untuk susun semula">⠿⠿</span>
+                        <span onclick="window.toggleColorPopover('${cat.key}', ${idx})" class="w-4 h-4 rounded-full shrink-0 cursor-pointer border border-white/30 hover:scale-110 transition" style="background:${opt.color}" title="Klik untuk tukar warna"></span>
+                        <input type="text" value="${String(opt.label).replace(/"/g,'&quot;')}" onchange="window.renameStatusOption('${cat.key}', ${idx}, this.value)" class="flex-1 bg-transparent text-white text-xs font-bold outline-none border-none min-w-0">
+                        <button onclick="window.deleteStatusOption('${cat.key}', ${idx})" title="Padam" class="text-red-500 hover:text-red-300 text-xs font-bold px-1">✕</button>
+                    </div>
+                    ${colorPopover}
+                </div>`;
+            }).join('');
+
+            let swatchPicker = window.SWATCHES.map(c => `
+                <span onclick="window.pickNewColor('${cat.key}', '${c}')" class="swatch ${window.tagPickerColorState[cat.key]===c ? 'selected' : ''}" style="background:${c}"></span>
+            `).join('');
+
+            return `
+            <div class="bg-[#1e1e1e] border border-[#333] rounded-xl p-4" style="border-top:3px solid ${cat.accent}">
+                <h4 class="font-bold m-0 mb-1" style="color:${cat.accent}">${cat.label}</h4>
+                <p class="text-[10px] text-gray-500 mb-3 m-0">${cat.desc}</p>
+                <div class="space-y-1.5 max-h-64 overflow-y-auto mb-3">${rows || `<div class="text-[10px] text-gray-600 italic p-2">Tiada option lagi.</div>`}</div>
+                <div class="bg-[#111] border border-[#2a2a2a] rounded-lg p-2.5">
+                    <input type="text" id="new-opt-${cat.key}" placeholder="Nama option baru..." class="w-full bg-[#1a1a1a] text-white text-xs px-2 py-1.5 rounded-lg border border-[#444] outline-none mb-2" onkeydown="if(event.key==='Enter'){event.preventDefault();window.addStatusOption('${cat.key}');}">
+                    <div class="flex items-center gap-1.5 mb-2">${swatchPicker}</div>
+                    <button onclick="window.addStatusOption('${cat.key}')" class="w-full text-black text-xs font-bold py-1.5 rounded-lg" style="background:${cat.accent}">+ Tambah Option</button>
+                </div>
+                <button onclick="window.resetStatusCategory('${cat.key}')" class="w-full text-[10px] text-gray-500 hover:text-red-400 mt-2">↺ Reset ke Default</button>
+            </div>`;
+        };
+
+        window.pickNewColor = function(catKey, color) {
+            window.tagPickerColorState[catKey] = color;
+            window.renderStatusManager();
+        };
+        window.toggleColorPopover = function(catKey, idx) {
+            let same = window.colorEditTarget && window.colorEditTarget.cat === catKey && window.colorEditTarget.idx === idx;
+            window.colorEditTarget = same ? null : { cat: catKey, idx: idx };
+            window.renderStatusManager();
+        };
+        window.closeColorPopover = function() {
+            window.colorEditTarget = null;
+            window.renderStatusManager();
+        };
+        window.setOptionColor = function(catKey, idx, color) {
+            window.statusConfig[catKey][idx].color = color;
+            window.saveStatusConfig();
+            window.colorEditTarget = null;
+            window.renderStatusManager();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+            if(typeof window.showToast === 'function') window.showToast('🎨 Warna ditukar', 'success', 1200);
+        };
+
+        // ---------- DRAG & DROP REORDER ----------
+        window.dragSource = null;
+        window.dragStartOption = function(ev, catKey, idx) {
+            window.dragSource = { cat: catKey, idx: idx };
+            ev.dataTransfer.effectAllowed = 'move';
+        };
+        window.dragDropOption = function(ev, catKey, targetIdx) {
+            ev.preventDefault();
+            document.querySelectorAll('.drag-row.drag-over').forEach(el => el.classList.remove('drag-over'));
+            if(!window.dragSource || window.dragSource.cat !== catKey) return;
+            let fromIdx = window.dragSource.idx;
+            if(fromIdx === targetIdx) return;
+            let arr = window.statusConfig[catKey];
+            let [moved] = arr.splice(fromIdx, 1);
+            arr.splice(targetIdx, 0, moved);
+            window.dragSource = null;
+            window.saveStatusConfig();
+            window.renderStatusManager();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+        };
+
+        window.addStatusOption = function(catKey) {
+            let input = document.getElementById('new-opt-' + catKey);
+            let val = input.value.trim();
+            if(!val) { if(typeof window.showToast === 'function') window.showToast('⚠️ Taip nama option dulu.', 'error', 1500); return; }
+            if(window.statusConfig[catKey].some(o => o.label.toLowerCase() === val.toLowerCase())) { if(typeof window.showToast === 'function') window.showToast('ℹ️ Option ni dah ada.', 'error', 1500); return; }
+            window.statusConfig[catKey].push({ label: val, color: window.tagPickerColorState[catKey] || window.SWATCHES[0] });
+            window.saveStatusConfig();
+            window.renderStatusManager();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+            if(typeof window.showToast === 'function') window.showToast(`✅ Option "${val}" ditambah`, 'success', 1500);
+        };
+
+        window.renameStatusOption = function(catKey, idx, newVal) {
+            newVal = newVal.trim();
+            if(!newVal) { window.renderStatusManager(); return; }
+            window.statusConfig[catKey][idx].label = newVal;
+            window.saveStatusConfig();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+        };
+
+        window.deleteStatusOption = function(catKey, idx) {
+            let opt = window.statusConfig[catKey][idx];
+            if(!confirm(`Padam option "${opt.label}" dari senarai ${catKey}?\n\n⚠️ Lead yang dah guna value ni takkan hilang datanya, tapi tak akan muncul lagi dalam dropdown.`)) return;
+            window.statusConfig[catKey].splice(idx, 1);
+            window.saveStatusConfig();
+            window.renderStatusManager();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+            if(typeof window.showToast === 'function') window.showToast(`🗑️ Option "${opt.label}" dipadam`, 'success', 1500);
+        };
+
+        window.resetStatusCategory = function(catKey) {
+            if(!confirm(`Reset senarai "${catKey}" ke default?`)) return;
+            window.statusConfig[catKey] = JSON.parse(JSON.stringify(window.DEFAULT_STATUS_CONFIG[catKey]));
+            window.saveStatusConfig();
+            window.renderStatusManager();
+            if(typeof window.renderAllBetaStatusSelects === 'function') window.renderAllBetaStatusSelects();
+            if(typeof window.showToast === 'function') window.showToast('↺ Dah reset ke default', 'success', 1500);
+        };
+
+        // ---------- HELPER: isi & warnakan <select> ikut Status Manager config ----------
+        window.fillSelectFromConfig = function(selectId, options, preferredDefault) {
+            let sel = document.getElementById(selectId);
+            if(!sel) return;
+            let currentVal = sel.value;
+            sel.innerHTML = (options || []).map(o => `<option value="${String(o.label).replace(/"/g,'&quot;')}">${o.label}</option>`).join('');
+            let hasCurrentVal = (options||[]).some(o => o.label === currentVal);
+            if(hasCurrentVal) sel.value = currentVal;
+            else if((options||[]).some(o => o.label === preferredDefault)) sel.value = preferredDefault;
+            window.paintStatusSelect(selectId, options);
+        };
+        window.hexToRgba = function(hex, alpha) {
+            hex = hex.replace('#','');
+            if(hex.length === 3) hex = hex.split('').map(c => c+c).join('');
+            let r = parseInt(hex.substring(0,2),16), g = parseInt(hex.substring(2,4),16), b = parseInt(hex.substring(4,6),16);
+            return `rgba(${r},${g},${b},${alpha})`;
+        };
+        window.paintStatusSelect = function(selectId, options) {
+            let sel = document.getElementById(selectId);
+            if(!sel) return;
+            let opt = (options || []).find(o => o.label === sel.value);
+            let color = opt ? opt.color : '#666';
+            sel.style.background = `linear-gradient(90deg, ${window.hexToRgba(color,0.30)}, ${window.hexToRgba(color,0.10)})`;
+            sel.style.borderColor = window.hexToRgba(color, 0.7);
+            sel.style.color = color;
+        };
+        window.paintStatusSelectLive = function(selectId) {
+            let catKeyMap = { 'betacrm-status':'status', 'betacrm-invite-status':'inviteStatus', 'betacrm-attend-status':'attendStatus' };
+            window.paintStatusSelect(selectId, window.statusConfig[catKeyMap[selectId]]);
+        };
+
         function getTargetJam(objTarget, timeStr) {
             if(!objTarget || !timeStr) return 0;
             let timeColon = timeStr.replace('.', ':');
@@ -2682,6 +3317,9 @@
 
         let btnImportLeadsAdminTab = document.getElementById('btnImportLeadsAdminTab');
         if(btnImportLeadsAdminTab) btnImportLeadsAdminTab.addEventListener('click', () => window.prosesImportCRM('failLeadsAdminTab', 'statusLeadsAdminTab', 'btnImportLeadsAdminTab', false, 'csv-lead-staff-admintab'));
+
+        let btnImportLeadsBeta = document.getElementById('btnImportLeadsBeta');
+        if(btnImportLeadsBeta) btnImportLeadsBeta.addEventListener('click', () => window.prosesImportCRM('failLeadsBeta', 'statusLeadsBeta', 'btnImportLeadsBeta', false, 'csv-lead-staff-beta'));
 
         // 'Bunuh' dan timpa butang import setup lama
         let oldBtnLeads = document.getElementById('btnImportLeads');
@@ -3576,7 +4214,7 @@
 
         // Gantikan Suis Admin sedia ada supaya dia "On" kan CCTV ni bila buka tab Setup!
         window.switchAdminTab = function(tab) {
-            ['perf', 'sch', 'crm', 'ps' , 'logs', 'setup', 'hunt', 'enroll', 'tgt'].forEach(t => {
+            ['perf', 'sch', 'crm', 'betacrm', 'ps' , 'logs', 'setup', 'hunt', 'enroll', 'tgt'].forEach(t => {
                 let btn = document.getElementById(`btn-adm-${t}`);
                 let view = document.getElementById(`adm-view-${t}`);
                 
@@ -3609,7 +4247,7 @@
                 window.loadAdminPSData();
                 window.renderPSUploadLogs(); 
             }
-            if(tab === 'setup') window.renderUrusStaf(); 
+            if(tab === 'setup') { window.renderUrusStaf(); window.renderStatusManager(); }
             if(tab === 'tgt') window.loadTargetDataOnly();
             if(tab === 'hunt') {
                 window.loadAdminHuntData();
@@ -3619,6 +4257,7 @@
                 window.loadAdminEnrollData();
                 window.renderEnrollUploadLogs();
             }
+            if(tab === 'betacrm') { window.loadCRMBetaData(); window.renderUrusStaf(); }
         };
 
 
@@ -4399,6 +5038,13 @@
                 if(selBulkPaste) selBulkPaste.innerHTML = htmlOpt; 
                 let selTextAdminTab = document.getElementById('text-lead-staff-admintab');
                 if(selTextAdminTab) selTextAdminTab.innerHTML = htmlOpt;
+
+                // 🌟 CRM (Beta) staff dropdowns
+                ['csv-lead-staff-beta','ai-lead-staff-beta','text-lead-staff-beta','betacrm-bulk-staff'].forEach(id => {
+                    let el = document.getElementById(id);
+                    if(!el) return;
+                    el.innerHTML = id === 'betacrm-bulk-staff' ? (`<option value="">- Reassign Staf -</option>` + htmlOpt) : htmlOpt;
+                });
             } catch(e) { if(c) c.innerHTML = "<div class='text-red-500 text-sm'>Gagal muat senarai staf.</div>"; }
         };
 
@@ -4641,6 +5287,1058 @@
                 if(r["Linked Enroll DocID"]) window.crmByEnrDocId[r["Linked Enroll DocID"]] = r;
             });
         };
+
+        // ====================================================================
+        // 🧪 CRM (BETA) — Phase 3: gabungan CRM + PS Master + PS Enroll
+        // ====================================================================
+        window.betaCRMSummary = []; // array hasil aggregation, 1 entry per crm_leads
+        window.betaCRMPage = 1;
+        window.betaCRMRowsPerPage = 30;
+
+        // 🌟 Bina 1 entry summary untuk 1 lead: gabung rekod PS Master (by Linked DocID + Contact)
+        // + PS Enroll (by Linked DocID + Contact) supaya history PENUH terpapar walau tak semua linked.
+        window._buildBetaSummaryForLead = function(leadRow) {
+            let leadContact = window.normalizePhone60(leadRow["CONTACT"] || "");
+            let leadPSDocId = leadRow["Linked PS DocID"] || "";
+            let leadEnrollDocId = leadRow["Linked Enroll DocID"] || "";
+
+            let allPS = [...(psState.adminData || []), ...(psState.data || [])];
+            let allEnroll = [...(enrollState.adminData || []), ...(enrollState.data || [])];
+
+            // Dedupe by docId (admin & data array boleh overlap)
+            let seenPS = {}; 
+            let psRows = allPS.filter(r => {
+                if(seenPS[r.docId]) return false;
+                seenPS[r.docId] = true;
+                let contactMatch = leadContact && window.normalizePhone60(r["Phone Number"] || "") === leadContact;
+                return r.docId === leadPSDocId || contactMatch;
+            });
+
+            let seenEnroll = {};
+            let enrollRows = allEnroll.filter(r => {
+                if(seenEnroll[r.docId]) return false;
+                seenEnroll[r.docId] = true;
+                let contactMatch = leadContact && window.normalizePhone60(r["Phone"] || "") === leadContact;
+                return r.docId === leadEnrollDocId || contactMatch;
+            });
+
+            // Sort PS rows terbaru dulu (ikut Date, fallback Timestamp)
+            psRows.sort((a,b) => {
+                let da = normalizeDateStr(a["Date"]) || normalizeDateStr(a["Timestamp"]) || "";
+                let db = normalizeDateStr(b["Date"]) || normalizeDateStr(b["Timestamp"]) || "";
+                return db.localeCompare(da);
+            });
+            enrollRows.sort((a,b) => {
+                let da = normalizeDateStr(a["Invoice Date"]) || "";
+                let db = normalizeDateStr(b["Invoice Date"]) || "";
+                return db.localeCompare(da);
+            });
+
+            let totalAttended = psRows.filter(r => String(r["Attendance"]||"").toLowerCase().trim() === "attended").length;
+            let lastClassRow = psRows[0] || null;
+            let lastInvoiceRow = enrollRows[0] || null;
+            let totalInvoiceAmount = enrollRows.reduce((sum, r) => sum + (parseFloat(String(r["Invoice Amount"]||"0").replace(/[^0-9.\-]/g,'')) || 0), 0);
+
+            // 🌟 DEFAULT Invite Status / Attend Status (dipakai HANYA bila field tu masih kosong dalam crm_leads -
+            // sebaik staf pilih & Save secara manual, value tersimpan itu yang dipakai selepas ni, bukan default lagi)
+            // - Invite Status: Status == "Invite" -> "Invite", selain itu -> "In Progress"
+            // - Attend Status: rekod PS Master terkini (lastClassRow) Attendance == "Attended" -> "Attended", selain -> "In Progress"
+            let defaultInviteStatus = (String(leadRow["STATUS"]||"").trim().toLowerCase() === "invite") ? "Invite" : "In Progress";
+            let defaultAttendStatus = (lastClassRow && String(lastClassRow["Attendance"]||"").trim().toLowerCase() === "attended") ? "Attended" : "In Progress";
+            let effectiveInviteStatus = leadRow["Invite Status"] || defaultInviteStatus;
+            let effectiveAttendStatus = leadRow["Attend Status"] || defaultAttendStatus;
+
+            return {
+                lead: leadRow,
+                psRows, enrollRows,
+                totalAttended,
+                lastClassRow,
+                lastInvoiceRow,
+                totalInvoiceAmount,
+                defaultInviteStatus, defaultAttendStatus,
+                effectiveInviteStatus, effectiveAttendStatus
+            };
+        };
+
+        window.loadCRMBetaData = async function(forceRefresh) {
+            let tbody = document.getElementById('betacrm-table-body');
+            if(tbody) tbody.innerHTML = `<tr><td colspan="12" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik & gabung data CRM + PS Master + PS Enroll...</td></tr>`;
+
+            let isForce = (forceRefresh === true);
+
+            // 🌟 Reuse loader sedia ada (crmState/psState/enrollState) - elak tarik data berulang kali
+            let jobs = [];
+            if(isForce || !(crmState.adminData && crmState.adminData.length)) jobs.push(window.loadAdminCRMData(isForce));
+            if(isForce || !(psState.adminData && psState.adminData.length))  jobs.push(window.loadPSData(isForce));
+            if(isForce || !(enrollState.adminData && enrollState.adminData.length)) jobs.push(window.loadAdminEnrollData(isForce));
+            try { await Promise.all(jobs); } catch(e) { console.error("Gagal load data CRM Beta:", e); }
+
+            // 🌟 Pastikan Status Manager & Global Tags dah loaded (untuk dropdown & pill dalam modal nanti)
+            if(!window.statusConfig || !window.statusConfig.status) await window.loadStatusConfig();
+            if(!window._globalTagsMaster || window._globalTagsMaster.length === 0) await window.loadGlobalTagsMaster();
+            window.renderAllBetaStatusSelects(); // isi dropdown bulk-edit bar juga
+
+            let leads = crmState.adminData || [];
+            window.betaCRMSummary = leads.map(leadRow => window._buildBetaSummaryForLead(leadRow));
+            window.betaCRMPage = 1;
+            window.renderCRMBetaTable();
+            window.renderCRMBetaMobileList();
+        };
+
+        window.setBetaCRMView = function(mode) {
+            let dBtn = document.getElementById('betacrm-view-desktop-btn');
+            let mBtn = document.getElementById('betacrm-view-mobile-btn');
+            let dWrap = document.getElementById('betacrm-desktop-wrapper');
+            let mWrap = document.getElementById('betacrm-mobile-wrapper');
+            if(mode === 'mobile') {
+                dWrap.style.display = 'none'; mWrap.style.display = 'block';
+                dBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-[#333] text-gray-400";
+                mBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-[#0072ff] text-white";
+                window.renderCRMBetaMobileList();
+            } else {
+                dWrap.style.display = 'block'; mWrap.style.display = 'none';
+                dBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-[#0072ff] text-white";
+                mBtn.className = "px-4 py-2 rounded-lg text-xs font-bold bg-[#333] text-gray-400";
+                window.renderCRMBetaTable();
+            }
+        };
+
+        window._betaStatusPillHtml = function(value, catKey, isDefault) {
+            let opts = (window.statusConfig && window.statusConfig[catKey]) || [];
+            let opt = opts.find(o => o.label === value);
+            let color = opt ? opt.color : '#666';
+            if(!value) return `<span class="text-gray-600 text-[10px]">-</span>`;
+            let suffix = isDefault ? ` <span title="Nilai default (belum di-set manual)" style="opacity:.6;">*</span>` : '';
+            return `<span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:${window.hexToRgba(color,0.2)}; color:${color}; border:1px solid ${window.hexToRgba(color,0.5)};">${value}${suffix}</span>`;
+        };
+
+        // ---------- COLUMN DEFS (SEMUA field CRM Master + column gabungan Beta) + SORT/FILTER STATE ----------
+        // 🌟 get(s) = fungsi ambil nilai display dari 1 entry betaCRMSummary (s.lead = rekod crm_leads asal)
+        window.betaCRMColumns = [
+            { key: 'Lead ID', label: 'Lead ID', color:'#ffeb3b', get: s => s.lead["Lead ID"]||"" },
+            { key: 'crm_imported_date', label: 'Imported Date', color:'#9c27b0', get: s => window.parseTimestampMasuk(s.lead["Timestamp Masuk"]).date },
+            { key: 'crm_imported_time', label: 'Imported Time', color:'#9c27b0', get: s => window.parseTimestampMasuk(s.lead["Timestamp Masuk"]).time },
+            { key: 'LEADS INBOUND', label: 'Inbound Date', color:'#ff9800', get: s => s.lead["LEADS INBOUND"]||"" },
+            { key: 'LEADS INBOUND TIME', label: 'Inbound Time', color:'#ff9800', get: s => s.lead["LEADS INBOUND TIME"]||"" },
+            { key: 'STATUS', label: 'Status', color:'#ff9800', get: s => s.lead["STATUS"]||"", isStatusPill:'status' },
+            { key: 'Invite Status', label: 'Invite Status', color:'#a78bfa', get: s => s.effectiveInviteStatus||"", isStatusPill:'inviteStatus' },
+            { key: 'Attend Status', label: 'Attend Status', color:'#4ade80', get: s => s.effectiveAttendStatus||"", isStatusPill:'attendStatus' },
+            { key: 'NAME', label: 'Name', get: s => s.lead["NAME"]||"" },
+            { key: 'CONTACT', label: 'Contact', get: s => s.lead["CONTACT"]||"", isContact:true },
+            { key: 'Staff Name', label: 'Staff Name', color:'#bb86fc', get: s => s.lead["Staff Name"]||"" },
+            { key: 'TO FU', label: 'Action (TO FU)', color:'#00e676', get: s => s.lead["TO FU"]||"" },
+            { key: 'HISTORY FU', label: 'History FU', get: s => s.lead["HISTORY FU"]||"", isWide:true },
+            { key: 'FOLLOW UP (DATE)', label: 'FU Date', get: s => s.lead["FOLLOW UP (DATE)"]||"" },
+            { key: 'FOLLOW UP (TIME)', label: 'FU Time', get: s => s.lead["FOLLOW UP (TIME)"]||"" },
+            { key: 'SOURCE', label: 'Source', get: s => s.lead["SOURCE"]||"" },
+            { key: 'EMAIL', label: 'Email', get: s => s.lead["EMAIL"]||"" },
+            { key: 'STATE', label: 'State', get: s => s.lead["STATE"]||"" },
+            { key: 'UMUR', label: 'Umur', get: s => s.lead["UMUR"]||"" },
+            { key: 'OCCUPATION', label: 'Occupation', get: s => s.lead["OCCUPATION"]||"" },
+            { key: 'FIRST TIME BELAJAR', label: 'FT Belajar', get: s => s.lead["FIRST TIME BELAJAR"]||"" },
+            { key: 'REASON LEARN', label: 'Reason Learn', get: s => s.lead["REASON LEARN"]||"", isWide:true },
+            { key: 'CONCERN PS', label: 'Concern PS', get: s => s.lead["CONCERN PS"]||"", isWide:true },
+            { key: 'Class', label: 'Class', color:'#00c6ff', get: s => s.lead["Class"]||"" },
+            { key: 'Class Date & Time', label: 'Class Date/Time', get: s => s.lead["Class Date & Time"]||"" },
+            { key: 'Parents Detail', label: 'Parents Detail', get: s => s.lead["Parents Detail"]||"" },
+            { key: 'ALL CHAT (JSON)', label: 'All Chat (JSON)', get: s => (s.lead["ALL CHAT (JSON)"] && String(s.lead["ALL CHAT (JSON)"]).trim()!=="") ? "Ada" : "", isChat:true },
+            { key: 'LAST CONTACTED (DATE)', label: 'Last C Date', get: s => s.lead["LAST CONTACTED (DATE)"]||"" },
+            { key: 'LAST CONTACTED (TIME)', label: 'Last C Time', get: s => s.lead["LAST CONTACTED (TIME)"]||"" },
+            { key: '__lastclass', label: 'Last Class Date', get: s => (s.lastClassRow && `${s.lastClassRow["Class"]||"-"} · ${s.lastClassRow["Date"]||"-"}`) || "" },
+            { key: '__totalattended', label: 'Total Attended', get: s => String(s.totalAttended) },
+            { key: '__lastinvoice', label: 'Last Invoice', get: s => (s.lastInvoiceRow && `RM${s.lastInvoiceRow["Invoice Amount"]||"0"} · ${s.lastInvoiceRow["Invoice Date"]||"-"}`) || "" },
+            { key: 'Tags', label: 'Tags', color:'#f59e0b', get: s => (typeof window.getRecordTags === 'function' ? window.getRecordTags(s.lead) : []).join(', '), isTagsCol:true }
+        ];
+        window.betaCRMSortCol = 'Lead ID';
+        window.betaCRMSortAsc = false;
+        window.betaCRMFilters = {}; // 🌟 multi-select excel-style, keyed by col.key -> [selected values]
+        window.betaCRMSelected = new Set();
+
+        window.sortBetaCRM = function(colKey) {
+            window.betaCRMSortAsc = (window.betaCRMSortCol === colKey) ? !window.betaCRMSortAsc : true;
+            window.betaCRMSortCol = colKey;
+            window.renderCRMBetaTable(); // regen header (icon sort berubah)
+        };
+
+        // ---------- EXCEL-STYLE MULTI-SELECT FILTER (duplicate ciri CRM Master) ----------
+        window.toggleBetaCRMFilterMenu = function(colKey, btnElement) {
+            let menu = document.getElementById(`betacrm-filter-menu-${colKey}`);
+            if(!menu) return;
+            let isHidden = menu.classList.contains('hidden');
+            document.querySelectorAll('th').forEach(th => th.style.zIndex = '20');
+            document.querySelectorAll('[id^="betacrm-filter-menu-"]').forEach(el => el.classList.add('hidden'));
+            if(!isHidden) return;
+
+            menu.classList.remove('hidden');
+            if(btnElement) { let closestTh = btnElement.closest('th'); if(closestTh) closestTh.style.zIndex = '999'; }
+
+            let col = window.betaCRMColumns.find(c => c.key === colKey);
+            if(!col) return;
+            let selectedArr = window.betaCRMFilters[colKey] || [];
+            let uniques = [...new Set(window.betaCRMSummary.map(s => { let v = col.get(s); return (v !== undefined && v !== null && String(v).trim() !== "") ? String(v).trim() : "-"; }))].sort();
+            let isAllChecked = (selectedArr.length > 0 && selectedArr.length === uniques.length) ? "checked" : "";
+
+            let html = `
+            <div class="mb-2 pb-2 border-b border-[#555] flex flex-col gap-2 sticky top-0 bg-[#2a2a2a] z-10">
+                <div class="flex justify-between">
+                    <button onclick="window.clearBetaCRMExcelFilter('${colKey}')" class="text-[#ff5252] hover:text-red-400 font-bold px-2 py-1 rounded hover:bg-[#ff525220]">Clear</button>
+                    <button onclick="window.applyBetaCRMExcelFilter('${colKey}')" class="text-[#00e676] hover:text-green-400 font-bold px-2 py-1 rounded hover:bg-[#00e67620]">Apply</button>
+                </div>
+                <input type="text" placeholder="Search..." oninput="window.searchBetaCRMFilterOptions(this, '${colKey}')" class="w-full bg-[#111] text-white p-1.5 rounded border border-[#555] outline-none text-xs focus:border-[#00e676]" onclick="event.stopPropagation()">
+                <label class="flex items-start gap-2 mt-1 cursor-pointer p-1.5 rounded bg-[#222] hover:bg-[#333] transition border border-[#00c6ff]">
+                    <input type="checkbox" onchange="window.toggleBetaCRMSelectAll(this, '${colKey}')" class="mt-0.5 accent-[#00c6ff]" ${isAllChecked}>
+                    <span class="break-words w-full text-[#00c6ff] font-bold">Select All</span>
+                </label>
+            </div>
+            <div class="chk-container">`;
+            uniques.forEach(val => {
+                let checked = selectedArr.includes(val) ? "checked" : "";
+                html += `<label class="flex items-start gap-2 mb-1.5 cursor-pointer hover:bg-[#444] p-1.5 rounded transition filter-item">
+                    <input type="checkbox" class="betacrm-filter-cb mt-0.5 accent-[#00e676]" value="${val.replace(/"/g,'&quot;')}" ${checked}>
+                    <span class="break-words w-full text-gray-200">${val}</span>
+                </label>`;
+            });
+            html += `</div>`;
+            menu.innerHTML = html;
+            setTimeout(() => { let sb = menu.querySelector('input[type="text"]'); if(sb) sb.focus(); }, 50);
+        };
+        window.toggleBetaCRMSelectAll = function(cb, colKey) {
+            let menu = document.getElementById(`betacrm-filter-menu-${colKey}`);
+            menu.querySelectorAll('.betacrm-filter-cb').forEach(c => { if(c.closest('label').style.display !== 'none') c.checked = cb.checked; });
+        };
+        window.applyBetaCRMExcelFilter = function(colKey) {
+            let menu = document.getElementById(`betacrm-filter-menu-${colKey}`);
+            let selected = Array.from(menu.querySelectorAll('.betacrm-filter-cb:checked')).map(cb => cb.value);
+            window.betaCRMFilters[colKey] = selected;
+            menu.classList.add('hidden');
+            window.betaCRMPage = 1;
+            window.renderCRMBetaTable(); // regen header (badge "X Selected")
+        };
+        window.clearBetaCRMExcelFilter = function(colKey) {
+            window.betaCRMFilters[colKey] = [];
+            let menu = document.getElementById(`betacrm-filter-menu-${colKey}`);
+            if(menu) menu.classList.add('hidden');
+            window.betaCRMPage = 1;
+            window.renderCRMBetaTable();
+        };
+        window.searchBetaCRMFilterOptions = function(inputElem, colKey) {
+            let q = inputElem.value.toLowerCase();
+            let menu = document.getElementById(`betacrm-filter-menu-${colKey}`);
+            menu.querySelectorAll('label.filter-item').forEach(label => {
+                let txt = label.querySelector('span').innerText.toLowerCase();
+                label.style.display = txt.includes(q) ? "flex" : "none";
+            });
+        };
+
+        window.toggleAllBetaCRMSelection = function(cb) {
+            let filtered = window._betaCRMFiltered();
+            if(cb.checked) filtered.forEach(s => window.betaCRMSelected.add(s.lead.docId));
+            else filtered.forEach(s => window.betaCRMSelected.delete(s.lead.docId));
+            window.renderCRMBetaTable(true); // 🌟 skip header regen - checkbox tak ubah header
+            window._betaUpdateBulkBar();
+        };
+        window.toggleBetaCRMRowSelection = function(docId) {
+            if(window.betaCRMSelected.has(docId)) window.betaCRMSelected.delete(docId);
+            else window.betaCRMSelected.add(docId);
+            window._betaUpdateBulkBar(); // 🌟 TAK render table balik langsung - laju, checkbox visual dah betul dari onclick
+        };
+        window.clearBetaCRMBulkSelection = function() {
+            window.betaCRMSelected.clear();
+            window._betaUpdateBulkBar();
+            window.renderCRMBetaTable(true);
+            window.renderCRMBetaMobileList();
+        };
+        window._betaUpdateBulkBar = function() {
+            let bar = document.getElementById('betacrm-bulk-bar');
+            let cntEl = document.getElementById('betacrm-bulk-count');
+            let n = window.betaCRMSelected.size;
+            if(bar) bar.classList.toggle('hidden', n === 0);
+            if(cntEl) cntEl.innerText = n;
+            let mCnt = document.getElementById('betacrm-mob-cb-count');
+            let mDes = document.getElementById('betacrm-mob-deselect');
+            if(mCnt) { mCnt.classList.toggle('hidden', n === 0); mCnt.innerText = n + ' dipilih'; }
+            if(mDes) mDes.classList.toggle('hidden', n === 0);
+        };
+
+        window.applyBetaCRMBulkEdit = async function() {
+            let ids = [...window.betaCRMSelected];
+            if(ids.length === 0) { window.showToast ? window.showToast('⚠️ Tiada lead dipilih', 'error', 1500) : alert('Tiada lead dipilih'); return; }
+            let statusV = document.getElementById('betacrm-bulk-status')?.value || '';
+            let inviteV = document.getElementById('betacrm-bulk-invite')?.value || '';
+            let attendV = document.getElementById('betacrm-bulk-attend')?.value || '';
+            let staffV = document.getElementById('betacrm-bulk-staff')?.value || '';
+            let updateData = {};
+            if(statusV) updateData["STATUS"] = statusV;
+            if(inviteV) updateData["Invite Status"] = inviteV;
+            if(attendV) updateData["Attend Status"] = attendV;
+            if(staffV) updateData["Staff Name"] = staffV;
+            if(Object.keys(updateData).length === 0) { window.showToast ? window.showToast('⚠️ Pilih sekurang-kurangnya 1 field untuk tukar', 'error', 1800) : alert('Pilih sekurang-kurangnya 1 field'); return; }
+            if(!confirm(`Sahkan tukar ${ids.length} lead dengan: ${JSON.stringify(updateData)}?`)) return;
+            try {
+                let batch = writeBatch(db);
+                ids.forEach(docId => batch.update(doc(db, "crm_leads", docId), updateData));
+                await batch.commit();
+                [crmState.adminData, crmState.data].forEach(arr => {
+                    (arr||[]).forEach(r => { if(ids.includes(r.docId)) Object.assign(r, updateData); });
+                });
+                window.betaCRMSummary = (crmState.adminData||[]).map(leadRow => window._buildBetaSummaryForLead(leadRow));
+                window.clearBetaCRMBulkSelection();
+                window.showToast ? window.showToast(`✅ ${ids.length} lead dikemaskini`, 'success', 1800) : alert('Berjaya dikemaskini');
+            } catch(e) {
+                console.error(e);
+                window.showToast ? window.showToast('❌ Gagal bulk edit: ' + e.message, 'error', 3000) : alert('Gagal: ' + e.message);
+            }
+        };
+
+        // ---------- HEADER: full column, quick-search (restore value - elak fokus hilang) + excel filter button ----------
+        window.generateBetaCRMHeader = function() {
+            let getIcon = colKey => window.betaCRMSortCol === colKey ? (window.betaCRMSortAsc ? '<span style="color:#00e676;">🔼</span>' : '<span style="color:#ff9800;">🔽</span>') : '↕';
+            let quickSearchValues = {};
+            document.querySelectorAll('#betacrm-desktop-wrapper .betacrm-quick-search').forEach(inp => { quickSearchValues[inp.getAttribute('data-col')] = inp.value; });
+
+            let html = `<tr>
+                <th style="width:36px; text-align:center; position:sticky; top:0; z-index:30; background:#1e1e1e;"><input type="checkbox" onclick="window.toggleAllBetaCRMSelection(this)" class="accent-[#00e676] w-4 h-4 cursor-pointer"></th>
+                <th style="width:60px; position:sticky; top:0; z-index:30; background:#1e1e1e;">Edit</th>`;
+            window.betaCRMColumns.forEach(col => {
+                let selectedArr = window.betaCRMFilters[col.key] || [];
+                let btnText = selectedArr.length > 0 ? `<span class="text-[#00e676] font-bold">${selectedArr.length} Selected</span>` : "All";
+                let btnBg = selectedArr.length > 0 ? "bg-[#1a3a2a] border-[#00e676]" : "bg-[#111] border-[#555]";
+                let searchVal = quickSearchValues[col.key] ? ` value="${quickSearchValues[col.key].replace(/"/g,'&quot;')}"` : "";
+                let colSty = col.color ? `color:${col.color};` : "";
+                html += `<th style="${colSty} overflow:visible; position:sticky; top:0; z-index:20; background-color:#1e1e1e; min-width:150px;">
+                    <div class="th-content" style="cursor:pointer;" onclick="window.sortBetaCRM('${col.key}')">${col.label} <span class="sort-icon">${getIcon(col.key)}</span></div>
+                    <input type="text" data-col="${col.key}" oninput="window.renderCRMBetaTable(true)" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="betacrm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
+                    <div class="text-left relative">
+                        <button onclick="window.toggleBetaCRMFilterMenu('${col.key}', this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
+                            ${btnText} <span class="text-[8px] ml-1">▼</span>
+                        </button>
+                        <div id="betacrm-filter-menu-${col.key}" class="hidden absolute left-0 top-full mt-1 w-64 bg-[#2a2a2a] border border-[#555] rounded-lg shadow-2xl max-h-80 overflow-y-auto text-xs font-normal text-left text-white" style="z-index:9999;"></div>
+                    </div>
+                </th>`;
+            });
+            html += `</tr>`;
+            return html;
+        };
+
+        // ---------- FILTER + SORT + SEARCH gabungan (guna col.get() abstraction, sokong quick search per column) ----------
+        window._betaCRMFiltered = function() {
+            let globalSearch = (document.getElementById('betacrm-search')?.value || '').toLowerCase().trim();
+            let result = window.betaCRMSummary.filter(s => {
+                let l = s.lead;
+                if(globalSearch) {
+                    let matchGlobal = String(l["NAME"]||"").toLowerCase().includes(globalSearch) ||
+                           String(l["CONTACT"]||"").toLowerCase().includes(globalSearch) ||
+                           String(l["Lead ID"]||"").toLowerCase().includes(globalSearch);
+                    if(!matchGlobal) return false;
+                }
+                // Excel multi-select filters per column
+                for(let colKey in window.betaCRMFilters) {
+                    let selectedArr = window.betaCRMFilters[colKey];
+                    if(!selectedArr || selectedArr.length === 0) continue;
+                    let col = window.betaCRMColumns.find(c => c.key === colKey);
+                    if(!col) continue;
+                    let val = String(col.get(s) || "").trim() || "-";
+                    if(!selectedArr.includes(val)) return false;
+                }
+                // Per-column quick text search (dari header input, kalau ada)
+                let searchBoxes = document.querySelectorAll('#betacrm-desktop-wrapper .betacrm-quick-search');
+                for(let inp of searchBoxes) {
+                    let q = inp.value.toLowerCase().trim();
+                    if(!q) continue;
+                    let colKey = inp.getAttribute('data-col');
+                    let col = window.betaCRMColumns.find(c => c.key === colKey);
+                    if(!col) continue;
+                    let val = String(col.get(s) || "").toLowerCase();
+                    if(!val.includes(q)) return false;
+                }
+                return true;
+            });
+            // Sort
+            result.sort((a, b) => {
+                let col = window.betaCRMColumns.find(c => c.key === window.betaCRMSortCol);
+                let va = col ? col.get(a) : a.lead["Lead ID"];
+                let vb = col ? col.get(b) : b.lead["Lead ID"];
+                let na = parseFloat(va), nb = parseFloat(vb);
+                let cmp;
+                if(!isNaN(na) && !isNaN(nb) && String(va).trim() !== "" && String(vb).trim() !== "") cmp = na - nb;
+                else cmp = String(va||"").localeCompare(String(vb||""));
+                return window.betaCRMSortAsc ? cmp : -cmp;
+            });
+            return result;
+        };
+
+        // ---------- RENDER TABLE (skipHeaderRegen=true untuk quick-search: elak fokus terputus & laju) ----------
+        window.renderCRMBetaTable = function(skipHeaderRegen) {
+            let tbody = document.getElementById('betacrm-table-body');
+            let thead = document.getElementById('betacrm-table-head');
+            if(thead && !skipHeaderRegen) thead.innerHTML = window.generateBetaCRMHeader();
+            if(!tbody) return;
+            let filtered = window._betaCRMFiltered();
+
+            let totalPages = Math.max(1, Math.ceil(filtered.length / window.betaCRMRowsPerPage));
+            if(window.betaCRMPage > totalPages) window.betaCRMPage = totalPages;
+            let startIdx = (window.betaCRMPage - 1) * window.betaCRMRowsPerPage;
+            let pageItems = filtered.slice(startIdx, startIdx + window.betaCRMRowsPerPage);
+            let colCount = window.betaCRMColumns.length + 2;
+
+            if(pageItems.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="${colCount}" class="text-center p-10 text-gray-500">Tiada lead dijumpai.</td></tr>`;
+            } else {
+                tbody.innerHTML = pageItems.map((s) => {
+                    let realIdx = window.betaCRMSummary.indexOf(s);
+                    let l = s.lead;
+                    let checked = window.betaCRMSelected.has(l.docId) ? 'checked' : '';
+                    let cellsHtml = window.betaCRMColumns.map(col => {
+                        if(col.isStatusPill) {
+                            let isDefault = col.key === 'Invite Status' ? !l["Invite Status"] : (col.key === 'Attend Status' ? !l["Attend Status"] : false);
+                            return `<td>${window._betaStatusPillHtml(col.get(s), col.isStatusPill, isDefault)}</td>`;
+                        }
+                        if(col.isTagsCol) {
+                            let tags = (typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : []);
+                            let tagsHtml = tags.length ? tags.map(t => `<span style="background:#78350f;color:#fbbf24;border:1px solid #f59e0b;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:bold;white-space:nowrap;margin-right:2px;">${t}</span>`).join('') : `<span class="text-gray-600 text-[10px]">-</span>`;
+                            return `<td><div class="scroll-cell" style="display:flex;flex-wrap:wrap;gap:3px;">${tagsHtml}</div></td>`;
+                        }
+                        if(col.isChat) {
+                            let has = col.get(s) === "Ada";
+                            return `<td>${has ? `<span class="text-[#00e676] font-bold">✅ Ada</span>` : `<span class="text-gray-500">-</span>`}</td>`;
+                        }
+                        if(col.isContact) {
+                            let val = col.get(s);
+                            if(!val) return `<td>-</td>`;
+                            let phone = window.normalizePhone60(val);
+                            return `<td><a href="https://wa.me/${phone}" target="_blank" onclick="event.stopPropagation()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-1.5 py-1 rounded text-[11px] no-underline flex items-center gap-1 w-fit font-bold shadow transition">💬 ${val}</a></td>`;
+                        }
+                        let val = col.get(s) || "-";
+                        let cSty = col.key === 'NAME' ? `style="color:#00c6ff; font-weight:bold;"` : (col.key === 'TO FU' ? `style="color:#00e676; font-weight:bold;"` : "");
+                        let wideClass = col.isWide ? 'wide' : '';
+                        return `<td ${cSty}><div class="scroll-cell ${wideClass}">${val}</div></td>`;
+                    }).join('');
+                    return `<tr onclick="window.openCRMBetaModal(${realIdx})" style="cursor:pointer;">
+                        <td onclick="event.stopPropagation()" style="text-align:center;"><input type="checkbox" ${checked} onchange="window.toggleBetaCRMRowSelection('${l.docId}')" class="accent-[#00e676] w-4 h-4 cursor-pointer"></td>
+                        <td onclick="event.stopPropagation()"><button onclick="window.openCRMBetaModal(${realIdx})" class="w-6 h-6 rounded bg-[#3f51b5] text-white flex items-center justify-center text-[10px]">✏️</button></td>
+                        ${cellsHtml}
+                    </tr>`;
+                }).join('');
+            }
+            let pageInfo = document.getElementById('betacrm-page-info');
+            if(pageInfo) pageInfo.innerText = `Page ${window.betaCRMPage} / ${totalPages} (Total: ${filtered.length})`;
+            window._betaUpdateBulkBar();
+        };
+
+        window.prevBetaCRM = function() { if(window.betaCRMPage > 1) { window.betaCRMPage--; window.renderCRMBetaTable(); } };
+        window.nextBetaCRM = function() {
+            let filtered = window._betaCRMFiltered();
+            let totalPages = Math.max(1, Math.ceil(filtered.length / window.betaCRMRowsPerPage));
+            if(window.betaCRMPage < totalPages) { window.betaCRMPage++; window.renderCRMBetaTable(); }
+        };
+
+        // ============================================================
+        // 🌟 MOBILE VIEW (Beta) — gabungan SEMUA filter dari CRM Master + PS Master mobile
+        // (TO FU, Nurturing, Preloved, Hunt CS, Absent, Half, Attend Tak Enroll, KWC, Date Range, Month, Class, Staff, Tags)
+        // ============================================================
+        window.betaCRMMobileSortField = 'LEAD_ID'; // 'LEAD_ID' | 'CLASS_DATE' | 'FU_DATE'
+        window.betaCRMMobileSortAsc = false;
+        window.betaMobileFilterState = 'All'; // single-select: All/TOFU/Nurturing/Preloved/HuntCS/Absent/Half/AttendTakEnroll/KWC
+        window.betaMobileClassFilter = '';
+        window.betaMobileStaffFilter = '';
+        window.betaMobileTagsFilter = [];
+        window.betaDateRangeFilter = { start: '', end: '' };
+        window.betaMonthFilter = '';
+
+        window.toggleBetaCRMMobileSort = function(field) {
+            if(window.betaCRMMobileSortField !== field) { window.betaCRMMobileSortField = field; window.betaCRMMobileSortAsc = false; }
+            else window.betaCRMMobileSortAsc = !window.betaCRMMobileSortAsc;
+            document.querySelectorAll('.betam-sort-btn').forEach(b => b.classList.remove('active-beta-chip'));
+            let btn = document.getElementById('betam-sort-' + field);
+            if(btn) btn.classList.add('active-beta-chip');
+            window.renderCRMBetaMobileList();
+        };
+
+        window.setBetaMobileFilter = function(type) {
+            window.betaMobileFilterState = type;
+            ['All','TOFU','Nurturing','Preloved','HuntCS','Absent','Half','AttendTakEnroll','KWC'].forEach(f => {
+                let btn = document.getElementById(`betam-filter-${f}`);
+                if(!btn) return;
+                btn.className = (f === type)
+                    ? "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition"
+                    : "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition";
+            });
+            window.renderCRMBetaMobileList();
+        };
+
+        // ---------- Dropdown filter: Class / Staff / Tags (popup ringkas, single/multi pilih) ----------
+        window.toggleBetaMobileDropdown = function(kind) {
+            let panel = document.getElementById(`betam-dropdown-${kind}`);
+            if(!panel) return;
+            let isHidden = panel.classList.contains('hidden');
+            document.querySelectorAll('[id^="betam-dropdown-"]').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('[id^="betam-panel-"]').forEach(p => p.classList.add('hidden'));
+            if(!isHidden) return;
+
+            if(kind === 'class') {
+                let opts = [...new Set(window.betaCRMSummary.map(s => s.lead["Class"]).filter(Boolean))].sort();
+                panel.innerHTML = `<div class="p-2"><button onclick="window.betaMobileClassFilter='';window.toggleBetaMobileDropdown('class');window.renderCRMBetaMobileList();" class="w-full text-left text-xs text-gray-400 hover:text-white p-1.5">— Semua Class —</button>${opts.map(c => `<button onclick="window.betaMobileClassFilter='${c.replace(/'/g,"\\'")}';window.toggleBetaMobileDropdown('class');window.renderCRMBetaMobileList();" class="w-full text-left text-xs text-white hover:bg-[#333] p-1.5 rounded">${c}</button>`).join('')}</div>`;
+            } else if(kind === 'staff') {
+                let opts = (typeof adminState !== 'undefined' && adminState.users) ? adminState.users : [];
+                panel.innerHTML = `<div class="p-2"><button onclick="window.betaMobileStaffFilter='';window.toggleBetaMobileDropdown('staff');window.renderCRMBetaMobileList();" class="w-full text-left text-xs text-gray-400 hover:text-white p-1.5">— Semua Staf —</button>${opts.map(u => `<button onclick="window.betaMobileStaffFilter='${u.replace(/'/g,"\\'")}';window.toggleBetaMobileDropdown('staff');window.renderCRMBetaMobileList();" class="w-full text-left text-xs text-white hover:bg-[#333] p-1.5 rounded">${u}</button>`).join('')}</div>`;
+            } else if(kind === 'tags') {
+                let opts = window.collectAllTagsGlobal ? window.collectAllTagsGlobal() : [];
+                panel.innerHTML = `<div class="p-2">${opts.length===0 ? '<div class="text-xs text-gray-500 p-2">Tiada tag master.</div>' : opts.map(t => {
+                    let active = window.betaMobileTagsFilter.includes(t);
+                    return `<button onclick="window._toggleBetaMobileTagFilter('${t.replace(/'/g,"\\'")}')" class="w-full text-left text-xs p-1.5 rounded flex items-center gap-2 ${active ? 'bg-[#f59e0b]/20 text-[#f59e0b]' : 'text-white hover:bg-[#333]'}">${active?'✓ ':''}${t}</button>`;
+                }).join('')}</div>`;
+            }
+            panel.classList.remove('hidden');
+        };
+        window._toggleBetaMobileTagFilter = function(tag) {
+            let idx = window.betaMobileTagsFilter.indexOf(tag);
+            if(idx > -1) window.betaMobileTagsFilter.splice(idx, 1); else window.betaMobileTagsFilter.push(tag);
+            window.toggleBetaMobileDropdown('tags');
+            window.renderCRMBetaMobileList();
+        };
+
+        // ---------- Date Range & Month panel (ikut Last Class Date) ----------
+        window.toggleBetaMobilePanel = function(kind) {
+            let panel = document.getElementById(`betam-panel-${kind}`);
+            if(!panel) return;
+            let isHidden = panel.classList.contains('hidden');
+            document.querySelectorAll('[id^="betam-dropdown-"]').forEach(p => p.classList.add('hidden'));
+            document.querySelectorAll('[id^="betam-panel-"]').forEach(p => p.classList.add('hidden'));
+            if(!isHidden) return;
+            panel.classList.remove('hidden');
+        };
+        window.applyBetaMobileDateRange = function() {
+            window.betaDateRangeFilter.start = document.getElementById('betam-daterange-start')?.value || '';
+            window.betaDateRangeFilter.end = document.getElementById('betam-daterange-end')?.value || '';
+            window.betaMonthFilter = '';
+            document.getElementById('betam-panel-daterange')?.classList.add('hidden');
+            window.renderCRMBetaMobileList();
+        };
+        window.clearBetaMobileDateRange = function() {
+            window.betaDateRangeFilter = { start: '', end: '' };
+            document.getElementById('betam-daterange-start').value = '';
+            document.getElementById('betam-daterange-end').value = '';
+            window.renderCRMBetaMobileList();
+        };
+        window.applyBetaMobileMonth = function() {
+            window.betaMonthFilter = document.getElementById('betam-month')?.value || '';
+            window.betaDateRangeFilter = { start: '', end: '' };
+            document.getElementById('betam-panel-month')?.classList.add('hidden');
+            window.renderCRMBetaMobileList();
+        };
+        window.clearBetaMobileMonth = function() {
+            window.betaMonthFilter = '';
+            document.getElementById('betam-month').value = '';
+            window.renderCRMBetaMobileList();
+        };
+
+        window.clearAllBetaMobileFilters = function() {
+            window.betaMobileFilterState = 'All';
+            window.betaMobileClassFilter = '';
+            window.betaMobileStaffFilter = '';
+            window.betaMobileTagsFilter = [];
+            window.betaDateRangeFilter = { start: '', end: '' };
+            window.betaMonthFilter = '';
+            let sb = document.getElementById('betacrm-search'); if(sb) sb.value = '';
+            window.setBetaMobileFilter('All');
+        };
+
+        // ---------- Filtering gabungan (search + status chips + PS chips + class/staff/tags + date/month) ----------
+        window._betaMobileFiltered = function() {
+            let search = (document.getElementById('betacrm-search')?.value || '').toLowerCase().trim();
+            let result = window.betaCRMSummary.filter(s => {
+                let l = s.lead;
+                let status = String(l["STATUS"]||"").toLowerCase().trim();
+                let lastAtt = s.lastClassRow ? String(s.lastClassRow["Attendance"]||"").toLowerCase().trim() : "";
+
+                if(search && !String(l["NAME"]||"").toLowerCase().includes(search) && !String(l["CONTACT"]||"").toLowerCase().includes(search) && !String(l["Lead ID"]||"").toLowerCase().includes(search)) return false;
+
+                let f = window.betaMobileFilterState;
+                if(f === 'TOFU' && !["-","in progress","new",""].includes(status)) return false;
+                if(f === 'Nurturing' && status !== 'nurturing') return false;
+                if(f === 'Preloved' && status !== 'preloved leads by bl hadi') return false;
+                if(f === 'HuntCS' && status !== 'hunt cs') return false;
+                if(f === 'Absent' && lastAtt !== 'absent') return false;
+                if(f === 'Half' && lastAtt !== 'half') return false;
+                if(f === 'AttendTakEnroll' && !(lastAtt === 'attended' && s.enrollRows.length === 0)) return false;
+                if(f === 'KWC') {
+                    let kwc30 = (() => { let d = new Date(); d.setDate(d.getDate()-30); return d.toISOString().split('T')[0]; })();
+                    let dateNorm = s.lastClassRow ? normalizeDateStr(s.lastClassRow["Date"]) : "";
+                    if(!(lastAtt === 'attended' && dateNorm && dateNorm <= kwc30)) return false;
+                }
+
+                if(window.betaMobileClassFilter && l["Class"] !== window.betaMobileClassFilter) return false;
+                if(window.betaMobileStaffFilter && l["Staff Name"] !== window.betaMobileStaffFilter) return false;
+                if(window.betaMobileTagsFilter.length > 0) {
+                    let tags = typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : [];
+                    if(!window.betaMobileTagsFilter.some(t => tags.includes(t))) return false;
+                }
+
+                let classDateNorm = s.lastClassRow ? normalizeDateStr(s.lastClassRow["Date"]) : "";
+                if(window.betaDateRangeFilter.start || window.betaDateRangeFilter.end) {
+                    if(!classDateNorm) return false;
+                    if(window.betaDateRangeFilter.start && classDateNorm < window.betaDateRangeFilter.start) return false;
+                    if(window.betaDateRangeFilter.end && classDateNorm > window.betaDateRangeFilter.end) return false;
+                }
+                if(window.betaMonthFilter) {
+                    if(!classDateNorm || classDateNorm.substring(0,7) !== window.betaMonthFilter) return false;
+                }
+                return true;
+            });
+
+            result.sort((a, b) => {
+                let av, bv;
+                if(window.betaCRMMobileSortField === 'CLASS_DATE') { av = (a.lastClassRow && normalizeDateStr(a.lastClassRow["Date"])) || ""; bv = (b.lastClassRow && normalizeDateStr(b.lastClassRow["Date"])) || ""; }
+                else if(window.betaCRMMobileSortField === 'FU_DATE') { av = normalizeDateStr(a.lead["FOLLOW UP (DATE)"]) || ""; bv = normalizeDateStr(b.lead["FOLLOW UP (DATE)"]) || ""; }
+                else { av = a.lead["Lead ID"]||""; bv = b.lead["Lead ID"]||""; }
+                let cmp = String(av).localeCompare(String(bv));
+                return window.betaCRMMobileSortAsc ? cmp : -cmp;
+            });
+            return result;
+        };
+
+        // ---------- Bulk Edit (button sentiasa nampak — TAK PERLU tick checkbox dulu, default ikut filter semasa) ----------
+        window.openBetaCRMBulkEdit = function() {
+            let filtered = window._betaMobileFiltered ? window._betaMobileFiltered() : window._betaCRMFiltered();
+            window.betaCRMSelected = new Set(filtered.map(s => s.lead.docId));
+            window._betaUpdateBulkBar();
+            document.getElementById('betacrm-bulk-bar')?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            window.showToast ? window.showToast(`🛠️ ${filtered.length} lead (ikut filter semasa) sedia untuk Bulk Edit`, 'success', 2000) : null;
+        };
+
+        window.renderCRMBetaMobileList = function() {
+            let list = document.getElementById('betacrm-mobile-list');
+            if(!list) return;
+            let filtered = window._betaMobileFiltered();
+            if(filtered.length === 0) {
+                list.innerHTML = `<div class="text-center text-gray-500 text-sm p-8">Tiada lead dijumpai.</div>`;
+                return;
+            }
+            list.innerHTML = filtered.map(s => {
+                let realIdx = window.betaCRMSummary.indexOf(s);
+                let l = s.lead;
+                let initial = (l["NAME"]||"?").trim().charAt(0).toUpperCase();
+                let lastClassTxt = s.lastClassRow ? `${s.lastClassRow["Class"]||"-"} · ${s.lastClassRow["Date"]||"-"}` : "-";
+                let lastInvoiceTxt = s.lastInvoiceRow ? `RM${s.lastInvoiceRow["Invoice Amount"]||"0"}` : "-";
+                let checked = window.betaCRMSelected.has(l.docId) ? 'checked' : '';
+                let tags = typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : [];
+                let tagsHtml = tags.slice(0,3).map(t => `<span class="bg-[#f59e0b]/20 text-[#f59e0b] text-[9px] font-bold px-1.5 py-0.5 rounded-full">${t}</span>`).join('');
+                return `<div id="betam-row-${l.docId}" class="border-b border-[#262626] p-3 hover:bg-[#1a1a1a]">
+                    <div class="flex items-center gap-2.5">
+                        <input type="checkbox" onclick="event.stopPropagation(); window.toggleBetaCRMRowSelection('${l.docId}')" ${checked} class="accent-[#00e676] w-4 h-4 cursor-pointer shrink-0">
+                        <div onclick="window.openCRMBetaModal(${realIdx})" class="flex items-center gap-2.5 flex-1 min-w-0 cursor-pointer">
+                        <div class="w-9 h-9 rounded-full bg-[#00c6ff] text-black font-bold flex items-center justify-center shrink-0 text-sm">${initial}</div>
+                        <div class="flex-1 min-w-0">
+                            <div class="flex items-center justify-between gap-2">
+                                <span class="font-bold text-sm truncate">${l["NAME"]||"-"}</span>
+                                <span class="text-[9px] bg-[#333] text-gray-300 px-1.5 py-0.5 rounded-full shrink-0">${l["Lead ID"]||"-"}</span>
+                            </div>
+                            <div class="text-[10px] text-gray-500">${l["CONTACT"]||"-"} · ${l["Staff Name"]||"-"}</div>
+                        </div>
+                        </div>
+                    </div>
+                    <div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer">
+                    <div class="flex flex-wrap items-center gap-1.5 mt-2">
+                        ${window._betaStatusPillHtml(l["STATUS"], 'status')}
+                        ${window._betaStatusPillHtml(s.effectiveInviteStatus, 'inviteStatus', !l["Invite Status"])}
+                        ${window._betaStatusPillHtml(s.effectiveAttendStatus, 'attendStatus', !l["Attend Status"])}
+                        ${tagsHtml}
+                    </div>
+                    <div class="flex items-center justify-between mt-2 text-[10px] text-gray-500">
+                        <span>📚 ${lastClassTxt} (${s.totalAttended}×)</span>
+                        <span>🧾 ${lastInvoiceTxt}</span>
+                    </div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        // ============================================================
+        // 🧪 MODAL CRM (BETA) — open / populate / tabs / tags / timeline / save
+        // ============================================================
+        window._betaCurrentIdx = null;
+
+        window.switchBetaTab = function(name) {
+            ['timeline','class','invoice','info'].forEach(t => {
+                document.getElementById('betacrm-tab-'+t)?.classList.add('hidden');
+                document.getElementById('betacrm-tabbtn-'+t)?.classList.remove('active');
+            });
+            document.getElementById('betacrm-tab-'+name)?.classList.remove('hidden');
+            document.getElementById('betacrm-tabbtn-'+name)?.classList.add('active');
+        };
+
+        window._betaSyncAvatarInitial = function() {
+            let nameVal = document.getElementById('betacrm-name')?.value || "?";
+            let av = document.getElementById('betacrm-avatar');
+            if(av) av.innerText = nameVal.trim().charAt(0).toUpperCase() || "?";
+        };
+
+        window._betaOpenWA = function() {
+            let contact = window.normalizePhone60(document.getElementById('betacrm-contact')?.value || "");
+            if(!contact) { window.showToast ? window.showToast('⚠️ Tiada nombor contact', 'error', 1500) : alert('Tiada nombor contact'); return; }
+            window.open(`https://wa.me/${contact}`, '_blank');
+        };
+
+        window.betaCRMCopyInviteDetails = function() {
+            let name = document.getElementById('betacrm-name')?.value || "-";
+            let contact = document.getElementById('betacrm-contact')?.value || "-";
+            let cls = document.getElementById('betacrm-class')?.value || "-";
+            let classDT = document.getElementById('betacrm-class-datetime')?.value || "-";
+            let txt = `Name: ${name}\nContact: ${contact}\nClass: ${cls}\nClass Date & Time: ${classDT}`;
+            navigator.clipboard.writeText(txt).then(() => {
+                window.showToast ? window.showToast('📋 Invite details disalin!', 'success', 1500) : alert('Invite details disalin!');
+            }).catch(() => alert('Gagal salin. Sila salin manual.'));
+        };
+
+        window._betaToggleRawHistory = function() {
+            document.getElementById('betacrm-raw-history-box').classList.toggle('hidden');
+        };
+        window._betaToggleRawChat = function() {
+            document.getElementById('betacrm-chat-raw').classList.toggle('hidden');
+        };
+
+        // ---------- Isi semua <select> Status/Invite/Attend ikut Status Manager ----------
+        window.renderAllBetaStatusSelects = function() {
+            if(!window.statusConfig) return;
+            window.fillSelectFromConfig('betacrm-status', window.statusConfig.status);
+            window.fillSelectFromConfig('betacrm-invite-status', window.statusConfig.inviteStatus);
+            window.fillSelectFromConfig('betacrm-attend-status', window.statusConfig.attendStatus);
+            // Bulk-edit bar dropdowns (biar ada opsyen "- Tukar X -" kekal sebagai default kosong)
+            let fillBulk = (id, opts, placeholder) => {
+                let el = document.getElementById(id);
+                if(!el) return;
+                el.innerHTML = `<option value="">${placeholder}</option>` + (opts||[]).map(o => `<option value="${o.label.replace(/"/g,'&quot;')}">${o.label}</option>`).join('');
+            };
+            fillBulk('betacrm-bulk-status', window.statusConfig.status, '- Tukar Status -');
+            fillBulk('betacrm-bulk-invite', window.statusConfig.inviteStatus, '- Tukar Invite Status -');
+            fillBulk('betacrm-bulk-attend', window.statusConfig.attendStatus, '- Tukar Attend Status -');
+        };
+
+        // ---------- TIMELINE: parse History FU (text, 1 baris = 1 entry) jadi kad visual ----------
+        window._betaTimelineIcon = function(line) {
+            let l = line.toLowerCase();
+            if(l.includes('added tags') || l.includes('removed tags')) return { icon:'🏷️', color:'#f59e0b' };
+            if(l.includes('class attended') || l.includes('attendance')) return { icon:'✅', color:'#00e676' };
+            if(l.includes('invoice')) return { icon:'🧾', color:'#ffca28' };
+            if(l.includes('status')) return { icon:'🔖', color:'#60a5fa' };
+            if(l.includes('call')) return { icon:'📞', color:'#60a5fa' };
+            return { icon:'💬', color:'#a78bfa' };
+        };
+        window.renderBetaTimelineList = function() {
+            let box = document.getElementById('betacrm-timeline-list');
+            if(!box) return;
+            let raw = document.getElementById('betacrm-history')?.value || "";
+            let lines = raw.split('\n').map(l => l.trim()).filter(Boolean);
+            if(lines.length === 0) { box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada riwayat lagi.</div>`; return; }
+            box.innerHTML = lines.map(line => {
+                let m = line.match(/^\[([^\]]+)\]\s*(.*)$/);
+                let ts = m ? m[1] : "";
+                let body = m ? m[2] : line;
+                let { icon, color } = window._betaTimelineIcon(line);
+                return `<div class="flex gap-3 items-start bg-[#1a1a1a] border border-[#262626] rounded-lg p-3">
+                    <span class="text-lg shrink-0">${icon}</span>
+                    <div class="flex-1">
+                        <div class="flex items-center justify-between flex-wrap gap-1">
+                            <span class="text-xs font-bold" style="color:${color}">${body}</span>
+                            <span class="text-[10px] text-gray-500 shrink-0">${ts}</span>
+                        </div>
+                    </div>
+                </div>`;
+            }).join('');
+        };
+
+        // ---------- CLASS HISTORY (PS Master rows) ----------
+        window._betaAttendColor = function(att) {
+            att = String(att||"").toLowerCase().trim();
+            if(att === 'attended') return { bg:'rgba(0,230,118,0.2)', fg:'#00e676' };
+            if(att === 'half') return { bg:'rgba(255,152,0,0.2)', fg:'#ff9800' };
+            if(att === 'absent') return { bg:'rgba(239,68,68,0.2)', fg:'#ef4444' };
+            return { bg:'#333', fg:'#999' };
+        };
+        window.renderBetaClassList = function(summary) {
+            let box = document.getElementById('betacrm-class-list');
+            if(!box) return;
+            if(!summary || summary.psRows.length === 0) { box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada rekod class attendance.</div>`; return; }
+            box.innerHTML = summary.psRows.map(r => {
+                let c = window._betaAttendColor(r["Attendance"]);
+                return `<div class="flex items-center justify-between bg-[#1a1a1a] border border-[#262626] rounded-lg p-3">
+                    <div><span class="bg-[#00c6ff]/20 text-[#00c6ff] text-[10px] font-bold px-2 py-0.5 rounded mr-2">${r["Class"]||"-"}</span><span class="text-sm font-bold">${r["Date"]||"-"} · ${r["Time"]||"-"}</span></div>
+                    <span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:${c.bg}; color:${c.fg};">${r["Attendance"]||"-"}</span>
+                </div>`;
+            }).join('');
+        };
+
+        // ---------- INVOICE HISTORY (PS Enroll rows) ----------
+        window.renderBetaInvoiceList = function(summary) {
+            let box = document.getElementById('betacrm-invoice-list');
+            if(!box) return;
+            if(!summary || summary.enrollRows.length === 0) { box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada rekod invois.</div>`; return; }
+            box.innerHTML = summary.enrollRows.map(r => {
+                let status = String(r["Collection Status"]||"-");
+                let sColor = status.toLowerCase() === 'paid' ? { bg:'rgba(0,230,118,0.2)', fg:'#00e676' } : { bg:'rgba(255,152,0,0.2)', fg:'#ff9800' };
+                return `<div class="bg-[#1a1a1a] border border-[#262626] rounded-lg p-3">
+                    <div class="flex items-center justify-between"><span class="text-sm font-bold">${r["Invoice Number"]||"-"}</span><span class="text-[10px] font-bold px-2 py-1 rounded-full" style="background:${sColor.bg}; color:${sColor.fg};">${status}</span></div>
+                    <div class="flex items-center justify-between text-xs text-gray-400 mt-1"><span>${r["Invoice Date"]||"-"} · ${r["Invoice Item"]||"-"}</span><span class="text-[#ffca28] font-bold">RM${r["Invoice Amount"]||"0"}</span></div>
+                </div>`;
+            }).join('');
+        };
+
+        // ---------- CHAT (ALL CHAT JSON) ----------
+        window.renderBetaChatList = function(rawChat) {
+            let box = document.getElementById('betacrm-chat-list');
+            let rawBox = document.getElementById('betacrm-chat-raw');
+            if(rawBox) rawBox.value = rawChat || "";
+            if(!box) return;
+            if(!rawChat || !rawChat.trim()) { box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada chat direkod.</div>`; return; }
+            try {
+                let arr = JSON.parse(rawChat);
+                if(!Array.isArray(arr)) throw new Error('bukan array');
+                box.innerHTML = arr.map(m => {
+                    let fromStaff = m.from === 'staff' || m.sender === 'staff' || m.role === 'staff';
+                    let sideCls = fromStaff ? 'chat-right' : 'chat-left';
+                    let who = m.name || m.sender || (fromStaff ? 'Staff' : 'Lead');
+                    let time = m.time || m.timestamp || '';
+                    let text = m.text || m.message || '';
+                    return `<div class="chat-bubble ${sideCls}"><div class="text-[9px] text-gray-500 mb-1">${who} · ${time}</div>${text}</div>`;
+                }).join('');
+            } catch(e) {
+                box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Format chat tak dikenali. Guna "Lihat/Edit Raw JSON" di bawah.</div>`;
+            }
+        };
+
+        // ---------- TAGS (refer Lead ID / crm_leads.Tags terus - bukan PS/Enroll berasingan) ----------
+        window._renderBetaTagPicker = function() {
+            let picker = document.getElementById('betacrm-tag-picker');
+            if(!picker) return;
+            let search = (document.getElementById('betacrm-tag-input')?.value || '').toLowerCase().trim();
+            let allTags = window.collectAllTagsGlobal ? window.collectAllTagsGlobal() : [];
+            let hidden = document.getElementById('betacrm-tags-value');
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            current.forEach(t => { if(!allTags.includes(t)) allTags.push(t); });
+            allTags.sort();
+            if(search) allTags = allTags.filter(t => t.toLowerCase().includes(search));
+            picker.innerHTML = allTags.length === 0 ? '' : allTags.map(t => {
+                let isSel = current.includes(t);
+                return `<button type="button" onclick="window._toggleBetaTag('${t.replace(/'/g,"\\'")}')" style="padding:3px 10px;border-radius:999px;font-size:10px;font-weight:bold;cursor:pointer;border:1.5px solid #f59e0b;transition:all 0.15s;${isSel ? 'background:#f59e0b;color:#000;' : 'background:#1a1000;color:#f59e0b;opacity:0.7;'}">${t}</button>`;
+            }).join('');
+        };
+        window._toggleBetaTag = function(tag) {
+            let hidden = document.getElementById('betacrm-tags-value');
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            let idx = current.indexOf(tag);
+            if(idx > -1) current.splice(idx, 1); else current.push(tag);
+            window._renderCRMSectionTags('betacrm-tags-container', 'betacrm-tags-value', current);
+            window._renderBetaTagPicker();
+        };
+        window._addBetaTagAndSave = function() {
+            let inp = document.getElementById('betacrm-tag-input');
+            if(!inp) return;
+            let val = inp.value.trim().replace(/,/g,'');
+            if(!val) return;
+            let hidden = document.getElementById('betacrm-tags-value');
+            let current = (hidden?.value || '').split(',').map(t=>t.trim()).filter(Boolean);
+            if(!current.includes(val)) current.push(val);
+            window._renderCRMSectionTags('betacrm-tags-container', 'betacrm-tags-value', current);
+            inp.value = '';
+            window._renderBetaTagPicker();
+            inp.focus();
+        };
+
+        // ---------- OPEN MODAL: isi semua field dari data BENAR ----------
+        window.openCRMBetaModal = function(idx) {
+            let summary = window.betaCRMSummary[idx];
+            if(!summary) return;
+            window._betaCurrentIdx = idx;
+            let l = summary.lead;
+            let setVal = (id, val) => { let el = document.getElementById(id); if(el) el.value = val || ""; };
+
+            document.getElementById('betacrm-docid').value = l.docId || "";
+            setVal('betacrm-name', l["NAME"]);
+            setVal('betacrm-contact', l["CONTACT"]);
+            document.getElementById('betacrm-leadid-badge').innerText = l["Lead ID"] || "-";
+            window._betaSyncAvatarInitial();
+
+            // Status Manager selects (isi dulu options, baru set value)
+            window.renderAllBetaStatusSelects();
+            document.getElementById('betacrm-status').value = l["STATUS"] || "";
+            // 🌟 Default cerdas: Invite Status ikut Status, Attend Status ikut rekod Attendance PS Master terkini —
+            // TAPI kalau field ni dah pernah di-set manual & disimpan sebelum ni, guna value tersimpan tu (bukan default).
+            document.getElementById('betacrm-invite-status').value = summary.effectiveInviteStatus || "";
+            document.getElementById('betacrm-attend-status').value = summary.effectiveAttendStatus || "";
+            window.paintStatusSelectLive('betacrm-status');
+            window.paintStatusSelectLive('betacrm-invite-status');
+            window.paintStatusSelectLive('betacrm-attend-status');
+            window._betaInviteManuallyChanged = false; // reset flag setiap kali modal dibuka semula
+            window.calcBetaInviteProgress();
+
+            // Reassign staff dropdown
+            let currentStaff = l["Staff Name"] || "-";
+            document.getElementById('betacrm-staff-display').innerText = currentStaff;
+            let staffSel = document.getElementById('betacrm-edit-staff');
+            if(staffSel) {
+                let html = `<option value="">- Kekalkan Staf (${currentStaff}) -</option>`;
+                if(typeof adminState !== 'undefined' && adminState.users && adminState.users.length > 0) {
+                    adminState.users.forEach(u => { html += `<option value="${u}">${u}</option>`; });
+                }
+                staffSel.innerHTML = html;
+            }
+
+            // Tags (refer Lead ID terus)
+            let tags = window.getRecordTags(l);
+            window._renderCRMSectionTags('betacrm-tags-container', 'betacrm-tags-value', tags);
+            document.getElementById('betacrm-tag-input').value = "";
+            window._renderBetaTagPicker();
+
+            // Quick stats
+            document.getElementById('betacrm-stat-attended').innerText = summary.totalAttended + '×';
+            document.getElementById('betacrm-stat-lastclass').innerText = summary.lastClassRow ? `Last: ${summary.lastClassRow["Class"]||"-"} · ${summary.lastClassRow["Date"]||"-"}` : "-";
+            document.getElementById('betacrm-stat-invoice').innerText = 'RM' + summary.totalInvoiceAmount.toLocaleString();
+            document.getElementById('betacrm-stat-invoicecount').innerText = summary.enrollRows.length + ' invois';
+            let inboundParsed = window.parseTimestampMasuk ? window.parseTimestampMasuk(l["Timestamp Masuk"]) : { date: l["LEADS INBOUND"] || "-" };
+            document.getElementById('betacrm-stat-inbound').innerText = l["LEADS INBOUND"] || inboundParsed.date || "-";
+            document.getElementById('betacrm-stat-source').innerText = 'Source: ' + (l["SOURCE"] || "-");
+            let nextFuD = l["FOLLOW UP (DATE)"] || "";
+            let nextFuT = l["FOLLOW UP (TIME)"] || "";
+            document.getElementById('betacrm-stat-nextfu').innerText = nextFuD ? `${nextFuD} ${nextFuT}` : "-";
+
+            // Timeline / Log FU form
+            setVal('betacrm-tofu', "");
+            document.getElementById('betacrm-fu-date').value = "";
+            document.getElementById('betacrm-fu-time').value = "";
+            setVal('betacrm-outcome', "");
+            setVal('betacrm-history', l["HISTORY FU"] || "");
+            document.getElementById('betacrm-raw-history-box').classList.add('hidden');
+            window.updatePreviewFUBeta();
+            window.renderBetaTimelineList();
+
+            // Class & Invoice
+            window.renderBetaClassList(summary);
+            window.renderBetaInvoiceList(summary);
+
+            // Info Lanjut
+            setVal('betacrm-source', l["SOURCE"]);
+            setVal('betacrm-state', l["STATE"]);
+            setVal('betacrm-umur', l["UMUR"]);
+            setVal('betacrm-occupation', l["OCCUPATION"]);
+            setVal('betacrm-email', l["EMAIL"]);
+            document.getElementById('betacrm-first-time').value = l["FIRST TIME BELAJAR"] || "";
+            setVal('betacrm-reason-learn', l["REASON LEARN"]);
+            setVal('betacrm-concern-ps', l["CONCERN PS"]);
+            setVal('betacrm-class', l["Class"]);
+            setVal('betacrm-class-datetime', l["Class Date & Time"]);
+            setVal('betacrm-parents', l["Parents Detail"]);
+            window.calcBetaInviteProgress();
+
+            // Chat
+            window.renderBetaChatList(l["ALL CHAT (JSON)"] || "");
+
+            window.switchBetaTab('timeline');
+            document.getElementById('modal-crm-beta').style.display = 'flex';
+        };
+
+        // ---------- % KELENGKAPAN DATA (gradient progress bar) ----------
+        // Logic: 100% kalau SEMUA 10 field bawah ada value, ATAU Invite Status == "Invite".
+        window.calcBetaInviteProgress = function() {
+            let fieldIds = ['betacrm-source','betacrm-state','betacrm-umur','betacrm-occupation','betacrm-email','betacrm-first-time','betacrm-reason-learn','betacrm-concern-ps','betacrm-class','betacrm-class-datetime'];
+            let filled = fieldIds.filter(id => {
+                let el = document.getElementById(id);
+                if(!el) return false;
+                let v = (el.value || "").trim();
+                return v !== "" && v !== "-";
+            }).length;
+            let inviteEl = document.getElementById('betacrm-invite-status');
+            let percent = (inviteEl && inviteEl.value === 'Invite') ? 100 : Math.round((filled / fieldIds.length) * 100);
+            let bar = document.getElementById('betacrm-progress-bar');
+            let label = document.getElementById('betacrm-progress-label');
+            if(bar) bar.style.width = percent + '%';
+            if(label) { label.innerText = percent + '%'; label.style.color = percent === 100 ? '#00e676' : (percent >= 50 ? '#f59e0b' : '#ef4444'); }
+        };
+
+        // ---------- DEFAULT LOGIC: Invite Status ikut Status (dipanggil bila Status ditukar dalam modal) ----------
+        window._betaApplyStatusDefaults = function() {
+            if(window._betaInviteManuallyChanged) return; // staf dah override manual, jangan timpa
+            let statusVal = document.getElementById('betacrm-status')?.value || '';
+            let defaultInvite = (statusVal.trim().toLowerCase() === 'invite') ? 'Invite' : 'In Progress';
+            let inviteSel = document.getElementById('betacrm-invite-status');
+            if(inviteSel && [...inviteSel.options].some(o => o.value === defaultInvite)) {
+                inviteSel.value = defaultInvite;
+                window.paintStatusSelectLive('betacrm-invite-status');
+                window.calcBetaInviteProgress();
+            }
+        };
+
+        window.closeCRMBetaModal = function() {
+            document.getElementById('modal-crm-beta').style.display = 'none';
+        };
+
+        // ---------- SAVE ----------
+        window.saveCRMBetaData = async function() {
+            let docId = document.getElementById('betacrm-docid').value;
+            if(!docId) { window.showToast ? window.showToast('❌ Tiada Lead dipilih', 'error', 1500) : alert('Tiada Lead dipilih'); return; }
+            let btn = document.getElementById('btn-save-crm-beta');
+            if(btn) { btn.disabled = true; btn.innerText = "⏳ Menyimpan..."; }
+
+            const getSafeVal = (id) => { let el = document.getElementById(id); return el ? el.value : ""; };
+
+            let newStaff = getSafeVal('betacrm-edit-staff');
+            let currentStaffDisplay = document.getElementById('betacrm-staff-display')?.innerText || "";
+            let finalStaff = newStaff || currentStaffDisplay;
+
+            let updateData = {
+                "NAME": getSafeVal('betacrm-name'),
+                "CONTACT": getSafeVal('betacrm-contact'),
+                "STATUS": getSafeVal('betacrm-status'),
+                "Invite Status": getSafeVal('betacrm-invite-status'),
+                "Attend Status": getSafeVal('betacrm-attend-status'),
+                "Staff Name": finalStaff,
+                "TO FU": getSafeVal('betacrm-tofu'),
+                "FOLLOW UP (DATE)": getSafeVal('betacrm-fu-date'),
+                "FOLLOW UP (TIME)": getSafeVal('betacrm-fu-time'),
+                "OUTCOME": getSafeVal('betacrm-outcome'),
+                "HISTORY FU": getSafeVal('betacrm-history'),
+                "SOURCE": getSafeVal('betacrm-source'),
+                "STATE": getSafeVal('betacrm-state'),
+                "UMUR": getSafeVal('betacrm-umur'),
+                "OCCUPATION": getSafeVal('betacrm-occupation'),
+                "EMAIL": getSafeVal('betacrm-email'),
+                "FIRST TIME BELAJAR": getSafeVal('betacrm-first-time'),
+                "REASON LEARN": getSafeVal('betacrm-reason-learn'),
+                "CONCERN PS": getSafeVal('betacrm-concern-ps'),
+                "Class": getSafeVal('betacrm-class'),
+                "Class Date & Time": getSafeVal('betacrm-class-datetime'),
+                "Parents Detail": getSafeVal('betacrm-parents'),
+                "Tags": (getSafeVal('betacrm-tags-value') || '').split(',').map(t=>t.trim()).filter(Boolean),
+                "LAST CONTACTED (DATE)": new Date().toISOString().split('T')[0],
+                "LAST CONTACTED (TIME)": new Date().toLocaleTimeString('en-US', { hour12:false, hour:'2-digit', minute:'2-digit' })
+            };
+
+            let rawChat = document.getElementById('betacrm-chat-raw');
+            if(rawChat && !rawChat.classList.contains('hidden')) updateData["ALL CHAT (JSON)"] = rawChat.value;
+
+            try {
+                await updateDoc(doc(db, "crm_leads", docId), updateData);
+                // Update cache tempatan supaya table terus reflect tanpa refresh penuh
+                [crmState.adminData, crmState.data].forEach(arr => {
+                    let i = (arr||[]).findIndex(r => r.docId === docId);
+                    if(i > -1) Object.assign(arr[i], updateData);
+                });
+                if(window._betaCurrentIdx !== null && window.betaCRMSummary[window._betaCurrentIdx]) {
+                    window.betaCRMSummary[window._betaCurrentIdx] = window._buildBetaSummaryForLead(
+                        [crmState.adminData||[], crmState.data||[]].flat().find(r => r.docId === docId) || window.betaCRMSummary[window._betaCurrentIdx].lead
+                    );
+                }
+                window.renderCRMBetaTable();
+                if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
+                window.showToast ? window.showToast('✅ Lead disimpan!', 'success', 1500) : alert('Lead disimpan!');
+                window.closeCRMBetaModal();
+            } catch(e) {
+                console.error("Gagal simpan CRM Beta:", e);
+                window.showToast ? window.showToast('❌ Gagal simpan: ' + e.message, 'error', 3000) : alert('Gagal simpan: ' + e.message);
+            } finally {
+                if(btn) { btn.disabled = false; btn.innerText = "💾 SAVE LEAD"; }
+            }
+        };
+
         let teamCrmPage = 1, adminCrmPage = 1, rowsPerPage = 30;
         let teamFilters = {}, adminFilters = {}, teamSortCol = "Lead ID", teamSortAsc = false, adminSortCol = "Lead ID", adminSortAsc = false;
 
@@ -5129,6 +6827,28 @@
         // ==========================================
         // 🌟 FUNGSI BULK ADD LEAD (PASTE) CRM MASTER
         // ==========================================
+        // 🌟 Wrapper Beta: fungsi asal prosesBulkPasteCRM() baca ID tetap (bulk-paste-*-crm) - jadi kita
+        // sementara "pinjam" nilai dari kotak Beta, panggil fungsi asal, lepas tu refresh Beta punya data.
+        window.prosesBulkPasteCRMBeta = async function() {
+            let staffOrig = document.getElementById('bulk-paste-staff-crm');
+            let dataOrig = document.getElementById('bulk-paste-data-crm');
+            let staffBeta = document.getElementById('bulk-paste-staff-beta');
+            let dataBeta = document.getElementById('bulk-paste-data-beta');
+            if(!staffOrig || !dataOrig || !staffBeta || !dataBeta) { alert('❌ Ralat: komponen Bulk Paste tak lengkap.'); return; }
+
+            let savedStaffVal = staffOrig.value, savedDataVal = dataOrig.value;
+            staffOrig.value = staffBeta.value;
+            dataOrig.value = dataBeta.value;
+            try {
+                await window.prosesBulkPasteCRM();
+                dataBeta.value = ""; // cuci kotak Beta lepas berjaya
+                window.loadCRMBetaData(true);
+            } finally {
+                staffOrig.value = savedStaffVal;
+                dataOrig.value = savedDataVal;
+            }
+        };
+
         window.prosesBulkPasteCRM = async function() {
             let staffSel = document.getElementById('bulk-paste-staff-crm');
             let staffName = staffSel ? staffSel.value : "";
@@ -5420,7 +7140,7 @@
                     let isMe = false;
                       
                       // 🌟 MAGIK BARU: Kalau ada nama Kunkwan atau Staf, jadikan dia Hijau (isMe = true)
-                      if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow === "me") {
+                      if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow.includes("Yana AS") || senderLow === "me") {
                           isMe = true;
                       } else if (staffNameStr && senderLow.includes(staffNameStr)) {
                           isMe = true;
@@ -5556,6 +7276,29 @@
             }
         };
 
+        // 🌟 Sama macam updatePreviewFU tapi untuk modal CRM (Beta) - id prefix betacrm-*
+        window.updatePreviewFUBeta = function() {
+            let actionEl = document.getElementById('betacrm-tofu');
+            let dEl = document.getElementById('betacrm-fu-date');
+            let tEl = document.getElementById('betacrm-fu-time');
+            let outcomeEl = document.getElementById('betacrm-outcome');
+            let previewEl = document.getElementById('betacrm-preview-fu');
+
+            let action = actionEl ? actionEl.value : "-";
+            let d = dEl ? dEl.value : "";
+            let t = tEl ? tEl.value : "";
+            let outcome = outcomeEl ? outcomeEl.value.trim() : "";
+
+            if(!d) d = new Date().toISOString().split('T')[0];
+            if(!t) t = "00:00";
+
+            if(previewEl) {
+                let txt = `[${d} ${t}] Action: ${action}`;
+                if(outcome) txt += ` | Outcome: ${outcome}`;
+                previewEl.value = txt;
+            }
+        };
+
         window.copyPreview = function() {
             let copyText = document.getElementById("crm-preview-fu");
             
@@ -5576,6 +7319,7 @@
         window.setCurrentDateTime = function(prefix) {
             let dateId, timeId, previewFn;
             if(prefix === 'crm') { dateId = 'crm-fu-date'; timeId = 'crm-fu-time'; previewFn = window.updatePreviewFU; }
+            else if(prefix === 'betacrm') { dateId = 'betacrm-fu-date'; timeId = 'betacrm-fu-time'; previewFn = window.updatePreviewFUBeta; }
             else if(prefix === 'ps') { dateId = 'ps-fudate'; timeId = 'ps-futime'; previewFn = window.updatePSPreview; }
             else if(prefix === 'ps-bulk') { dateId = 'ps-bulk-fudate'; timeId = 'ps-bulk-futime'; previewFn = null; }
             else if(prefix === 'enroll') { dateId = 'enroll-fudate'; timeId = 'enroll-futime'; previewFn = window.updateEnrollPreview; }
@@ -5607,6 +7351,7 @@
         window.appendPreviewToHistory = function(prefix) {
             let previewId, historyId;
             if(prefix === 'crm') { previewId = 'crm-preview-fu'; historyId = 'crm-history'; }
+            else if(prefix === 'betacrm') { previewId = 'betacrm-preview-fu'; historyId = 'betacrm-history'; }
             else if(prefix === 'ps') { previewId = 'ps-preview-fu'; historyId = 'ps-rem2'; }
             else if(prefix === 'enroll') { previewId = 'enroll-preview-fu'; historyId = 'enroll-history'; }
             else return;
@@ -5632,6 +7377,7 @@
             // 🌟 FIX: Clear Outcome lepas berjaya append
             let outcomeId;
             if (prefix === 'crm') outcomeId = 'crm-outcome';
+            else if (prefix === 'betacrm') outcomeId = 'betacrm-outcome';
             else if (prefix === 'ps') outcomeId = 'ps-outcome';
             else if (prefix === 'enroll') outcomeId = 'enroll-outcome';
             
@@ -5642,6 +7388,7 @@
             
             // Refresh preview box supaya outcome hilang dari situ jugak
             if (prefix === 'crm' && typeof window.updatePreviewFU === 'function') window.updatePreviewFU();
+            else if (prefix === 'betacrm' && typeof window.updatePreviewFUBeta === 'function') window.updatePreviewFUBeta();
             else if (prefix === 'ps' && typeof window.updatePSPreview === 'function') window.updatePSPreview();
             else if (prefix === 'enroll' && typeof window.updateEnrollPreview === 'function') window.updateEnrollPreview();
         };
@@ -8901,7 +10648,7 @@
             window._mobileTagsFilterExclude = [];
             // Clear status filter
             window.psMobileFilterState = 'All';
-            let filterBtns = ['All','Absent','Half','AttendTakEnroll'];
+            let filterBtns = ['All','Absent','Half','AttendTakEnroll','KWC'];
             filterBtns.forEach(f => {
                 let btn = document.getElementById(`m-ps-filter-${f}-${isAdmin}`);
                 if(btn) {
@@ -9997,7 +11744,8 @@
                 'add-staff-dropdown', // letak ID dropdown "new staff" boss kat sini
                 'filter-staff',
                 'hunt-admin-staff',
-                'bulk-paste-staff-crm' // 🌟 Tambah ID ini di sini
+                'bulk-paste-staff-crm', // 🌟 Tambah ID ini di sini
+                'bulk-paste-staff-beta'
             ];
 
             senaraiID.forEach(id => {
@@ -10617,7 +12365,7 @@
 
         window.setPSMobileFilter = function(type, isAdmin) {
             window.psMobileFilterState = type;
-            ['All', 'Absent', 'Half', 'AttendTakEnroll'].forEach(f => {
+            ['All', 'Absent', 'Half', 'AttendTakEnroll', 'KWC'].forEach(f => {
                 let btn = document.getElementById(`m-ps-filter-${f}-${isAdmin}`);
                 if(btn) {
                     if(f === type) {
@@ -10773,6 +12521,8 @@
             };
 
             let currentFilters = isAdmin ? adminPsFilters : teamPsFilters;
+            // 🌟 KWC: Attendance = Attended, Class Date 4/7 dan LEBIH LAMA (<=), bukan dari 4/7 sampai harini
+            let kwc30DaysAgo = (() => { let d = new Date(); d.setDate(d.getDate() - 30); return d.toISOString().split('T')[0]; })();
             let mapped = stateArr.filter(row => {
                 let name = String(row["Student Name"] || row["Name"] || "").toLowerCase();
                 let contact = String(row["Phone Number"] || row["Phone"] || row["Contact"] || row["contact"] || "").toLowerCase();
@@ -10783,6 +12533,10 @@
                 if(window.psMobileFilterState === 'Absent' && att !== "absent") return false;
                 if(window.psMobileFilterState === 'Half' && att !== "half") return false;
                 if(window.psMobileFilterState === 'AttendTakEnroll' && !(att === "attended" && enr === "no")) return false;
+                if(window.psMobileFilterState === 'KWC') {
+                    let kwcDateNorm = normalizeDateStr(row["Date"]);
+                    if(!(att === "attended" && kwcDateNorm && kwcDateNorm <= kwc30DaysAgo)) return false;
+                }
 
                 // 📆 Date Range & 🗓️ Month/Year Filter (ikut Class Date - row["Date"])
                 let rowClassDateNorm = normalizeDateStr(row["Date"]);
@@ -12608,6 +14362,7 @@
         // ==========================================
         window.onload = function() {
             window.loadToFuTaskList();
+            window.loadStatusConfig();
 
             let role = localStorage.getItem("kunkwan_role");
             if (role === "admin") {
