@@ -9284,6 +9284,23 @@
             return val;
         };
 
+        // 🌟 FIX: Alias nama column Excel PS Master -> nama field yang Table View / Modal PS Master Details expect.
+        // Excel selalunya guna nama ringkas/variasi (cth "Remark"), tapi sistem baca field dengan nama tepat ("Remark 1").
+        // Tanpa alias ni, data masuk Firestore tapi bawah nama field yang tak dikenali langsung oleh UI.
+        window._canonicalizePSHeader = function(h) {
+            let norm = String(h || "").toLowerCase().replace(/[^a-z0-9]/g, '');
+            const PS_HEADER_ALIASES = {
+                'remark': 'Remark 1',
+                'remark1': 'Remark 1',
+                'eforemark': 'EFO Remark',
+                'eforemarks': 'EFO Remark',
+                'efosremark': 'EFO Remark',
+                'progressstatus': 'Progess Status', // 🌟 sistem sedia ada guna ejaan "Progess" (tanpa 'r') - kekalkan supaya Table View jumpa
+                'progessstatus': 'Progess Status'
+            };
+            return PS_HEADER_ALIASES[norm] || h;
+        };
+
         window.prosesImportPSExcel = async function(inputId, statusId, btn, isStaffView = false) {
             const failList = document.getElementById(inputId).files;
             const status = document.getElementById(statusId);
@@ -9351,7 +9368,10 @@
                                                 }
                                             }
                                         }
-                                        rowData[h || `Col_${c}`] = String(val || "").trim(); 
+                                        // 🌟 FIX: Alias nama column Excel -> nama field yang Table View/Modal PS Master expect
+                                        // (elak "Remark"/"EFO Remark"/"Progress Status" hilang sebab nama tak match 100%)
+                                        let canonicalKey = window._canonicalizePSHeader(h);
+                                        rowData[canonicalKey || `Col_${c}`] = String(val || "").trim(); 
                                     });
                                     validRows.push({ code: studentCodeExcel, data: rowData, name: idxName !== -1 ? String(rowArray[idxName] || "").trim() : "" });
                                 }
