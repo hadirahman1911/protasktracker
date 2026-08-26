@@ -474,6 +474,7 @@
                     </div>
                     <button onclick="window.openEnrollBulkEdit(false)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-1.5 px-4 rounded text-xs shadow ml-auto">🛠️ Bulk Edit</button>
                     <button onclick="window.bulkAutoCreateCRM('enroll', false)" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-2">🔄 Bulk Auto-Create CRM</button>
+                    <button onclick="window.syncPhoneFromLinkedPS()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold py-1.5 px-4 rounded text-xs shadow ml-2">📞 Sync Phone (Linked PS→CRM)</button>
                 </div>  
 
                 <div class="flex justify-center md:justify-start gap-3 mt-4 mb-3">
@@ -898,6 +899,7 @@
                         <button id="betacrm-view-desktop-btn" onclick="window.setBetaCRMView('desktop')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#0072ff] text-white">🖥️ Desktop View</button>
                         <button id="betacrm-view-mobile-btn" onclick="window.setBetaCRMView('mobile')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#333] text-gray-400">📱 Mobile View</button>
                         <button onclick="window.openBetaCRMBulkEdit()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition">🛠️ Bulk Edit</button>
+                        <button onclick="window.syncPhoneFromLinkedPS()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-4 py-2 rounded-lg text-xs shadow transition">📞 Sync Phone (Linked PS→CRM)</button>
                         <input type="text" id="betacrm-search" oninput="window.renderCRMBetaTable(true); window.renderCRMBetaMobileList();" placeholder="🔍 Search Name, Contact atau Lead ID..." class="flex-1 bg-[#111] text-white px-4 py-2 rounded-lg outline-none border border-[#333] focus:border-[#00e676] text-sm max-w-md">
                     </div>
 
@@ -1226,6 +1228,7 @@
                         <button onclick="window.copyEnrollCollection(true)" class="bg-[#00e676] hover:bg-[#00c853] text-black font-bold py-2 px-4 rounded text-sm shadow">📋 Copy Text</button>
                         <button onclick="window.openEnrollBulkEdit(true)" class="bg-purple-600 hover:bg-purple-500 text-white font-bold py-2 px-4 rounded text-sm shadow ml-2">🛠️ Bulk Edit</button>
                         <button onclick="window.bulkAutoCreateCRM('enroll', true)" class="bg-[#00c6ff] hover:bg-[#009acd] text-black font-bold py-2 px-4 rounded text-sm shadow ml-2">🔄 Bulk Auto-Create CRM</button>
+                        <button onclick="window.syncPhoneFromLinkedPS()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold py-2 px-4 rounded text-sm shadow ml-2">📞 Sync Phone (Linked PS→CRM)</button>
                     </div>
 
                     <div class="mb-4 bg-[#111] p-3 rounded-lg border border-[#333]">
@@ -1611,6 +1614,7 @@
             <div class="flex gap-1.5 px-4 pt-3 border-b border-[#2a2a2a] overflow-x-auto shrink-0" style="background:#131313;">
                 <button onclick="window.switchBetaTab('timeline')" id="betacrm-tabbtn-timeline" class="beta-tab-btn active shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📋 Timeline & FU</button>
                 <button onclick="window.switchBetaTab('class')" id="betacrm-tabbtn-class" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📚 Class History</button>
+                <button onclick="window.switchBetaTab('psdetails')" id="betacrm-tabbtn-psdetails" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">🎓 PS Details</button>
                 <button onclick="window.switchBetaTab('invoice')" id="betacrm-tabbtn-invoice" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">🧾 Invoice</button>
                 <button onclick="window.switchBetaTab('info')" id="betacrm-tabbtn-info" class="beta-tab-btn shrink-0 px-4 py-2.5 rounded-t-lg text-xs font-bold bg-[#1a1a1a] text-gray-400">📇 Info Lanjut</button>
             </div>
@@ -1665,6 +1669,11 @@
                 <!-- ===== CLASS HISTORY ===== -->
                 <div id="betacrm-tab-class" class="hidden">
                     <div id="betacrm-class-list" class="space-y-2"></div>
+                </div>
+
+                <!-- ===== PS DETAILS (Raw data PS Master) ===== -->
+                <div id="betacrm-tab-psdetails" class="hidden">
+                    <div id="betacrm-psdetails-list" class="space-y-3"></div>
                 </div>
 
                 <!-- ===== INVOICE HISTORY ===== -->
@@ -5289,6 +5298,157 @@
         };
 
         // ====================================================================
+        // 🌟 Cari nilai phone dari satu rekod, cuba beberapa kemungkinan nama field
+        // (Excel import tak selalu guna header "Phone Number" tepat - boleh jadi "Phone", "No Phone", "Contact No", "HP", dll)
+        window._extractPhoneFromRecord = function(rec) {
+            if(!rec) return "";
+            const PHONE_KEYS = [
+                'Phone Number', 'Phone', 'Contact', 'contact', 'No Phone', 'Phone No',
+                'Phone No.', 'Contact No', 'Contact No.', 'Contact Number', 'HP',
+                'No. Phone', 'No Telefon', 'Nombor Telefon', 'Mobile', 'Mobile Number', 'WhatsApp'
+            ];
+            for(let k of PHONE_KEYS) {
+                let v = rec[k];
+                if(v && String(v).trim() !== "") return v;
+            }
+            // Fallback: scan semua key, cari yang nama dia mengandungi "phone"/"contact"/"hp"/"mobile"
+            // dan nilai dia ada sekurang-kurangnya 5 digit (elak salah tangkap field lain)
+            for(let k in rec) {
+                let kn = k.toLowerCase();
+                if(kn.includes('phone') || kn.includes('contact') || kn.includes('mobile') || kn === 'hp') {
+                    let v = rec[k];
+                    if(v && window.cleanPhoneDigits(v).length >= 5) return v;
+                }
+            }
+            return "";
+        };
+
+        // 🌟 Cache scan PENUH collection ps_students / ps_enroll dari Firestore (bukan setakat local state)
+        // supaya Auto Sync jalan automatik bila modal dibuka, tanpa perlu tekan butang.
+        // TTL 3 minit - elak query Firestore berulang setiap kali buka modal.
+        window._psFullCache = { data: null, ts: 0 };
+        window._enrollFullCache = { data: null, ts: 0 };
+        window._FULL_SYNC_CACHE_TTL = 3 * 60 * 1000;
+
+        window._getAllPSFull = async function() {
+            let now = Date.now();
+            if(window._psFullCache.data && (now - window._psFullCache.ts) < window._FULL_SYNC_CACHE_TTL) return window._psFullCache.data;
+            let arr = [];
+            const snap = await getDocs(collection(db, "ps_students"));
+            snap.forEach(d => arr.push({ docId: d.id, ...d.data() }));
+            window._psFullCache = { data: arr, ts: now };
+            return arr;
+        };
+        window._getAllEnrollFull = async function() {
+            let now = Date.now();
+            if(window._enrollFullCache.data && (now - window._enrollFullCache.ts) < window._FULL_SYNC_CACHE_TTL) return window._enrollFullCache.data;
+            let arr = [];
+            const snap = await getDocs(collection(db, "ps_enroll"));
+            snap.forEach(d => arr.push({ docId: d.id, ...d.data() }));
+            window._enrollFullCache = { data: arr, ts: now };
+            return arr;
+        };
+
+        // 🔄 AUTO SYNC SENYAP: jalan automatik bila modal Beta dibuka (idx = index dalam betaCRMSummary).
+        // Kalau lead ni tiada psRows/enrollRows dalam local state, scan PENUH Firestore ikut no phone,
+        // simpan link (Linked PS DocID / Linked Enroll DocID) & refresh UI - tanpa perlu tekan butang.
+        window._autoLiveSyncPSForLead = async function(idx) {
+            let summary = window.betaCRMSummary[idx];
+            if(!summary) return;
+            let l = summary.lead;
+            let contact = l["CONTACT"] || "";
+            if(!contact) return;
+
+            let needPS = summary.psRows.length === 0;
+            let needEnroll = summary.enrollRows.length === 0;
+            if(!needPS && !needEnroll) return; // dah ada data, tak payah scan
+
+            // 🌟 Papar loading dalam tab PS Details supaya nampak proses tengah jalan (bukan senyap)
+            if(window._betaCurrentIdx === idx && needPS) {
+                window.renderBetaPSDetailsList(null, `⏳ Sedang scan penuh collection ps_students untuk cari no phone ${contact}...`);
+            }
+
+            try {
+                let updates = {}, foundPS = null, foundEnroll = null;
+
+                if(needPS) {
+                    let allPS = await window._getAllPSFull();
+                    foundPS = allPS.find(r => window.phonesMatch(window._extractPhoneFromRecord(r), contact));
+                    if(foundPS) updates["Linked PS DocID"] = foundPS.docId;
+                    console.log(`[Auto-Sync PS] Lead ${l["NAME"]||l.docId} (${contact}): scan ${allPS.length} rekod ps_students -> ${foundPS ? 'JUMPA ' + foundPS.docId : 'TAK JUMPA'}`);
+                }
+                if(needEnroll) {
+                    let allEnroll = await window._getAllEnrollFull();
+                    foundEnroll = allEnroll.find(r => window.phonesMatch(window._extractPhoneFromRecord(r), contact));
+                    if(foundEnroll) updates["Linked Enroll DocID"] = foundEnroll.docId;
+                }
+
+                if(foundPS || foundEnroll) {
+                    // 🌟 Skali sync jumpa PS/Enroll baru - terus betulkan CONTACT ikut phone rekod tu (kalau beza/kosong)
+                    let srcForPhone = foundPS || foundEnroll;
+                    let phoneRaw = window._extractPhoneFromRecord(srcForPhone);
+                    let phoneFixed = window._formatPhone60(phoneRaw);
+                    if(phoneFixed && !window.phonesMatch(l["CONTACT"] || "", phoneFixed)) {
+                        updates["CONTACT"] = phoneFixed;
+                    }
+
+                    await updateDoc(doc(db, "crm_leads", l.docId), updates);
+
+                    [crmState.adminData, crmState.data].forEach(arr => {
+                        let i = (arr||[]).findIndex(r => r.docId === l.docId);
+                        if(i > -1) Object.assign(arr[i], updates);
+                    });
+                    Object.assign(l, updates);
+
+                    if(foundPS) {
+                        psState.adminData = psState.adminData || [];
+                        if(window._findIdxByDocId(psState.adminData, foundPS.docId) === -1) psState.adminData.push(foundPS);
+                    }
+                    if(foundEnroll) {
+                    enrollState.adminData = enrollState.adminData || [];
+                    if(window._findIdxByDocId(enrollState.adminData, foundEnroll.docId) === -1) enrollState.adminData.push(foundEnroll);
+                }
+
+                window.betaCRMSummary[idx] = window._buildBetaSummaryForLead(l);
+
+                // Refresh UI CUMA kalau modal masih terbuka pada lead yang sama (elak lead lain tertimpa)
+                if(window._betaCurrentIdx === idx) {
+                    let fresh = window.betaCRMSummary[idx];
+                    let elContact = document.getElementById('betacrm-contact');
+                    if(elContact) elContact.value = l["CONTACT"] || "";
+                    window.renderBetaClassList(fresh);
+                    window.renderBetaPSDetailsList(fresh);
+                    window.renderBetaInvoiceList(fresh);
+                    let elAtt = document.getElementById('betacrm-stat-attended');
+                    let elLast = document.getElementById('betacrm-stat-lastclass');
+                    let elInv = document.getElementById('betacrm-stat-invoice');
+                    let elInvCount = document.getElementById('betacrm-stat-invoicecount');
+                    if(elAtt) elAtt.innerText = fresh.totalAttended + '×';
+                    if(elLast) elLast.innerText = fresh.lastClassRow ? `Last: ${fresh.lastClassRow["Class"]||"-"} · ${fresh.lastClassRow["Date"]||"-"}` : "-";
+                    if(elInv) elInv.innerText = 'RM' + fresh.totalInvoiceAmount.toLocaleString();
+                    if(elInvCount) elInvCount.innerText = fresh.enrollRows.length + ' invois';
+
+                    let msgParts = [];
+                    if(foundPS) msgParts.push('PS Master (' + (foundPS["Student Name"]||foundPS["Name"]||"-") + ')');
+                    if(foundEnroll) msgParts.push('PS Enroll');
+                    window.showToast ? window.showToast('🔄 Auto-sync jumpa: ' + msgParts.join(' & '), 'success', 2500) : null;
+                }
+                window.renderCRMBetaTable();
+                } else {
+                    // Tiada match langsung - papar mesej jelas dalam tab (bukan senyap)
+                    console.log(`[Auto-Sync PS] Lead ${l["NAME"]||l.docId} (${contact}): tiada match PS Master/PS Enroll selepas scan penuh.`);
+                    if(window._betaCurrentIdx === idx && needPS) {
+                        window.renderBetaPSDetailsList(summary);
+                    }
+                }
+            } catch(e) {
+                console.error('Auto live-sync PS gagal:', e);
+                if(window._betaCurrentIdx === idx && needPS) {
+                    window.renderBetaPSDetailsList(null, `❌ Auto-sync gagal: ${e.message}. Sila cuba butang refresh atau semak akses Firestore.`);
+                }
+            }
+        };
+
         // 🧪 CRM (BETA) — Phase 3: gabungan CRM + PS Master + PS Enroll
         // ====================================================================
         window.betaCRMSummary = []; // array hasil aggregation, 1 entry per crm_leads
@@ -5298,19 +5458,20 @@
         // 🌟 Bina 1 entry summary untuk 1 lead: gabung rekod PS Master (by Linked DocID + Contact)
         // + PS Enroll (by Linked DocID + Contact) supaya history PENUH terpapar walau tak semua linked.
         window._buildBetaSummaryForLead = function(leadRow) {
-            let leadContact = window.normalizePhone60(leadRow["CONTACT"] || "");
-            let leadPSDocId = leadRow["Linked PS DocID"] || "";
-            let leadEnrollDocId = leadRow["Linked Enroll DocID"] || "";
+            let leadContactRaw = leadRow["CONTACT"] || "";
 
             let allPS = [...(psState.adminData || []), ...(psState.data || [])];
             let allEnroll = [...(enrollState.adminData || []), ...(enrollState.data || [])];
+            let leadPSDocId = leadRow["Linked PS DocID"] || "";
+            let leadEnrollDocId = leadRow["Linked Enroll DocID"] || "";
 
             // Dedupe by docId (admin & data array boleh overlap)
             let seenPS = {}; 
             let psRows = allPS.filter(r => {
                 if(seenPS[r.docId]) return false;
                 seenPS[r.docId] = true;
-                let contactMatch = leadContact && window.normalizePhone60(r["Phone Number"] || "") === leadContact;
+                let phoneVal = window._extractPhoneFromRecord(r);
+                let contactMatch = leadContactRaw && phoneVal && window.phonesMatch(phoneVal, leadContactRaw);
                 return r.docId === leadPSDocId || contactMatch;
             });
 
@@ -5318,7 +5479,8 @@
             let enrollRows = allEnroll.filter(r => {
                 if(seenEnroll[r.docId]) return false;
                 seenEnroll[r.docId] = true;
-                let contactMatch = leadContact && window.normalizePhone60(r["Phone"] || "") === leadContact;
+                let phoneVal = window._extractPhoneFromRecord(r);
+                let contactMatch = leadContactRaw && phoneVal && window.phonesMatch(phoneVal, leadContactRaw);
                 return r.docId === leadEnrollDocId || contactMatch;
             });
 
@@ -5959,7 +6121,7 @@
         window._betaCurrentIdx = null;
 
         window.switchBetaTab = function(name) {
-            ['timeline','class','invoice','info'].forEach(t => {
+            ['timeline','class','psdetails','invoice','info'].forEach(t => {
                 document.getElementById('betacrm-tab-'+t)?.classList.add('hidden');
                 document.getElementById('betacrm-tabbtn-'+t)?.classList.remove('active');
             });
@@ -6068,6 +6230,69 @@
             }).join('');
         };
 
+        // ---------- PS DETAILS (Raw data PENUH PS Master, ikut field yang diminta) ----------
+        window._betaPSDetailFields = [
+            { key: 'Timestamp', label: 'Timestamp' },
+            { key: 'Potential Student Code', label: 'PS Code' },
+            { key: '__imported_date', label: 'Imported Date' },
+            { key: '__imported_time', label: 'Imported Time' },
+            { key: '__phone', label: 'Phone' },
+            { key: 'Email', label: 'Email' },
+            { key: 'Age', label: 'Age' },
+            { key: 'Country', label: 'Country' },
+            { key: 'State', label: 'State' },
+            { key: 'Class', label: 'Class' },
+            { key: 'Date', label: 'Date' },
+            { key: 'Time', label: 'Time' },
+            { key: 'Source', label: 'Source' },
+            { key: 'Occupation', label: 'Occupation' },
+            { key: 'PS Student', label: 'PS Student' },
+            { key: 'Learned Mandarin', label: 'Learned Mandarin' },
+            { key: 'Remark 1', label: 'Remark 1' },
+            { key: 'Lecturer', label: 'Lecturer' },
+            { key: 'EFO', label: 'EFO' },
+            { key: 'EFO Remark', label: 'EFO Remarks' },
+            { key: 'Progess Status', label: 'Progress Status' },
+            { key: 'Enrollment Status', label: 'Enrollment Status' },
+            { key: 'Attendance', label: 'Attendance' },
+            { key: 'Present', label: 'Present' }
+        ];
+        window.renderBetaPSDetailsList = function(summary, statusMsg) {
+            let box = document.getElementById('betacrm-psdetails-list');
+            if(!box) return;
+            if(statusMsg) {
+                box.innerHTML = `<div class="text-center text-gray-500 text-xs p-4">${statusMsg}</div>`;
+                return;
+            }
+            if(!summary || !summary.psRows || summary.psRows.length === 0) {
+                box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada rekod PS Master untuk lead ini (no phone tak jumpa match dalam <code class="bg-[#111] px-1 rounded">ps_students</code> selepas scan penuh).</div>`;
+                return;
+            }
+            box.innerHTML = summary.psRows.map((r, i) => {
+                let imp = window.parseTimestampMasuk ? window.parseTimestampMasuk(r["Timestamp Masuk"]) : { date: '-', time: '-' };
+                let fieldsHtml = window._betaPSDetailFields.map(f => {
+                    let val;
+                    if(f.key === '__imported_date') val = imp.date;
+                    else if(f.key === '__imported_time') val = imp.time;
+                    else if(f.key === '__phone') val = window._extractPhoneFromRecord ? window._extractPhoneFromRecord(r) : (r["Phone Number"] || r["Phone"] || r["Contact"] || '');
+                    else val = window.formatDisplayValue ? window.formatDisplayValue(r[f.key]) : (r[f.key] || '-');
+                    if(!val || String(val).trim() === '') val = '-';
+                    return `<div class="min-w-0">
+                        <div class="text-[9px] uppercase tracking-wide text-gray-500 font-bold truncate">${f.label}</div>
+                        <div class="text-xs text-white break-words">${val}</div>
+                    </div>`;
+                }).join('');
+                let studentName = r["Student Name"] || r["Name"] || "-";
+                return `<div class="bg-[#15202b] border border-[#3f51b5] rounded-lg p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-[#64b5f6] font-bold text-xs">🎓 ${studentName} ${summary.psRows.length > 1 ? `<span class="text-gray-500 font-normal">(rekod ${i+1}/${summary.psRows.length})</span>` : ''}</span>
+                        <button type="button" onclick="window.openCRMModalFromPS ? window.openCRMModalFromPS(true, window._findIdxByDocId(psState.adminData, '${r.docId}')) : null" class="bg-[#3f51b5] hover:bg-[#303f9f] text-white px-2 py-0.5 rounded text-[10px]">✏️ Buka Penuh</button>
+                    </div>
+                    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-2.5">${fieldsHtml}</div>
+                </div>`;
+            }).join('');
+        };
+
         // ---------- INVOICE HISTORY (PS Enroll rows) ----------
         window.renderBetaInvoiceList = function(summary) {
             let box = document.getElementById('betacrm-invoice-list');
@@ -6150,6 +6375,20 @@
             if(!summary) return;
             window._betaCurrentIdx = idx;
             let l = summary.lead;
+
+            // 🌟 Auto-fix CONTACT SENYAP: bila modal dibuka & lead ni ada psRows/enrollRows (linked),
+            // banding phone dalam PS Master/Enroll dengan CONTACT sedia ada - kalau beza/kosong, betulkan terus.
+            (function autoFixContactOnOpen() {
+                let src = (summary.psRows && summary.psRows[0]) || (summary.enrollRows && summary.enrollRows[0]);
+                if(!src) return;
+                let phoneRaw = window._extractPhoneFromRecord ? window._extractPhoneFromRecord(src) : "";
+                let phone = window._formatPhone60 ? window._formatPhone60(phoneRaw) : "";
+                if(!phone) return;
+                if(l["CONTACT"] && window.phonesMatch(l["CONTACT"], phone)) return; // dah sama, tak payah
+                l["CONTACT"] = phone; // update memori terus supaya form terus papar betul
+                updateDoc(doc(db, "crm_leads", l.docId), { "CONTACT": phone }).catch(e => console.error("Auto-fix CONTACT gagal:", e));
+            })();
+
             let setVal = (id, val) => { let el = document.getElementById(id); if(el) el.value = val || ""; };
 
             document.getElementById('betacrm-docid').value = l.docId || "";
@@ -6213,6 +6452,7 @@
 
             // Class & Invoice
             window.renderBetaClassList(summary);
+            window.renderBetaPSDetailsList(summary);
             window.renderBetaInvoiceList(summary);
 
             // Info Lanjut
@@ -6234,6 +6474,9 @@
 
             window.switchBetaTab('timeline');
             document.getElementById('modal-crm-beta').style.display = 'flex';
+
+            // 🔄 Auto sync senyap ikut no phone (scan penuh Firestore) - jalan di belakang, tak block UI
+            window._autoLiveSyncPSForLead(idx);
         };
 
         // ---------- % KELENGKAPAN DATA (gradient progress bar) ----------
@@ -7913,9 +8156,9 @@
             if(!record) return;
 
             let linkFieldOnCrm = type === 'ps' ? "Linked PS DocID" : "Linked Enroll DocID";
-            let recordPhone = type === 'ps'
-                ? (record["Phone Number"] || record["Phone"] || record["Contact"] || "")
-                : (record["Phone"] || "");
+            let recordPhoneRaw = window._extractPhoneFromRecord(record);
+            let recordPhone = window._formatPhone60(recordPhoneRaw);
+            let recordEmail = record["Email"] || record["Email Address"] || record["E-mail"] || "";
             let recordName = record["Student Name"] || record["Name"] || "-";
 
             try {
@@ -7941,7 +8184,27 @@
                     }
                 }
 
-                // 3. Masih tak jumpa - AUTO-CREATE CRM lead baru terus & link
+                // 3. Masih tak jumpa ikut link - cuba cari lead sedia ada ikut Phone/Email dulu
+                //    (kalau jumpa, LINK je & overwrite CONTACT - elak cipta lead pendua)
+                if(!foundLead && (recordPhone || recordEmail)) {
+                    [{ arr: crmState.adminData, adm: true }, { arr: crmState.data, adm: false }].forEach(grp => {
+                        if(foundLead) return;
+                        let i = (grp.arr || []).findIndex(r =>
+                            (recordPhone && r["CONTACT"] && window.phonesMatch(r["CONTACT"], recordPhone)) ||
+                            (recordEmail && r["EMAIL"] && String(r["EMAIL"]).trim().toLowerCase() === String(recordEmail).trim().toLowerCase())
+                        );
+                        if(i > -1) { foundLead = grp.arr[i]; foundIsAdmin = grp.adm; foundIdx = i; }
+                    });
+                    if(foundLead) {
+                        let updateData = { [linkFieldOnCrm]: record.docId };
+                        if(recordPhone) updateData["CONTACT"] = recordPhone;
+                        if((!foundLead["NAME"] || foundLead["NAME"] === "-") && recordName !== "-") updateData["NAME"] = recordName;
+                        await updateDoc(doc(db, "crm_leads", foundLead.docId), updateData);
+                        Object.assign(foundLead, updateData);
+                    }
+                }
+
+                // 4. Masih tak jumpa langsung - AUTO-CREATE CRM lead baru terus & link
                 if(!foundLead) {
                     let newLeadId = await window._generateNewLeadId();
                     let todayStr = new Date().toISOString().split('T')[0];
@@ -7952,7 +8215,8 @@
                         "Lead ID": newLeadId,
                         "Staff Name": staffName,
                         "NAME": recordName,
-                        "CONTACT": window._formatPhone60(recordPhone),
+                        "CONTACT": recordPhone,
+                        "EMAIL": recordEmail || "-",
                         "STATUS": "New",
                         "LEADS INBOUND": window.toSheetDate(todayStr),
                         "LEADS INBOUND TIME": timeStr,
@@ -8038,76 +8302,137 @@
             let todayStr = new Date().toISOString().split('T')[0];
             let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: "numeric", minute: "numeric" });
 
-            // ⚡ STEP 4: Bina semua doc dalam memori, tulis guna writeBatch (max 500/batch)
+            // ⚡ STEP 4: Sedia peta lookup CRM leads sedia ada (by Phone & by Email) - elak lead pendua,
+            // & bagi kita overwrite CONTACT sedia ada bila jumpa match (kalau CONTACT lama kosong/salah format).
             let targetArr = isAdmin ? crmState.adminData : crmState.data;
             if(!window.crmByPsDocId) window.crmByPsDocId = {};
             if(!window.crmByEnrollDocId) window.crmByEnrollDocId = {};
 
-            let allNewDocs = []; // { ref, data }
+            let seenLeadDoc = {};
+            let allExistingLeads = [...(crmState.adminData || []), ...(crmState.data || [])].filter(r => {
+                if(!r.docId || seenLeadDoc[r.docId]) return false;
+                seenLeadDoc[r.docId] = true;
+                return true;
+            });
+            let existingByEmail = {}; // email (lowercase) -> lead object (rujukan terus, boleh mutate)
+            allExistingLeads.forEach(r => {
+                let em = String(r["EMAIL"] || "").trim().toLowerCase();
+                if(em && em !== "-") existingByEmail[em] = r;
+            });
+            let findExistingLeadMatch = (phone, email) => {
+                if(phone) {
+                    let m = allExistingLeads.find(r => r["CONTACT"] && window.phonesMatch(r["CONTACT"], phone));
+                    if(m) return m;
+                }
+                if(email) {
+                    let m = existingByEmail[String(email).trim().toLowerCase()];
+                    if(m) return m;
+                }
+                return null;
+            };
+
+            // ⚡ STEP 5: Bina doc baru DALAM MEMORI (schema BETUL ikut crm_leads: NAME/CONTACT/STATUS),
+            // & kumpul UPDATE untuk lead sedia ada yang match Phone/Email (link je + overwrite CONTACT, bukan cipta pendua)
+            let allNewDocs = []; // { ref, data, psDocId }
+            let allUpdates = []; // { ref, data, docId, psDocId }
+
             for(let record of unlinkedRecords) {
+                let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
+                let recordPhoneRaw = window._extractPhoneFromRecord(record);
+                let recordPhone = window._formatPhone60(recordPhoneRaw);
+                let recordEmail = record["Email"] || record["Email Address"] || record["E-mail"] || "";
+                let recordName = record["Student Name"] || record["Name"] || "-";
+
+                let matched = findExistingLeadMatch(recordPhone, recordEmail);
+
+                if(matched) {
+                    // 🌟 Nombor telefon / email sama dengan lead sedia ada -> LINK je & overwrite CONTACT (bukan cipta pendua)
+                    let updateData = { [linkFieldOnCrm]: record.docId };
+                    if(recordPhone) updateData["CONTACT"] = recordPhone;
+                    if((!matched["NAME"] || matched["NAME"] === "-") && recordName !== "-") updateData["NAME"] = recordName;
+                    let ref = doc(db, "crm_leads", matched.docId);
+                    allUpdates.push({ ref, data: updateData, docId: matched.docId, psDocId: record.docId });
+                    Object.assign(matched, updateData); // update memori terus
+                    continue;
+                }
+
                 currentMax++;
                 let newLeadId = "L" + String(currentMax).padStart(5, '0');
-                let staffName = window._resolveStaffName(record["Staff Name"] || record["Referral"] || record["Inviter"] || currentUser);
-                let recordPhone = type === 'ps' ? (record["Phone Number"] || record["Phone"] || record["Contact"] || "") : (record["Phone"] || "");
-                let recordName = record["Student Name"] || record["Name"] || "-";
                 let newRef = doc(collection(db, "crm_leads"));
                 let newCRMDoc = {
                     "Lead ID": newLeadId,
-                    "Timestamp Masuk": record["Timestamp Masuk"] || new Date().toISOString(),
                     "Staff Name": staffName,
-                    "Student Name": recordName,
-                    "Phone Number": recordPhone,
-                    "TO FU": "",
-                    "TO FU DONE": false,
-                    "HISTORY FU": `[${todayStr} ${timeStr}] [AUTO] CRM Lead created dari ${type.toUpperCase()}`,
-                    "Status CRM": "Baru Masuk (Belum FU)",
+                    "NAME": recordName,
+                    "CONTACT": recordPhone,
+                    "EMAIL": recordEmail || "-",
+                    "STATUS": "New",
+                    "LEADS INBOUND": window.toSheetDate(todayStr),
+                    "LEADS INBOUND TIME": timeStr,
+                    "Timestamp Masuk": record["Timestamp Masuk"] || new Date().toISOString(),
+                    "HISTORY FU": `[${todayStr} ${timeStr}] [AUTO] CRM Lead dicipta dari ${type.toUpperCase()}`,
                     [linkFieldOnCrm]: record.docId
                 };
                 allNewDocs.push({ ref: newRef, data: newCRMDoc, psDocId: record.docId });
+                // Daftar terus dalam peta supaya rekod lain dalam batch yang sama (phone/email sama) tak cipta pendua lagi
+                let regDoc = { docId: newRef.id, ...newCRMDoc };
+                allExistingLeads.push(regDoc);
+                if(recordEmail && recordEmail !== "-") existingByEmail[String(recordEmail).trim().toLowerCase()] = regDoc;
             }
 
-            // ⚡ STEP 5: Batch write 500 serentak
+            // ⚡ STEP 6: Batch write (cipta baru + update lead sedia ada) 500 serentak
             let batchCount = 0;
             let batch = writeBatch(db);
             let opCount = 0;
-            let totalBatches = Math.ceil(allNewDocs.length / 500);
+            let totalOps = allNewDocs.length + allUpdates.length;
+            let totalBatches = Math.ceil(totalOps / 500) || 1;
             let batchNum = 1;
 
-            for(let item of allNewDocs) {
-                batch.set(item.ref, item.data);
-                opCount++;
-                batchCount++;
-
+            let flushIfNeeded = async () => {
                 if(opCount >= 500) {
-                    loadingMsg.innerText = `🚀 Lori ${batchNum}/${totalBatches} — ${batchCount}/${allNewDocs.length} CRM...`;
+                    loadingMsg.innerText = `🚀 Lori ${batchNum}/${totalBatches} — ${batchCount}/${totalOps} CRM...`;
                     await batch.commit();
                     batch = writeBatch(db);
                     opCount = 0;
                     batchNum++;
                 }
+            };
+
+            for(let item of allNewDocs) {
+                batch.set(item.ref, item.data);
+                opCount++; batchCount++;
+                await flushIfNeeded();
+            }
+            for(let item of allUpdates) {
+                batch.update(item.ref, item.data);
+                opCount++; batchCount++;
+                await flushIfNeeded();
             }
             if(opCount > 0) {
-                loadingMsg.innerText = `🚀 Lori terakhir — ${batchCount}/${allNewDocs.length} CRM...`;
+                loadingMsg.innerText = `🚀 Lori terakhir — ${batchCount}/${totalOps} CRM...`;
                 await batch.commit();
             }
 
-            // ⚡ STEP 6: Update counter sekali je
+            // ⚡ STEP 7: Update counter sekali je
             try {
                 await setDoc(doc(db, "system_settings", "crm_counter"), { max_lead_id: currentMax }, { merge: true });
             } catch(e) { console.error("Gagal update crm_counter:", e); }
 
-            // ⚡ STEP 7: Update memori (state & lookup map)
+            // ⚡ STEP 8: Update memori (state & lookup map)
             for(let item of allNewDocs) {
                 let fullDoc = { docId: item.ref.id, ...item.data };
                 targetArr.push(fullDoc);
                 if(type === 'ps') window.crmByPsDocId[item.psDocId] = fullDoc;
                 else window.crmByEnrollDocId[item.psDocId] = fullDoc;
             }
+            for(let item of allUpdates) {
+                if(type === 'ps') window.crmByPsDocId[item.psDocId] = allExistingLeads.find(r => r.docId === item.docId);
+                else window.crmByEnrollDocId[item.psDocId] = allExistingLeads.find(r => r.docId === item.docId);
+            }
 
             // Tutup loading
             let lMsgFinal = document.getElementById('bulk-crm-loading');
             if(lMsgFinal) document.body.removeChild(lMsgFinal);
-            if(!isSilent) alert(`✅ Selesai! ${allNewDocs.length} CRM baru berjaya dicipta.`);
+            if(!isSilent) alert(`✅ Selesai! ${allNewDocs.length} CRM baru dicipta${allUpdates.length ? `, ${allUpdates.length} lead sedia ada di-link & CONTACT di-overwrite (match Phone/Email)` : ''}.`);
 
             if(type === 'ps') { window.renderPSTable(isAdmin); window.renderPSMobileList(isAdmin); }
             else { window.renderEnrollTable(isAdmin); window.renderEnrollMobileList(isAdmin); }
@@ -8115,6 +8440,99 @@
 
         window.openCRMModalFromPS = function(isAdmin, actualIdx) {
             window._openCRMModalFromLinkedRecord('ps', isAdmin, actualIdx);
+        };
+
+        // ==========================================
+        // 📞 SYNC PHONE (Linked PS Master -> CRM Master CONTACT)
+        // Untuk lead CRM Master yang DAH ADA link (Linked PS DocID) ke ps_students,
+        // tapi CONTACT dia kosong/tak sync - scan penuh & overwrite CONTACT ikut Phone PS Master.
+        // ==========================================
+        window.syncPhoneFromLinkedPS = async function(isSilent = false) {
+            if(!isSilent && !confirm("Sync Phone dari PS Master (rekod yang DAH LINKED) ke CRM Master (CONTACT)?\n\nIni akan overwrite CONTACT sedia ada ikut nombor dalam PS Master.")) return;
+
+            let loadingMsg = document.getElementById('bulk-crm-loading');
+            if(!loadingMsg) {
+                loadingMsg = document.createElement('div');
+                loadingMsg.id = 'bulk-crm-loading';
+                loadingMsg.style = 'position:fixed; top:20px; left:50%; transform:translateX(-50%); background:#f59e0b; color:#000; padding:12px 25px; border-radius:8px; z-index:99999; font-weight:bold; box-shadow:0 4px 15px rgba(0,0,0,0.5);';
+                document.body.appendChild(loadingMsg);
+            }
+            loadingMsg.innerText = "⏳ Menyediakan data PS Master & CRM Master penuh...";
+
+            try {
+                // 1. Tarik PENUH ps_students (guna cache sedia ada kalau ada)
+                let allPS = await window._getAllPSFull();
+                let psById = {};
+                allPS.forEach(r => { psById[r.docId] = r; });
+
+                // 2. Tarik PENUH crm_leads terus dari Firestore (elak partial state - staff vs admin)
+                const snapLeads = await getDocs(collection(db, "crm_leads"));
+                let allLeads = [];
+                snapLeads.forEach(d => allLeads.push({ docId: d.id, ...d.data() }));
+
+                // 3. Kumpul lead yang ada Linked PS DocID & phone dia beza/tiada
+                let toUpdate = [];
+                allLeads.forEach(lead => {
+                    let psDocId = lead["Linked PS DocID"];
+                    if(!psDocId) return;
+                    let psRec = psById[psDocId];
+                    if(!psRec) return;
+                    let phoneRaw = window._extractPhoneFromRecord(psRec);
+                    let phone = window._formatPhone60(phoneRaw);
+                    if(!phone) return;
+                    let currentContact = lead["CONTACT"] || "";
+                    if(currentContact && window.phonesMatch(currentContact, phone)) return; // dah sama, skip
+                    toUpdate.push({ docId: lead.docId, phone });
+                });
+
+                if(toUpdate.length === 0) {
+                    if(!isSilent) alert("✅ Semua lead yang linked dah ada CONTACT terkini. Tiada yang perlu di-sync.");
+                    let lMsgFinal = document.getElementById('bulk-crm-loading');
+                    if(lMsgFinal) document.body.removeChild(lMsgFinal);
+                    return;
+                }
+
+                // 4. Batch update 500 serentak
+                let batch = writeBatch(db);
+                let opCount = 0, doneCount = 0;
+                let totalBatches = Math.ceil(toUpdate.length / 500);
+                let batchNum = 1;
+                for(let item of toUpdate) {
+                    batch.update(doc(db, "crm_leads", item.docId), { "CONTACT": item.phone });
+                    opCount++; doneCount++;
+                    if(opCount >= 500) {
+                        loadingMsg.innerText = `🚀 Lori ${batchNum}/${totalBatches} — ${doneCount}/${toUpdate.length} disync...`;
+                        await batch.commit();
+                        batch = writeBatch(db);
+                        opCount = 0;
+                        batchNum++;
+                    }
+                }
+                if(opCount > 0) {
+                    loadingMsg.innerText = `🚀 Lori terakhir — ${doneCount}/${toUpdate.length} disync...`;
+                    await batch.commit();
+                }
+
+                // 5. Update memori (crmState) supaya UI terus refresh tanpa perlu reload
+                let updMap = {};
+                toUpdate.forEach(u => { updMap[u.docId] = u.phone; });
+                [crmState.data, crmState.adminData].forEach(arr => {
+                    (arr || []).forEach(r => { if(updMap[r.docId]) r["CONTACT"] = updMap[r.docId]; });
+                });
+
+                let lMsgFinal = document.getElementById('bulk-crm-loading');
+                if(lMsgFinal) document.body.removeChild(lMsgFinal);
+
+                if(typeof window.renderCRMBetaTable === 'function') window.renderCRMBetaTable();
+                if(typeof window.renderCRMTable === 'function') window.renderCRMTable();
+                if(typeof window.renderAdminCRMTable === 'function') window.renderAdminCRMTable();
+
+                if(!isSilent) alert(`✅ Selesai! ${toUpdate.length} lead CRM Master di-update CONTACT ikut Phone PS Master (Linked).`);
+            } catch(e) {
+                let lMsgFinal = document.getElementById('bulk-crm-loading');
+                if(lMsgFinal) document.body.removeChild(lMsgFinal);
+                alert("Gagal sync: " + e.message);
+            }
         };
 
         window.openCRMModalFromEnroll = function(isAdmin, actualIdx) {
@@ -9523,6 +9941,10 @@
                 // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
                 if (typeof window.bulkAutoCreateCRM === 'function') {
                     window.bulkAutoCreateCRM('ps', !isStaffView, true);
+                }
+                // 🌟 AUTO-TRIGGER SYNC PHONE (SILENT) - untuk rekod yang DAH linked, backfill/betulkan CONTACT
+                if (typeof window.syncPhoneFromLinkedPS === 'function') {
+                    window.syncPhoneFromLinkedPS(true);
                 }
             } catch (err) {
                 alert("Ralat: " + err.message);
@@ -13890,6 +14312,10 @@
                 // 🌟 AUTO-TRIGGER CRM CREATION (SILENT)
                 if (typeof window.bulkAutoCreateCRM === 'function') {
                     window.bulkAutoCreateCRM('enroll', true, true);
+                }
+                // 🌟 AUTO-TRIGGER SYNC PHONE (SILENT) - untuk rekod yang DAH linked, backfill/betulkan CONTACT
+                if (typeof window.syncPhoneFromLinkedPS === 'function') {
+                    window.syncPhoneFromLinkedPS(true);
                 }
             } catch(err) { alert("Ralat: " + err.message); btn.disabled = false; }
         };
