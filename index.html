@@ -1684,16 +1684,16 @@
                 <!-- ===== INFO LANJUT ===== -->
                 <div id="betacrm-tab-info" class="hidden">
                     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-                        <div class="beta-fld"><label>Source</label><input type="text" id="betacrm-source" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>State</label><input type="text" id="betacrm-state" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>Umur</label><input type="text" id="betacrm-umur" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>Occupation</label><input type="text" id="betacrm-occupation" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>Email</label><input type="text" id="betacrm-email" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>First Time Belajar?</label><input type="text" id="betacrm-first-time" placeholder="Cth: Ya / Tidak, pernah belajar" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld sm:col-span-2"><label>Reason Learn</label><input type="text" id="betacrm-reason-learn" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld sm:col-span-2"><label>Concern PS (Remarks)</label><textarea id="betacrm-concern-ps" rows="2" oninput="window.calcBetaInviteProgress()"></textarea></div>
-                        <div class="beta-fld"><label>Class</label><input type="text" id="betacrm-class" oninput="window.calcBetaInviteProgress()"></div>
-                        <div class="beta-fld"><label>Class Date & Time</label><input type="text" id="betacrm-class-datetime" oninput="window.calcBetaInviteProgress()"></div>
+                        <div class="beta-fld"><label>Source</label><input type="text" id="betacrm-source"></div>
+                        <div class="beta-fld"><label>State</label><input type="text" id="betacrm-state"></div>
+                        <div class="beta-fld"><label>Umur</label><input type="text" id="betacrm-umur"></div>
+                        <div class="beta-fld"><label>Occupation</label><input type="text" id="betacrm-occupation"></div>
+                        <div class="beta-fld"><label>Email</label><input type="text" id="betacrm-email"></div>
+                        <div class="beta-fld"><label>First Time Belajar?</label><input type="text" id="betacrm-first-time" placeholder="Cth: Ya / Tidak, pernah belajar"></div>
+                        <div class="beta-fld sm:col-span-2"><label>Reason Learn</label><input type="text" id="betacrm-reason-learn"></div>
+                        <div class="beta-fld sm:col-span-2"><label>Concern PS (Remarks)</label><textarea id="betacrm-concern-ps" rows="2"></textarea></div>
+                        <div class="beta-fld"><label>Class</label><input type="text" id="betacrm-class"></div>
+                        <div class="beta-fld"><label>Class Date & Time</label><input type="text" id="betacrm-class-datetime"></div>
                         <div class="beta-fld sm:col-span-2"><label>Parents Detail</label><input type="text" id="betacrm-parents"></div>
                     </div>
                 </div>
@@ -2796,7 +2796,9 @@
         // 🌟 CORE ENGINE (DIKONGSI OLEH CSV FILE & PASTE TEXT)
         window._coreProsesImportCRM = async function(parsedRows, status, btn, isStaffView, selectedStaff, onDone) {
             const formatPhone60 = (p) => {
-                let n = String(p || "").replace(/[^0-9]/g, '');
+                // 🌟 FIX: guna cleanPhoneDigits (leading digit-run) supaya angka dlm username WhatsApp
+                // (cth: "60135336090 farissa24") tak melekat sekali & rosakkan duplicate check.
+                let n = window.cleanPhoneDigits ? window.cleanPhoneDigits(p) : String(p || "").replace(/[^0-9]/g, '');
                 if (!n) return "";
                 if (n.startsWith('60')) return n;
                 if (n.startsWith('0')) return '60' + n.substring(1);
@@ -2811,7 +2813,7 @@
                 snap.forEach(d => {
                     let data = d.data();
                     let leadId = data["Lead ID"];
-                    let cleanContact = formatPhone60(data["CONTACT"] || data.contact);
+                    let contactKey = window.getContactKey(data["CONTACT"] || data.contact);
                     
                     if (leadId) {
                         existingMap[`id_${leadId}`] = { docId: d.id, ...data };
@@ -2821,7 +2823,7 @@
                             if (!isNaN(num) && num > maxLeadNumber) maxLeadNumber = num;
                         }
                     }
-                    if (cleanContact && cleanContact !== "-") existingMap[`phone_${cleanContact}`] = { docId: d.id, ...data };
+                    if (contactKey) existingMap[contactKey] = { docId: d.id, ...data };
                     // 🌟 NAME MATCHING DIBUANG UNTUK ELAK OVERWRITE ORANG LAIN
                 });
             } catch(e) { console.error("Gagal tarik existing CRM:", e); }
@@ -2841,14 +2843,16 @@
                 rowData["Staff Name"] = staffName;
 
                 let rCleanContact = formatPhone60(rowData["CONTACT"] || rowData.contact);
-                if(rCleanContact) rowData["CONTACT"] = rCleanContact; 
+                if(rCleanContact) rowData["CONTACT"] = rCleanContact; // hanya overwrite kalau ia memang nombor phone
+
+                let rContactKey = window.getContactKey(rowData["CONTACT"] || rowData.contact);
 
                 let csvLeadId = rowData["Lead ID"] ? String(rowData["Lead ID"]).trim() : "";
                 let foundExisting = null;
 
-                // 🌟 LOGIK CARI (Hanya guna Lead ID & Phone)
+                // 🌟 LOGIK CARI (Lead ID, atau Contact -- phone ATAU username macam @_azdnn)
                 if (csvLeadId && existingMap[`id_${csvLeadId}`]) foundExisting = existingMap[`id_${csvLeadId}`];
-                else if (rCleanContact && rCleanContact !== "-" && existingMap[`phone_${rCleanContact}`]) foundExisting = existingMap[`phone_${rCleanContact}`];
+                else if (rContactKey && existingMap[rContactKey]) foundExisting = existingMap[rContactKey];
 
                 try { 
                     let now = new Date();
@@ -2893,7 +2897,7 @@
                         bAdded++;
                         
                         existingMap[`id_${csvLeadId}`] = { docId: newDocRef.id, ...rowData };
-                        if (rCleanContact) existingMap[`phone_${rCleanContact}`] = { docId: newDocRef.id, ...rowData };
+                        if (rContactKey) existingMap[rContactKey] = { docId: newDocRef.id, ...rowData };
                     }
                 } catch (e) { ralat++; }
             }
@@ -3003,7 +3007,7 @@
             
             // Formula bersihkan nombor telefon sama macam enjin import
             const formatPhone60 = (p) => {
-                let n = String(p || "").replace(/[^0-9]/g, '');
+                let n = window.cleanPhoneDigits ? window.cleanPhoneDigits(p) : String(p || "").replace(/[^0-9]/g, '');
                 if (!n) return "";
                 if (n.startsWith('60')) return n;
                 if (n.startsWith('0')) return '60' + n.substring(1);
@@ -5457,32 +5461,66 @@
 
         // 🌟 Bina 1 entry summary untuk 1 lead: gabung rekod PS Master (by Linked DocID + Contact)
         // + PS Enroll (by Linked DocID + Contact) supaya history PENUH terpapar walau tak semua linked.
-        window._buildBetaSummaryForLead = function(leadRow) {
-            let leadContactRaw = leadRow["CONTACT"] || "";
+        // 🚀 PERF FIX: bina lookup map SEKALI je (bukan scan semua PS/Enroll untuk SETIAP lead).
+        // Key guna last-9-digit phone suffix supaya sepadan dengan logic phonesMatch() sedia ada.
+        window._phoneKey9 = function(rawPhone) {
+            let d = window.cleanPhoneDigits(rawPhone);
+            if(!d || d.length < 7) return null;
+            return d.slice(-Math.min(d.length, 9));
+        };
 
+        window._buildPSEnrollLookupMaps = function() {
             let allPS = [...(psState.adminData || []), ...(psState.data || [])];
             let allEnroll = [...(enrollState.adminData || []), ...(enrollState.data || [])];
+
+            let psByDocId = {}, psByPhone = {};
+            let seenPS = {};
+            allPS.forEach(r => {
+                if(seenPS[r.docId]) return;
+                seenPS[r.docId] = true;
+                psByDocId[r.docId] = r;
+                let key = window._phoneKey9(window._extractPhoneFromRecord(r));
+                if(key) { (psByPhone[key] = psByPhone[key] || []).push(r); }
+            });
+
+            let enrollByDocId = {}, enrollByPhone = {};
+            let seenEnroll = {};
+            allEnroll.forEach(r => {
+                if(seenEnroll[r.docId]) return;
+                seenEnroll[r.docId] = true;
+                enrollByDocId[r.docId] = r;
+                let key = window._phoneKey9(window._extractPhoneFromRecord(r));
+                if(key) { (enrollByPhone[key] = enrollByPhone[key] || []).push(r); }
+            });
+
+            return { psByDocId, psByPhone, enrollByDocId, enrollByPhone };
+        };
+
+        window._buildBetaSummaryForLead = function(leadRow, maps) {
+            // Kalau caller tak bagi maps (contoh: refresh 1 lead je lepas save), bina on-demand.
+            // Hot path (loadCRMBetaData) SENTIASA bagi maps supaya elak rebuild berulang.
+            if(!maps) maps = window._buildPSEnrollLookupMaps();
+            let leadContactRaw = leadRow["CONTACT"] || "";
             let leadPSDocId = leadRow["Linked PS DocID"] || "";
             let leadEnrollDocId = leadRow["Linked Enroll DocID"] || "";
+            let leadPhoneKey = window._phoneKey9(leadContactRaw);
 
-            // Dedupe by docId (admin & data array boleh overlap)
-            let seenPS = {}; 
-            let psRows = allPS.filter(r => {
-                if(seenPS[r.docId]) return false;
-                seenPS[r.docId] = true;
-                let phoneVal = window._extractPhoneFromRecord(r);
-                let contactMatch = leadContactRaw && phoneVal && window.phonesMatch(phoneVal, leadContactRaw);
-                return r.docId === leadPSDocId || contactMatch;
-            });
+            // O(1) map lookup instead of O(M) filter-scan per lead
+            let psCandidates = {};
+            let directPS = maps.psByDocId[leadPSDocId];
+            if(directPS) psCandidates[directPS.docId] = directPS;
+            if(leadPhoneKey && maps.psByPhone[leadPhoneKey]) {
+                maps.psByPhone[leadPhoneKey].forEach(r => { psCandidates[r.docId] = r; });
+            }
+            let psRows = Object.values(psCandidates);
 
-            let seenEnroll = {};
-            let enrollRows = allEnroll.filter(r => {
-                if(seenEnroll[r.docId]) return false;
-                seenEnroll[r.docId] = true;
-                let phoneVal = window._extractPhoneFromRecord(r);
-                let contactMatch = leadContactRaw && phoneVal && window.phonesMatch(phoneVal, leadContactRaw);
-                return r.docId === leadEnrollDocId || contactMatch;
-            });
+            let enrollCandidates = {};
+            let directEnroll = maps.enrollByDocId[leadEnrollDocId];
+            if(directEnroll) enrollCandidates[directEnroll.docId] = directEnroll;
+            if(leadPhoneKey && maps.enrollByPhone[leadPhoneKey]) {
+                maps.enrollByPhone[leadPhoneKey].forEach(r => { enrollCandidates[r.docId] = r; });
+            }
+            let enrollRows = Object.values(enrollCandidates);
 
             // Sort PS rows terbaru dulu (ikut Date, fallback Timestamp)
             psRows.sort((a,b) => {
@@ -5541,7 +5579,8 @@
             window.renderAllBetaStatusSelects(); // isi dropdown bulk-edit bar juga
 
             let leads = crmState.adminData || [];
-            window.betaCRMSummary = leads.map(leadRow => window._buildBetaSummaryForLead(leadRow));
+            let _maps = window._buildPSEnrollLookupMaps(); // 🚀 bina SEKALI, bukan per-lead
+            window.betaCRMSummary = leads.map(leadRow => window._buildBetaSummaryForLead(leadRow, _maps));
             window.betaCRMPage = 1;
             window.renderCRMBetaTable();
             window.renderCRMBetaMobileList();
@@ -5743,7 +5782,8 @@
                 [crmState.adminData, crmState.data].forEach(arr => {
                     (arr||[]).forEach(r => { if(ids.includes(r.docId)) Object.assign(r, updateData); });
                 });
-                window.betaCRMSummary = (crmState.adminData||[]).map(leadRow => window._buildBetaSummaryForLead(leadRow));
+                let _bulkMaps = window._buildPSEnrollLookupMaps();
+                window.betaCRMSummary = (crmState.adminData||[]).map(leadRow => window._buildBetaSummaryForLead(leadRow, _bulkMaps));
                 window.clearBetaCRMBulkSelection();
                 window.showToast ? window.showToast(`✅ ${ids.length} lead dikemaskini`, 'success', 1800) : alert('Berjaya dikemaskini');
             } catch(e) {
@@ -5830,6 +5870,26 @@
         };
 
         // ---------- RENDER TABLE (skipHeaderRegen=true untuk quick-search: elak fokus terputus & laju) ----------
+        // 🌟 FUNGSI BARU: DELETE LEAD DARI CRM BETA (jaga betaCRMSummary supaya tak stale)
+        window.padamLeadCRMBeta = async function(docId) {
+            if(!confirm("⚠️ Adakah anda pasti mahu memadam rekod Lead ini secara KEKAL?")) return;
+            try {
+                await deleteDoc(doc(db, "crm_leads", docId));
+
+                // Buang dari memori (state asal + summary Beta) supaya table terus refresh tepat
+                crmState.adminData = (crmState.adminData || []).filter(row => row.docId !== docId);
+                window.betaCRMSummary = (window.betaCRMSummary || []).filter(s => !s.lead || s.lead.docId !== docId);
+
+                window.renderCRMBetaTable();
+                if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none' && typeof window.renderCRMBetaMobileList === 'function') {
+                    window.renderCRMBetaMobileList();
+                }
+                window.showToast ? window.showToast('✅ Lead dipadam!', 'success', 1500) : alert("✅ Rekod CRM berjaya dihapuskan!");
+            } catch(e) {
+                alert("Gagal memadam rekod: " + e.message);
+            }
+        };
+
         window.renderCRMBetaTable = function(skipHeaderRegen) {
             let tbody = document.getElementById('betacrm-table-body');
             let thead = document.getElementById('betacrm-table-head');
@@ -5868,7 +5928,10 @@
                             let val = col.get(s);
                             if(!val) return `<td>-</td>`;
                             let phone = window.normalizePhone60(val);
-                            return `<td><a href="https://wa.me/${phone}" target="_blank" onclick="event.stopPropagation()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-1.5 py-1 rounded text-[11px] no-underline flex items-center gap-1 w-fit font-bold shadow transition">💬 ${val}</a></td>`;
+                            return `<td>
+                                <a href="https://wa.me/${phone}" target="_blank" onclick="event.stopPropagation()" class="bg-[#25D366] hover:bg-[#128C7E] text-white px-1.5 py-1 rounded text-[11px] no-underline flex items-center gap-1 w-fit font-bold shadow transition">💬 ${val}</a>
+                                <button onclick="event.stopPropagation(); window.copyBetaFUText('${l.docId}')" class="mt-1 bg-[#374151] hover:bg-[#4b5563] text-white px-1.5 py-1 rounded text-[11px] flex items-center gap-1 w-fit font-bold shadow transition" title="Copy FU text">📋 Copy</button>
+                            </td>`;
                         }
                         let val = col.get(s) || "-";
                         let cSty = col.key === 'NAME' ? `style="color:#00c6ff; font-weight:bold;"` : (col.key === 'TO FU' ? `style="color:#00e676; font-weight:bold;"` : "");
@@ -5877,7 +5940,10 @@
                     }).join('');
                     return `<tr onclick="window.openCRMBetaModal(${realIdx})" style="cursor:pointer;">
                         <td onclick="event.stopPropagation()" style="text-align:center;"><input type="checkbox" ${checked} onchange="window.toggleBetaCRMRowSelection('${l.docId}')" class="accent-[#00e676] w-4 h-4 cursor-pointer"></td>
-                        <td onclick="event.stopPropagation()"><button onclick="window.openCRMBetaModal(${realIdx})" class="w-6 h-6 rounded bg-[#3f51b5] text-white flex items-center justify-center text-[10px]">✏️</button></td>
+                        <td onclick="event.stopPropagation()"><div class="flex gap-1 items-center justify-center">
+                            <button onclick="window.openCRMBetaModal(${realIdx})" class="w-6 h-6 rounded bg-[#3f51b5] text-white flex items-center justify-center text-[10px]">✏️</button>
+                            <button onclick="window.padamLeadCRMBeta('${l.docId}')" class="w-6 h-6 rounded bg-red-600 hover:bg-red-500 text-white flex items-center justify-center text-[10px]">🗑️</button>
+                        </div></td>
                         ${cellsHtml}
                     </tr>`;
                 }).join('');
@@ -6142,14 +6208,29 @@
         };
 
         window.betaCRMCopyInviteDetails = function() {
-            let name = document.getElementById('betacrm-name')?.value || "-";
-            let contact = document.getElementById('betacrm-contact')?.value || "-";
-            let cls = document.getElementById('betacrm-class')?.value || "-";
-            let classDT = document.getElementById('betacrm-class-datetime')?.value || "-";
-            let txt = `Name: ${name}\nContact: ${contact}\nClass: ${cls}\nClass Date & Time: ${classDT}`;
+            let getV = id => document.getElementById(id)?.value || "-";
+            let cls = getV('betacrm-class');
+            let clsDt = getV('betacrm-class-datetime');
+            let name = getV('betacrm-name');
+            let phone = getV('betacrm-contact');
+            let email = getV('betacrm-email');
+            let state = getV('betacrm-state');
+            let source = getV('betacrm-source');
+            let umur = getV('betacrm-umur');
+            let occ = getV('betacrm-occupation');
+            let ft = getV('betacrm-first-time');
+            let reason = getV('betacrm-reason-learn');
+            let parents = getV('betacrm-parents');
+            let concern = getV('betacrm-concern-ps');
+
+            let txt = `Class : ${cls}\nClass Date & Time : ${clsDt}\nNama : ${name}\nPhone : ${phone}\nEmail : ${email}\nNegeri : ${state}\nSource : ${source}\nUmur : ${umur}\nKerja : ${occ}\n\nFirst Time Belajar : ${ft}\nKegunaan : ${reason}\nParents Detail : ${parents}\n\nRemarks : ${concern}`;
+
             navigator.clipboard.writeText(txt).then(() => {
-                window.showToast ? window.showToast('📋 Invite details disalin!', 'success', 1500) : alert('Invite details disalin!');
-            }).catch(() => alert('Gagal salin. Sila salin manual.'));
+                window.showToast ? window.showToast('📋 Invite details disalin!', 'success', 1500) : alert('✅ Berjaya copy Invite Detail! Boleh terus Paste di WhatsApp.');
+            }).catch(() => {
+                window._fallbackCopyText ? window._fallbackCopyText(txt) : null;
+                window.showToast ? window.showToast('📋 Invite details disalin!', 'success', 1500) : alert('Gagal salin. Sila salin manual.');
+            });
         };
 
         window._betaToggleRawHistory = function() {
@@ -6308,26 +6389,50 @@
             }).join('');
         };
 
-        // ---------- CHAT (ALL CHAT JSON) ----------
-        window.renderBetaChatList = function(rawChat) {
+        // ---------- CHAT (ALL CHAT JSON) — SAMA PERSIS macam CRM Master punya "Rekod Perbualan" ----------
+        window.renderBetaChatList = function(rawChat, leadData) {
             let box = document.getElementById('betacrm-chat-list');
             let rawBox = document.getElementById('betacrm-chat-raw');
             if(rawBox) rawBox.value = rawChat || "";
             if(!box) return;
-            if(!rawChat || !rawChat.trim()) { box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Tiada chat direkod.</div>`; return; }
+
+            if(!rawChat || !String(rawChat).trim()) {
+                box.innerHTML = `<div class="text-gray-500 text-center p-10 flex flex-col items-center justify-center h-full"><span class="text-4xl mb-2">📭</span> Tiada rekod perbualan dijumpai.</div>`;
+                return;
+            }
+
+            let data = leadData || {};
             try {
-                let arr = JSON.parse(rawChat);
-                if(!Array.isArray(arr)) throw new Error('bukan array');
-                box.innerHTML = arr.map(m => {
-                    let fromStaff = m.from === 'staff' || m.sender === 'staff' || m.role === 'staff';
-                    let sideCls = fromStaff ? 'chat-right' : 'chat-left';
-                    let who = m.name || m.sender || (fromStaff ? 'Staff' : 'Lead');
-                    let time = m.time || m.timestamp || '';
-                    let text = m.text || m.message || '';
-                    return `<div class="chat-bubble ${sideCls}"><div class="text-[9px] text-gray-500 mb-1">${who} · ${time}</div>${text}</div>`;
+                let chats = JSON.parse(rawChat);
+                if(!Array.isArray(chats)) chats = [chats];
+
+                let staffNameStr = (data["Staff Name"] || "").toLowerCase().split(" ")[0];
+
+                box.innerHTML = chats.map(c => {
+                    let text = c.text || c.message || c.msg || JSON.stringify(c);
+                    let sender = c.sender || c.name || "Unknown";
+                    let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
+                    let senderLow = sender.toLowerCase();
+                    let isMe = false;
+
+                    // 🌟 SAMA logik dengan CRM Master: nama Kunkwan/Class/Mandarin/staff = Hijau (isMe)
+                    if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow.includes("yana as") || senderLow === "me") {
+                        isMe = true;
+                    } else if (staffNameStr && senderLow.includes(staffNameStr)) {
+                        isMe = true;
+                    } else {
+                        isMe = false; // takde ciri staff = automatik prospek (Oren)
+                    }
+
+                    let alignClass = isMe ? 'chat-right' : 'chat-left';
+                    return `
+                        <div class="chat-bubble ${alignClass}">
+                            <div class="chat-header-line"><span class="chat-sender">${sender}</span><span class="chat-time">${dateStr}</span></div>
+                            <div class="chat-msg">${text}</div>
+                        </div>`;
                 }).join('');
             } catch(e) {
-                box.innerHTML = `<div class="text-center text-gray-600 text-xs p-4">Format chat tak dikenali. Guna "Lihat/Edit Raw JSON" di bawah.</div>`;
+                box.innerHTML = `<div class="text-gray-500 text-center p-5">Format JSON tidak sah.<br><br><span class="text-[#ff9800] text-xs break-all">${rawChat}</span></div>`;
             }
         };
 
@@ -6470,7 +6575,7 @@
             window.calcBetaInviteProgress();
 
             // Chat
-            window.renderBetaChatList(l["ALL CHAT (JSON)"] || "");
+            window.renderBetaChatList(l["ALL CHAT (JSON)"] || "", l);
 
             window.switchBetaTab('timeline');
             document.getElementById('modal-crm-beta').style.display = 'flex';
@@ -6572,6 +6677,7 @@
                 }
                 window.renderCRMBetaTable();
                 if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
+                window.calcBetaInviteProgress(); // 🌟 kira % kelengkapan SEKALI je lepas save (bukan tiap keystroke)
                 window.showToast ? window.showToast('✅ Lead disimpan!', 'success', 1500) : alert('Lead disimpan!');
                 window.closeCRMBetaModal();
             } catch(e) {
@@ -7132,9 +7238,14 @@
                             skippedNoStaff.push(`Baris ${idx + 1}: ${name}`);
                             return;
                         }
-                        // Formula bersihkan nombor fon dan selit 60
-                        let cleanPhone = rawPhone.replace(/[^0-9]/g, '');
-                        if(cleanPhone.startsWith('0')) cleanPhone = '60' + cleanPhone.substring(1);
+                        // Formula bersihkan nombor fon dan selit 60 -- TAPI kalau bukan nombor phone
+                        // (cth username WhatsApp macam "@_azdnn", takde digit langsung), simpan text asal.
+                        let cleanPhone = window.cleanPhoneDigits ? window.cleanPhoneDigits(rawPhone) : rawPhone.replace(/[^0-9]/g, '');
+                        if(cleanPhone) {
+                            if(cleanPhone.startsWith('0')) cleanPhone = '60' + cleanPhone.substring(1);
+                        } else {
+                            cleanPhone = rawPhone; // bukan nombor phone -> kekalkan text asal
+                        }
                         
                         validLeads.push({
                             NAME: name,
@@ -7161,6 +7272,43 @@
                 alert("⚠️ Tiada data sah dijumpai. Pastikan format betul: Nama, Phone, Source, Staff Name\n\nCth: Ali, 0123456789, Tik Tok, Aiman");
                 return;
             }
+
+            // 🌟 SEMAK DUPLICATE (dulu fungsi ni terus tembak semua, TAKDE check langsung!)
+            // Banding guna getContactKey supaya nombor phone ATAU username (cth "@_azdnn") sama-sama dikesan.
+            let btnCheck = document.querySelector('button[onclick="window.prosesBulkPasteCRM()"]');
+            if(btnCheck) { btnCheck.innerText = "🔍 Menyemak duplicate..."; btnCheck.disabled = true; }
+
+            let existingKeySet = new Set();
+            try {
+                const dupSnap = await getDocs(collection(db, "crm_leads"));
+                dupSnap.forEach(d => {
+                    let k = window.getContactKey(d.data()["CONTACT"] || d.data().contact);
+                    if(k) existingKeySet.add(k);
+                });
+            } catch(e) { console.error("Gagal semak duplicate:", e); }
+
+            let dupList = [];
+            let seenInBatch = new Set();
+            let finalLeads = [];
+            validLeads.forEach((lead, idx) => {
+                let k = window.getContactKey(lead["CONTACT"]);
+                if((k && existingKeySet.has(k)) || (k && seenInBatch.has(k))) {
+                    dupList.push(`${lead.NAME} (${lead.CONTACT})`);
+                    return; // skip -- dah wujud
+                }
+                if(k) seenInBatch.add(k);
+                finalLeads.push(lead);
+            });
+
+            if(btnCheck) { btnCheck.innerText = "📥 Simpan Leads"; btnCheck.disabled = false; }
+
+            if(dupList.length > 0) {
+                let msg = `⚠️ ${dupList.length} lead DILANGKAU sebab Contact dah wujud dalam sistem:\n\n${dupList.join('\n')}`;
+                if(finalLeads.length === 0) { alert(msg); return; }
+                if(!confirm(msg + `\n\nTeruskan simpan ${finalLeads.length} lead baru yang lain?`)) return;
+            }
+            validLeads = finalLeads;
+            if(validLeads.length === 0) return;
 
             if(!confirm(`Adakah anda pasti untuk menabur ${validLeads.length} leads baru?`)) return;
 
@@ -7445,11 +7593,74 @@
         };
 
         // ==========================================
+        // 🌟 Nama hari (Malay) dari tarikh format DD/MM/YYYY atau YYYY-MM-DD
+        // ==========================================
+        window._fuDayName = function(dateStr) {
+            if(!dateStr || dateStr === "-") return "";
+            let iso = window.toInputDate(dateStr); // -> YYYY-MM-DD
+            if(!iso) return "";
+            let d = new Date(iso + "T00:00:00");
+            if(isNaN(d.getTime())) return "";
+            let names = ["Ahad","Isnin","Selasa","Rabu","Khamis","Jumaat","Sabtu"];
+            return names[d.getDay()] || "";
+        };
+
+        // ==========================================
+        // 🌟 COPY FU TEXT — CRM Beta (Desktop View)
+        // ==========================================
+        window.copyBetaFUText = function(docId) {
+            let entry = (window.betaCRMSummary || []).find(s => s.lead && s.lead.docId === docId);
+            let l = entry ? entry.lead : (window.crmState_adminData_lookup ? null : null);
+            if(!l) {
+                // fallback cari terus dalam crmState kalau summary belum sync
+                l = (crmState.adminData || []).find(r => r.docId === docId) || (crmState.data || []).find(r => r.docId === docId);
+            }
+            if(!l) { window.showToast ? window.showToast('⚠️ Data lead tidak dijumpai', 'error', 1500) : alert('Data tidak dijumpai'); return; }
+
+            let fuDate = l["FOLLOW UP (DATE)"] || "";
+            let dayName = window._fuDayName(fuDate);
+            let tarikhLine = fuDate ? (dayName ? `${fuDate} (${dayName})` : fuDate) : "-";
+
+            let text = `Name : ${l["NAME"] || "-"}
+Contact : ${l["CONTACT"] || "-"}
+Staff Name : ${l["Staff Name"] || "-"}
+
+Action (TO FU):
+${l["TO FU"] || "-"}
+Tarikh : ${tarikhLine}
+Masa : ${l["FOLLOW UP (TIME)"] || "-"}
+
+History FU :
+${l["HISTORY FU"] || "-"}`;
+
+            let doToast = () => { window.showToast ? window.showToast('✅ Disalin ke clipboard', 'success', 1500) : null; };
+
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(doToast).catch(() => {
+                    window._fallbackCopyText(text); doToast();
+                });
+            } else {
+                window._fallbackCopyText(text); doToast();
+            }
+        };
+
+        window._fallbackCopyText = function(text) {
+            let ta = document.createElement('textarea');
+            ta.value = text;
+            ta.style.position = 'fixed';
+            ta.style.opacity = '0';
+            document.body.appendChild(ta);
+            ta.focus(); ta.select();
+            try { document.execCommand('copy'); } catch(e) { console.error(e); }
+            document.body.removeChild(ta);
+        };
+
+        // ==========================================
         // 🌟 NORMALIZE NO PHONE -> FORMAT 60XXXXXXXXX
         // (Buang semua simbol/space, pastikan kod negara 60)
         // ==========================================
         window.normalizePhone60 = function(p) {
-            let n = String(p || "").replace(/[^0-9]/g, '');
+            let n = window.cleanPhoneDigits ? window.cleanPhoneDigits(p) : String(p || "").replace(/[^0-9]/g, '');
             if (!n) return "";
             if (n.startsWith('60')) return n;
             if (n.startsWith('0')) return '60' + n.substring(1);
@@ -7460,8 +7671,36 @@
         // 🌟 CLEAN PHONE DIGITS -> buang semua simbol/space SAHAJA
         // (TAK paksa kod negara 60, selamat untuk no bukan Malaysia)
         // ==========================================
+        // 🌟 FIX: Ambil HANYA leading digit-run (nombor phone sebenar di hadapan),
+        // supaya angka yang terkandung dalam username WhatsApp (cth: "60135336090 farissa24")
+        // tak ikut melekat sekali dan rosakkan matching/duplicate-detection.
         window.cleanPhoneDigits = function(p) {
-            return String(p || "").replace(/[^0-9]/g, '');
+            let s = String(p || "").trim();
+            if(!s) return "";
+            // Tangkap blok leading yang terdiri drpd digit/space/dash/plus/kurungan (format lazim nombor phone),
+            // berhenti sebaik jumpa huruf/simbol lain (anggap situ mula username/label).
+            let m = s.match(/^[\d\s\-\+\(\)]+/);
+            let numPart = m ? m[0] : s;
+            return numPart.replace(/[^0-9]/g, '');
+        };
+
+        // ==========================================
+        // 🌟 GET CONTACT KEY -> key untuk duplicate-check yang boleh handle DUA jenis CONTACT:
+        //   1. Nombor phone (cth "60135336090", "60135336090 farissa24") -> key ikut digit
+        //   2. Username WhatsApp TANPA nombor langsung (cth "@_azdnn") -> key ikut text (case-insensitive)
+        // Elak masalah: cleanPhoneDigits("@_azdnn") = "" (kosong) -> duplicate check ter-skip.
+        // ==========================================
+        window.getContactKey = function(raw) {
+            let s = String(raw || "").trim();
+            if(!s || s === "-") return "";
+            let digits = window.cleanPhoneDigits(s);
+            if(digits && digits.length >= 7) {
+                if(digits.startsWith('60')) return 'phone_' + digits;
+                if(digits.startsWith('0')) return 'phone_60' + digits.substring(1);
+                return 'phone_60' + digits;
+            }
+            // Takde nombor phone valid -> anggap username/handle, banding literal (case-insensitive, buang space)
+            return 'user_' + s.toLowerCase().replace(/\s+/g, '');
         };
 
         // ==========================================
@@ -8105,7 +8344,7 @@
 
         // Format phone ke 60xxxxxxxxx (sama macam saveNewCRMLead)
         window._formatPhone60 = function(p) {
-            let n = String(p || "").replace(/[^0-9]/g, '');
+            let n = window.cleanPhoneDigits ? window.cleanPhoneDigits(p) : String(p || "").replace(/[^0-9]/g, '');
             if (!n) return "";
             if (n.startsWith('60')) return n;
             if (n.startsWith('0')) return '60' + n.substring(1);
@@ -12077,21 +12316,24 @@
 
     // 🌟 FORMAT PHONE (Wajib 60)
     const formatPhone60 = (p) => {
-        let n = String(p).replace(/[^0-9]/g, '');
+        let n = window.cleanPhoneDigits ? window.cleanPhoneDigits(p) : String(p).replace(/[^0-9]/g, '');
         if (!n) return "";
         if (n.startsWith('60')) return n;
         if (n.startsWith('0')) return '60' + n.substring(1);
         return '60' + n;
     };
     let cleanContact = formatPhone60(contactRaw);
+    // 🌟 FIX: kalau CONTACT bukan nombor phone (cth username "@_azdnn"), JANGAN kosongkan --
+    // simpan & banding guna text asal, bukan hasil formatPhone60 yg jadi "" untuk non-phone.
+    let contactToSave = cleanContact || contactRaw;
 
     try {
-        // 🌟 1. SEMAK DUPLICATE SECARA PINTAS (Cari phone number tu je, jimat kuota!)
-        const qDup = fbQuery(collection(db, "crm_leads"), fbWhere("CONTACT", "==", cleanContact));
+        // 🌟 1. SEMAK DUPLICATE SECARA PINTAS (Cari phone number ATAU username, jimat kuota!)
+        const qDup = fbQuery(collection(db, "crm_leads"), fbWhere("CONTACT", "==", contactToSave));
         const dupSnap = await getDocs(qDup);
         
         if (!dupSnap.empty) {
-            alert("⚠️ Nombor telefon ni DAH WUJUD dalam sistem! Sila guna fungsi Edit kat jadual, tak payah tambah baru.");
+            alert("⚠️ Contact ni DAH WUJUD dalam sistem! Sila guna fungsi Edit kat jadual, tak payah tambah baru.");
             btn.innerText = "💾 SIMPAN LEAD BARU"; btn.disabled = false;
             return;
         }
@@ -12124,7 +12366,7 @@
             "Lead ID": newLeadId,
             "Staff Name": staffName,
             "NAME": name,
-            "CONTACT": cleanContact,
+            "CONTACT": contactToSave,
             "STATUS": document.getElementById('add-crm-status').value,
             "SOURCE": document.getElementById('add-crm-source').value,
             "Timestamp Masuk": new Date().toISOString(),
