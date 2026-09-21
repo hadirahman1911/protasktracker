@@ -900,7 +900,9 @@
                         <button id="betacrm-view-mobile-btn" onclick="window.setBetaCRMView('mobile')" class="px-4 py-2 rounded-lg text-xs font-bold bg-[#333] text-gray-400">📱 Mobile View</button>
                         <button onclick="window.openBetaCRMBulkEdit()" class="bg-purple-600 hover:bg-purple-500 text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition">🛠️ Bulk Edit</button>
                         <button onclick="window.syncPhoneFromLinkedPS()" class="bg-[#f59e0b] hover:bg-[#d97706] text-black font-bold px-4 py-2 rounded-lg text-xs shadow transition">📞 Sync Phone (Linked PS→CRM)</button>
-                        <input type="text" id="betacrm-search" oninput="window.renderCRMBetaTable(true); window.renderCRMBetaMobileList();" placeholder="🔍 Search Name, Contact atau Lead ID..." class="flex-1 bg-[#111] text-white px-4 py-2 rounded-lg outline-none border border-[#333] focus:border-[#00e676] text-sm max-w-md">
+                        <button onclick="window.mergeDuplicateLeads()" class="bg-[#ec4899] hover:bg-[#db2777] text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition">🧬 Merge Duplicate (No. Phone)</button>
+                        <button onclick="window.backupCRMLeads()" class="bg-[#0ea5e9] hover:bg-[#0284c7] text-white font-bold px-4 py-2 rounded-lg text-xs shadow transition">💾 Backup CRM (Excel + JSON)</button>
+                        <input type="text" id="betacrm-search" oninput="window._debouncedRenderBetaCRMSearch()" placeholder="🔍 Search Name, Contact atau Lead ID..." class="flex-1 bg-[#111] text-white px-4 py-2 rounded-lg outline-none border border-[#333] focus:border-[#00e676] text-sm max-w-md">
                     </div>
 
                     <!-- DESKTOP VIEW -->
@@ -1155,7 +1157,7 @@
                 <div class="bg-[#1e1e1e] p-5 rounded-xl border border-[#333] mt-4">
                     <h3 class="text-[#00c6ff] font-bold m-0 flex items-center gap-2">🗂️ Status Manager <span class="text-[9px] bg-yellow-500/20 text-yellow-400 border border-yellow-500/40 px-2 py-0.5 rounded-full normal-case">Untuk CRM (Beta)</span></h3>
                     <p class="text-xs text-gray-400 mt-1 mb-0">Urus pilihan untuk 3 field status kat Lead: <b class="text-[#60a5fa]">Status</b>, <b class="text-[#a78bfa]">Invite Status</b>, <b class="text-[#4ade80]">Attend Status</b>. Tambah/edit/padam/seret-susun/tukar warna — auto sync ke dropdown CRM (Beta) sebaik simpan.</p>
-                    <p class="text-[10px] text-yellow-500 mt-2 mb-0">⚠️ Nota: <b>Invite Status</b> & <b>Attend Status</b> = field baru dalam <code class="bg-[#111] px-1 rounded">crm_leads</code>, staf <b>set manual</b> je (bukan auto-sync dari Attendance PS Master).</p>
+                    <p class="text-[10px] text-yellow-500 mt-2 mb-0">⚠️ Nota: <b>Invite Status</b> & <b>Attend Status</b> = field baru dalam <code class="bg-[#111] px-1 rounded">crm_leads</code>, <b>Attend Status</b> = auto ikut column Attendance PS Master (terkini); <b>Invite Status</b> auto jadi "Invite" bila Status = Invite, selain tu kekal.</p>
                     <div id="status-manager-cards" class="grid grid-cols-1 lg:grid-cols-3 gap-4 mt-4"></div>
                 </div>
 
@@ -1582,7 +1584,7 @@
                     <div>
                         <label class="text-[9px] uppercase tracking-wide text-gray-500 font-bold block mb-1">Attend Status</label>
                         <select id="betacrm-attend-status" onchange="window.paintStatusSelectLive('betacrm-attend-status')" class="beta-status-pill w-full text-xs font-bold rounded-lg px-2 py-2 outline-none border"></select>
-                        <p class="text-[9px] text-gray-600 mt-1.5">💡 Default auto-cadang ikut Status/Attendance — staf boleh override & Save bila-bila masa.</p>
+                        <p class="text-[9px] text-gray-600 mt-1.5">💡 Attend Status = auto ikut column Attendance (PS Master terkini). Invite Status auto jadi "Invite" bila Status = Invite; status lain kekal.</p>
                     </div>
                 </div>
             </div>
@@ -2479,7 +2481,7 @@
         window.STATUS_CATEGORIES = [
             { key: 'status', label: 'Status', accent: '#60a5fa', desc: 'Status utama lead (New → Closed).' },
             { key: 'inviteStatus', label: 'Invite Status', accent: '#a78bfa', desc: 'Status jemputan kelas. Manual set oleh staf.' },
-            { key: 'attendStatus', label: 'Attend Status', accent: '#4ade80', desc: 'Status kehadiran. Manual set oleh staf — BUKAN auto dari Attendance PS Master.' }
+            { key: 'attendStatus', label: 'Attend Status', accent: '#4ade80', desc: 'Status kehadiran. AUTO ikut column Attendance PS Master (terkini). Tambah label Absent/Half kalau nak dipaparkan sama.' }
         ];
         window.SWATCHES = ['#60a5fa','#a78bfa','#4ade80','#f59e0b','#ef4444','#00c6ff','#ec4899','#94a3b8'];
         window.DEFAULT_STATUS_CONFIG = {
@@ -2693,10 +2695,76 @@
             sel.style.background = `linear-gradient(90deg, ${window.hexToRgba(color,0.30)}, ${window.hexToRgba(color,0.10)})`;
             sel.style.borderColor = window.hexToRgba(color, 0.7);
             sel.style.color = color;
+            if(sel._syncCustomDropdown) sel._syncCustomDropdown(); // 🌟 sync custom dropdown trigger (kalau dah di-init)
         };
         window.paintStatusSelectLive = function(selectId) {
             let catKeyMap = { 'betacrm-status':'status', 'betacrm-invite-status':'inviteStatus', 'betacrm-attend-status':'attendStatus' };
             window.paintStatusSelect(selectId, window.statusConfig[catKeyMap[selectId]]);
+        };
+
+        // ==========================================
+        // 🌟 CUSTOM DROPDOWN (bukan native <select> popup) -- native dropdown guna styling
+        // OS/browser sendiri (background putih, highlight biru) yang tak boleh di-override penuh,
+        // lagi-lagi kat mobile. Fix: <select> asal kekal (jadi "value holder" je, disorokkan),
+        // dan kita bina panel custom dark-theme kat atas dia. Semua code sedia ada yang baca
+        // .value / .onchange TAK PERLU diubah langsung -- select tu masih functional macam biasa.
+        // ==========================================
+        window._customDropdownInit = function(selectId) {
+            let sel = document.getElementById(selectId);
+            if(!sel || sel.dataset.customized === '1') { if(sel && sel._syncCustomDropdown) sel._syncCustomDropdown(); return; }
+            sel.dataset.customized = '1';
+
+            let wrap = document.createElement('div');
+            wrap.style.position = 'relative';
+            sel.parentNode.insertBefore(wrap, sel);
+            wrap.appendChild(sel);
+
+            sel.style.position = 'absolute';
+            sel.style.opacity = '0';
+            sel.style.pointerEvents = 'none';
+            sel.style.width = '1px'; sel.style.height = '1px'; sel.style.overflow = 'hidden';
+
+            let trigger = document.createElement('button');
+            trigger.type = 'button';
+            trigger.className = 'beta-status-pill w-full text-xs font-bold rounded-lg px-2 py-2 outline-none border flex items-center justify-between gap-1';
+            wrap.appendChild(trigger);
+
+            let panel = document.createElement('div');
+            panel.className = 'hidden';
+            panel.style.cssText = 'position:absolute; top:100%; left:0; right:0; margin-top:4px; background:#1e1e1e; border:1px solid #444; border-radius:8px; z-index:200; overflow-y:auto; max-height:220px; box-shadow:0 8px 24px rgba(0,0,0,0.5);';
+            wrap.appendChild(panel);
+
+            function syncTrigger() {
+                let opt = sel.options[sel.selectedIndex];
+                trigger.innerHTML = `<span>${opt ? opt.text : '-'}</span><span style="opacity:0.6;font-size:9px;">${sel.dataset.locked === '1' ? '🤖 Auto' : '▼'}</span>`;
+                trigger.style.background = sel.style.background;
+                trigger.style.borderColor = sel.style.borderColor;
+                trigger.style.color = sel.style.color;
+            }
+            function rebuildPanel() {
+                panel.innerHTML = Array.from(sel.options).map((o, i) =>
+                    `<div data-idx="${i}" style="padding:9px 10px; cursor:pointer; font-size:12px; font-weight:bold; color:#ddd;" onmouseover="this.style.background='#2a2a2a'" onmouseout="this.style.background='transparent'">${o.text}</div>`
+                ).join('');
+                panel.querySelectorAll('[data-idx]').forEach(el => {
+                    el.onclick = () => {
+                        sel.selectedIndex = parseInt(el.getAttribute('data-idx'));
+                        sel.dispatchEvent(new Event('change', { bubbles: true }));
+                        panel.classList.add('hidden');
+                        syncTrigger();
+                    };
+                });
+            }
+            trigger.onclick = (e) => {
+                e.stopPropagation();
+                document.querySelectorAll('.beta-custom-dd-open').forEach(p => { if(p !== panel) p.classList.add('hidden'); });
+                rebuildPanel();
+                panel.classList.toggle('hidden');
+                panel.classList.toggle('beta-custom-dd-open');
+            };
+            document.addEventListener('click', () => panel.classList.add('hidden'));
+
+            sel._syncCustomDropdown = syncTrigger;
+            syncTrigger();
         };
 
         function getTargetJam(objTarget, timeStr) {
@@ -5431,6 +5499,10 @@
                     if(elLast) elLast.innerText = fresh.lastClassRow ? `Last: ${fresh.lastClassRow["Class"]||"-"} · ${fresh.lastClassRow["Date"]||"-"}` : "-";
                     if(elInv) elInv.innerText = 'RM' + fresh.totalInvoiceAmount.toLocaleString();
                     if(elInvCount) elInvCount.innerText = fresh.enrollRows.length + ' invois';
+                    let elAttSel = document.getElementById('betacrm-attend-status');
+                    if(elAttSel) { elAttSel.value = fresh.effectiveAttendStatus || ""; window.paintStatusSelectLive('betacrm-attend-status'); }
+                    let elInvSel = document.getElementById('betacrm-invite-status');
+                    if(elInvSel && fresh.hasPSCode) { elInvSel.value = "Invite"; window.paintStatusSelectLive('betacrm-invite-status'); window.calcBetaInviteProgress(); }
 
                     let msgParts = [];
                     if(foundPS) msgParts.push('PS Master (' + (foundPS["Student Name"]||foundPS["Name"]||"-") + ')');
@@ -5470,8 +5542,10 @@
         };
 
         window._buildPSEnrollLookupMaps = function() {
-            let allPS = [...(psState.adminData || []), ...(psState.data || [])];
-            let allEnroll = [...(enrollState.adminData || []), ...(enrollState.data || [])];
+            // 🌟 Termasuk hasil scan PENUH (_getAllPSFull/_getAllEnrollFull) yang kekal dalam memori -- kalau tak, state separa
+            // (psState.adminData) tak cukup & Attend Status jadi "In Progress" balik selagi lead tak dibuka.
+            let allPS = [...(psState.adminData || []), ...(psState.data || []), ...((window._psFullCache && window._psFullCache.data) || [])];
+            let allEnroll = [...(enrollState.adminData || []), ...(enrollState.data || []), ...((window._enrollFullCache && window._enrollFullCache.data) || [])];
 
             let psByDocId = {}, psByPhone = {};
             let seenPS = {};
@@ -5494,6 +5568,17 @@
             });
 
             return { psByDocId, psByPhone, enrollByDocId, enrollByPhone };
+        };
+
+        // 🤖 Map value column Attendance (PS Master) -> label Attend Status.
+        // Utamakan label yang sama dgn Status Manager (cth Absent/Half kalau staf dah tambah), fallback: Attended -> "Attended", selain -> "In Progress".
+        window._betaAttendFromAttendance = function(att) {
+            let a = String(att||"").trim().toLowerCase();
+            if(!a) return "";
+            let opts = (window.statusConfig && window.statusConfig.attendStatus) || [];
+            let exact = opts.find(o => String(o.label).trim().toLowerCase() === a);
+            if(exact) return exact.label;
+            return a === "attended" ? "Attended" : "In Progress";
         };
 
         window._buildBetaSummaryForLead = function(leadRow, maps) {
@@ -5544,9 +5629,13 @@
             // - Invite Status: Status == "Invite" -> "Invite", selain itu -> "In Progress"
             // - Attend Status: rekod PS Master terkini (lastClassRow) Attendance == "Attended" -> "Attended", selain -> "In Progress"
             let defaultInviteStatus = (String(leadRow["STATUS"]||"").trim().toLowerCase() === "invite") ? "Invite" : "In Progress";
-            let defaultAttendStatus = (lastClassRow && String(lastClassRow["Attendance"]||"").trim().toLowerCase() === "attended") ? "Attended" : "In Progress";
-            let effectiveInviteStatus = leadRow["Invite Status"] || defaultInviteStatus;
-            let effectiveAttendStatus = leadRow["Attend Status"] || defaultAttendStatus;
+            let defaultAttendStatus = window._betaAttendFromAttendance(lastClassRow ? lastClassRow["Attendance"] : "") || "In Progress";
+            // 🎟️ Lead yang ada PS Code (Potential Student Code) dalam PS Master = dah diinvite -> Invite Status sentiasa "Invite"
+            let hasPSCode = psRows.some(r => { let c = String(r["Potential Student Code"]||"").trim(); return c && c !== "-"; });
+            let effectiveInviteStatus = hasPSCode ? "Invite" : (leadRow["Invite Status"] || defaultInviteStatus);
+            // 🤖 Attend Status = AUTO ikut column Attendance (PS Master terkini). Kalau tiada rekod PS langsung, baru guna value tersimpan / default.
+            let attendIsAuto = !!(lastClassRow && String(lastClassRow["Attendance"]||"").trim());
+            let effectiveAttendStatus = attendIsAuto ? defaultAttendStatus : (leadRow["Attend Status"] || defaultAttendStatus);
 
             return {
                 lead: leadRow,
@@ -5556,8 +5645,258 @@
                 lastInvoiceRow,
                 totalInvoiceAmount,
                 defaultInviteStatus, defaultAttendStatus,
-                effectiveInviteStatus, effectiveAttendStatus
+                effectiveInviteStatus, effectiveAttendStatus, attendIsAuto, hasPSCode
             };
+        };
+
+        // 💾 BACKUP CRM: muat turun SEMUA crm_leads (terus dari Firestore) sebagai .json (lengkap, sesuai untuk restore) + .xlsx (senang tengok)
+        window.backupCRMLeads = async function(preloaded, silent) {
+            try {
+                let all = preloaded;
+                if(!all) {
+                    const snap = await getDocs(collection(db, "crm_leads"));
+                    all = [];
+                    snap.forEach(d => all.push({ docId: d.id, ...d.data() }));
+                }
+                let stamp = new Date().toISOString().slice(0, 16).replace(/[:T]/g, '-');
+
+                // JSON (semua field, kekal struktur asal)
+                let a = document.createElement('a');
+                a.href = URL.createObjectURL(new Blob([JSON.stringify(all, null, 1)], { type: 'application/json' }));
+                a.download = `crm_leads_backup_${stamp}.json`;
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+                // Excel
+                let keys = [...new Set(all.flatMap(o => Object.keys(o)))];
+                keys = ['docId', ...keys.filter(k => k !== 'docId')];
+                let rows = all.map(o => {
+                    let r = {};
+                    keys.forEach(k => {
+                        let v = o[k];
+                        if(Array.isArray(v) && v.every(x => typeof x !== 'object')) v = v.join(', ');
+                        else if(v && typeof v === 'object') v = JSON.stringify(v);
+                        if(typeof v === 'string' && v.length > 32000) v = v.slice(0, 32000); // had 1 sel Excel
+                        r[k] = (v === undefined || v === null) ? '' : v;
+                    });
+                    return r;
+                });
+                let wb = XLSX.utils.book_new();
+                XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(rows), 'crm_leads');
+                setTimeout(() => XLSX.writeFile(wb, `crm_leads_backup_${stamp}.xlsx`), 400);
+
+                if(!silent) alert(`✅ Backup siap: ${all.length} lead. 2 fail (.json & .xlsx) dimuat turun ke folder Downloads.\n\nKalau browser tanya "Allow multiple downloads", pilih Allow.`);
+            } catch(e) {
+                console.error("Gagal backup CRM:", e);
+                alert("❌ Gagal backup: " + e.message);
+                throw e;
+            }
+        };
+
+        // 🧬 MERGE LEAD PENDUA (nombor telefon sama)
+        // - Scan PENUH crm_leads, kumpul ikut no phone (9 digit terakhir)
+        // - Lead dengan Lead ID paling AWAL jadi utama; field kosong diisi dari pendua, Tags digabung, History FU disambung
+        // - Pendua dipadam SELEPAS confirm (tak boleh undo)
+        window.mergeDuplicateLeads = async function() {
+            let overlay = null;
+            try {
+                const snap = await getDocs(collection(db, "crm_leads"));
+                let all = [];
+                snap.forEach(d => all.push({ docId: d.id, ...d.data() }));
+
+                let groups = {};
+                all.forEach(l => {
+                    let k = window._phoneKey9(l["CONTACT"]);
+                    if(!k) return;
+                    (groups[k] = groups[k] || []).push(l);
+                });
+                let dupGroups = Object.values(groups).filter(g => g.length > 1);
+                if(dupGroups.length === 0) { alert("✅ Tiada lead pendua (no. phone sama) dijumpai."); return; }
+
+                let leadNum = l => { let n = parseInt(String(l["Lead ID"]||"").replace(/\D/g,'')); return isNaN(n) ? Infinity : n; };
+                dupGroups.forEach(g => g.sort((a, b) => leadNum(a) - leadNum(b)));
+
+                let totalDelete = dupGroups.reduce((n, g) => n + g.length - 1, 0);
+                let preview = dupGroups.slice(0, 15).map(g =>
+                    `• ${g[0]["Lead ID"]||g[0].docId} ← ${g.slice(1).map(x => x["Lead ID"]||x.docId).join(', ')}  (${g[0]["CONTACT"]})`
+                ).join('\n');
+                if(dupGroups.length > 15) preview += `\n... dan ${dupGroups.length - 15} kumpulan lagi`;
+                if(!confirm(`Jumpa ${dupGroups.length} kumpulan pendua (${totalDelete} lead akan DIPADAM selepas digabung ke lead utama / Lead ID paling awal):\n\n${preview}\n\nData kosong pada lead utama akan diisi dari pendua, Tags digabung, History FU disambung.\nTindakan ni TAK BOLEH di-undo. Teruskan?\n\n(Backup .json + .xlsx akan dimuat turun automatik dulu sebelum apa-apa dipadam.)`)) return;
+
+                // 🛡️ Kalau kumpulan terlalu banyak, bagi pilihan cuba sikit dulu
+                if(dupGroups.length > 20) {
+                    let ans = prompt(`Ada ${dupGroups.length} kumpulan pendua.\nBerapa kumpulan nak digabung SEKARANG?\n(Disyorkan cuba 20 dulu & semak hasil. Kosongkan = semua)`, '20');
+                    if(ans === null) return;
+                    let n = parseInt(ans);
+                    if(!isNaN(n) && n > 0 && n < dupGroups.length) dupGroups = dupGroups.slice(0, n);
+                }
+
+                // ===== PROGRESS OVERLAY =====
+                overlay = document.createElement('div');
+                overlay.id = 'merge-progress-overlay';
+                overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.75); z-index:100000; display:flex; align-items:center; justify-content:center;';
+                overlay.innerHTML = `
+                    <div style="background:#1a1a1a; border:1px solid #ec4899; border-radius:12px; padding:22px 26px; width:min(420px,90vw); color:#fff;">
+                        <div style="font-weight:bold; font-size:14px; margin-bottom:4px;">🧬 Merge Duplicate</div>
+                        <div id="mp-stage" style="font-size:11px; color:#9ca3af; margin-bottom:12px;">Menyediakan...</div>
+                        <div style="height:10px; background:#111; border:1px solid #333; border-radius:999px; overflow:hidden;">
+                            <div id="mp-bar" style="height:100%; width:0%; background:linear-gradient(90deg,#ec4899,#a78bfa); transition:width .2s;"></div>
+                        </div>
+                        <div style="display:flex; justify-content:space-between; margin-top:8px; font-size:12px; font-weight:bold;">
+                            <span id="mp-count">0/${dupGroups.length}</span><span id="mp-pct">0%</span>
+                        </div>
+                        <div id="mp-note" style="font-size:10px; color:#f59e0b; min-height:14px; margin-top:6px;"></div>
+                        <button id="mp-cancel" type="button" style="margin-top:10px; background:#333; color:#ddd; border:none; border-radius:6px; padding:6px 14px; font-size:11px; font-weight:bold; cursor:pointer;">Batal</button>
+                    </div>`;
+                document.body.appendChild(overlay);
+                let cancelled = false, hung = false, cancelResolve;
+                const cancelPromise = new Promise(r => { cancelResolve = r; });
+                overlay.querySelector('#mp-cancel').onclick = () => { cancelled = true; cancelResolve('cancel'); }; // batal SERTA-MERTA (tak tunggu server)
+                const setProgress = (done, total, stage) => {
+                    let pct = total ? Math.round((done / total) * 100) : 0;
+                    overlay.querySelector('#mp-bar').style.width = pct + '%';
+                    overlay.querySelector('#mp-count').innerText = `${done}/${total}`;
+                    overlay.querySelector('#mp-pct').innerText = pct + '%';
+                    if(stage) overlay.querySelector('#mp-stage').innerText = stage;
+                };
+
+                setProgress(0, dupGroups.length, '💾 Muat turun backup dulu...');
+                await window.backupCRMLeads(all, true); // kalau backup gagal, merge dibatalkan (throw -> catch)
+
+                const isEmpty = v => v === undefined || v === null || (typeof v === 'string' && (v.trim() === '' || v.trim() === '-')) || (Array.isArray(v) && v.length === 0);
+                const toTagArr = v => Array.isArray(v) ? v.map(x => String(x).trim()).filter(Boolean) : String(v||'').split(',').map(x => x.trim()).filter(Boolean);
+                const SKIP = new Set(['docId', 'Lead ID', 'Timestamp Masuk']);
+                let todayStr = new Date().toISOString().split('T')[0];
+                let timeStr = new Date().toLocaleTimeString('en-US', { hour12: false, hour: '2-digit', minute: '2-digit' });
+
+                // Bina pelan merge untuk setiap kumpulan
+                let plans = dupGroups.map(g => {
+                    let primary = g[0], merged = {}, delIds = [];
+                    g.slice(1).forEach(d => {
+                        Object.keys(d).forEach(k => {
+                            if(SKIP.has(k)) return;
+                            let cur = (k in merged) ? merged[k] : primary[k];
+                            if(k === 'Tags') {
+                                let u = [...new Set([...toTagArr(cur), ...toTagArr(d[k])])];
+                                if(u.length !== toTagArr(cur).length) merged[k] = u;
+                                return;
+                            }
+                            if(k === 'HISTORY FU') {
+                                let curLines = String(cur||'').split('\n').map(x => x.trim()).filter(Boolean);
+                                let add = String(d[k]||'').split('\n').map(x => x.trim()).filter(x => x && !curLines.includes(x));
+                                if(add.length) merged[k] = [...curLines, ...add].join('\n');
+                                return;
+                            }
+                            if(k === 'STATUS') {
+                                let c = String(cur||'').trim().toLowerCase(), n = String(d[k]||'').trim().toLowerCase();
+                                if((isEmpty(cur) || c === 'new') && !isEmpty(d[k]) && n !== 'new') merged[k] = d[k];
+                                return;
+                            }
+                            if(isEmpty(cur) && !isEmpty(d[k])) merged[k] = d[k];
+                        });
+                        let hist = (merged['HISTORY FU'] !== undefined ? merged['HISTORY FU'] : primary['HISTORY FU']) || '';
+                        merged['HISTORY FU'] = hist + (hist ? '\n' : '') + `[${todayStr} ${timeStr}] [AUTO] Digabung dari lead pendua ${d["Lead ID"]||d.docId}`;
+                        delIds.push(d.docId);
+                    });
+                    return { primary, merged, delIds };
+                });
+
+                // Commit SATU kumpulan setiap kali (atomik per kumpulan) supaya progress X/X tepat
+                let doneCount = 0, deletedIds = new Set();
+                setProgress(0, plans.length, '🧬 Menggabung lead...');
+                for(let plan of plans) {
+                    if(cancelled) break;
+                    let batch = writeBatch(db);
+                    if(Object.keys(plan.merged).length) batch.update(doc(db, "crm_leads", plan.primary.docId), plan.merged);
+                    plan.delIds.forEach(id => batch.delete(doc(db, "crm_leads", id)));
+                    let note = overlay.querySelector('#mp-note');
+                    let warn = setTimeout(() => { note.innerText = '⏳ Server lambat balas... (sambungan perlahan atau had Firestore?)'; }, 8000);
+                    let toHandle, result;
+                    try {
+                        result = await Promise.race([
+                            batch.commit().then(() => 'ok'),
+                            cancelPromise,
+                            new Promise(r => { toHandle = setTimeout(() => r('timeout'), 30000); })
+                        ]);
+                    } finally { clearTimeout(warn); clearTimeout(toHandle); }
+                    if(result === 'cancel') break;
+                    if(result === 'timeout') { hung = true; break; }
+                    note.innerText = '';
+                    plan.delIds.forEach(id => deletedIds.add(id));
+                    Object.assign(plan.primary, plan.merged);
+                    doneCount++;
+                    setProgress(doneCount, plans.length, `🧬 Menggabung ${plan.primary["Lead ID"]||''} ...`);
+                }
+
+                [crmState.adminData, crmState.data].forEach(arr => {
+                    if(!arr) return;
+                    for(let i = arr.length - 1; i >= 0; i--) if(deletedIds.has(arr[i].docId)) arr.splice(i, 1);
+                });
+                setProgress(doneCount, plans.length, cancelled ? '⚠️ Dibatalkan' : (hung ? '❌ Server tak balas' : '✅ Siap!'));
+                await new Promise(r => setTimeout(r, 400)); // bagi sempat nampak 100%
+                if(overlay) { overlay.remove(); overlay = null; }
+                if(hung) {
+                    alert(`❌ Server Firestore tak membalas dalam 30 saat, merge dihentikan.\n${doneCount}/${plans.length} kumpulan siap.\n\nKemungkinan kuota Firestore habis atau sambungan bermasalah. Kumpulan yang sedang dihantar masih boleh siap sendiri nanti bila sambungan pulih. Cuba semula kemudian.`);
+                } else {
+                    alert(cancelled
+                        ? `⚠️ Dibatalkan: ${doneCount}/${plans.length} kumpulan siap digabung, ${deletedIds.size} lead pendua dipadam.\n(Kumpulan yang sedang dihantar mungkin masih menunggu server dan boleh siap sendiri nanti.)`
+                        : `✅ Selesai! ${doneCount}/${plans.length} kumpulan digabung, ${deletedIds.size} lead pendua dipadam.`);
+                }
+                window.loadCRMBetaData(true);
+            } catch(e) {
+                console.error("Gagal merge lead pendua:", e);
+                if(overlay) { overlay.remove(); overlay = null; }
+                alert("❌ Gagal merge: " + e.message);
+            }
+        };
+
+        // 🔄 AUTO SYNC SEMUA LEAD (senyap, background): tak perlu buka lead satu-satu.
+        // - Scan penuh ps_students & ps_enroll SEKALI (cache 3 min) -> link Linked PS/Enroll DocID kalau belum ada
+        // - Attend Status disimpan TERUS ke Firestore ikut Attendance PS Master terkini (hanya lead yang nilainya berubah -> jimat write)
+        window._betaBulkSyncRunning = false;
+        window._betaBulkAutoSyncAll = async function() {
+            if(window._betaBulkSyncRunning) return;
+            window._betaBulkSyncRunning = true;
+            try {
+                await window._getAllPSFull();
+                await window._getAllEnrollFull();
+                let maps = window._buildPSEnrollLookupMaps(); // dah termasuk data penuh
+                let leads = crmState.adminData || [];
+                let changes = []; // { lead, updates }
+
+                leads.forEach(lead => {
+                    if(!lead.docId) return;
+                    let sum = window._buildBetaSummaryForLead(lead, maps);
+                    let updates = {};
+                    if(sum.psRows.length && !lead["Linked PS DocID"]) updates["Linked PS DocID"] = sum.psRows[0].docId;
+                    if(sum.enrollRows.length && !lead["Linked Enroll DocID"]) updates["Linked Enroll DocID"] = sum.enrollRows[0].docId;
+                    if(sum.attendIsAuto && (lead["Attend Status"] || "") !== sum.effectiveAttendStatus) updates["Attend Status"] = sum.effectiveAttendStatus;
+                    if(sum.hasPSCode && (lead["Invite Status"] || "") !== "Invite") updates["Invite Status"] = "Invite"; // ada PS Code -> Invite
+                    if(Object.keys(updates).length) changes.push({ lead, updates });
+                });
+
+                // Tulis dalam batch (max 450 op / batch)
+                for(let i = 0; i < changes.length; i += 450) {
+                    let batch = writeBatch(db);
+                    changes.slice(i, i + 450).forEach(c => batch.update(doc(db, "crm_leads", c.lead.docId), c.updates));
+                    await batch.commit();
+                }
+                changes.forEach(c => {
+                    Object.assign(c.lead, c.updates);
+                    let other = (crmState.data || []).find(r => r.docId === c.lead.docId);
+                    if(other && other !== c.lead) Object.assign(other, c.updates);
+                });
+
+                // Bina semula summary dengan data penuh & refresh table
+                window.betaCRMSummary = leads.map(l => window._buildBetaSummaryForLead(l, maps));
+                window.renderCRMBetaTable();
+                if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
+                if(changes.length && window.showToast) window.showToast('🔄 Auto-sync: ' + changes.length + ' lead dikemas kini', 'success', 2000);
+                console.log('[Auto-Sync Semua] ' + changes.length + ' lead dikemas kini dalam database.');
+            } catch(e) {
+                console.error('Auto-sync semua lead gagal:', e);
+            } finally {
+                window._betaBulkSyncRunning = false;
+            }
         };
 
         window.loadCRMBetaData = async function(forceRefresh) {
@@ -5583,7 +5922,13 @@
             window.betaCRMSummary = leads.map(leadRow => window._buildBetaSummaryForLead(leadRow, _maps));
             window.betaCRMPage = 1;
             window.renderCRMBetaTable();
-            window.renderCRMBetaMobileList();
+            // 🚀 PERF FIX: render mobile list HANYA kalau memang tengah visible -- dulu render SETIAP KALI
+            // walaupun user tengah kat Desktop View, bazir kerja & sumbang kepada freeze di phone.
+            if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') {
+                window.renderCRMBetaMobileList();
+            }
+            // 🔄 Sync semua lead ke PS Master/Enroll di belakang tabir (tak block UI, tak perlu buka lead)
+            window._betaBulkAutoSyncAll();
         };
 
         window.setBetaCRMView = function(mode) {
@@ -5809,7 +6154,7 @@
                 let colSty = col.color ? `color:${col.color};` : "";
                 html += `<th style="${colSty} overflow:visible; position:sticky; top:0; z-index:20; background-color:#1e1e1e; min-width:150px;">
                     <div class="th-content" style="cursor:pointer;" onclick="window.sortBetaCRM('${col.key}')">${col.label} <span class="sort-icon">${getIcon(col.key)}</span></div>
-                    <input type="text" data-col="${col.key}" oninput="window.renderCRMBetaTable(true)" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="betacrm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
+                    <input type="text" data-col="${col.key}" oninput="window._debouncedRenderBetaCRMSearch()" onclick="event.stopPropagation()" placeholder="🔍 Cari..." class="betacrm-quick-search w-full mb-1.5 mt-1 bg-[#1a1a1a] text-[#00c6ff] p-1.5 rounded border border-[#00c6ff] outline-none text-[10px] placeholder-gray-600 shadow-inner"${searchVal}>
                     <div class="text-left relative">
                         <button onclick="window.toggleBetaCRMFilterMenu('${col.key}', this)" class="w-full ${btnBg} text-gray-300 hover:bg-[#222] text-[10px] p-1.5 rounded flex justify-between items-center outline-none transition">
                             ${btnText} <span class="text-[8px] ml-1">▼</span>
@@ -5823,8 +6168,35 @@
         };
 
         // ---------- FILTER + SORT + SEARCH gabungan (guna col.get() abstraction, sokong quick search per column) ----------
+        // 🚀 PERF FIX: debounce -- tunggu user berhenti taip ~250ms baru render, elak render setiap huruf.
+        window._debounce = function(fn, delay) {
+            let timer = null;
+            return function(...args) {
+                clearTimeout(timer);
+                timer = setTimeout(() => fn.apply(this, args), delay);
+            };
+        };
+        window._debouncedRenderBetaCRMSearch = window._debounce(function() {
+            window.renderCRMBetaTable(true);
+            if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none' && typeof window.renderCRMBetaMobileList === 'function') {
+                window.renderCRMBetaMobileList();
+            }
+        }, 250);
+
         window._betaCRMFiltered = function() {
             let globalSearch = (document.getElementById('betacrm-search')?.value || '').toLowerCase().trim();
+
+            // 🚀 PERF FIX: querySelectorAll + column-lookup + value dulu SEKALI je di luar loop
+            // (dulu ni jalan SEKALI PER LEAD -- kalau 3000 lead = 3000x DOM query, tu punca lag).
+            let quickSearches = Array.from(document.querySelectorAll('#betacrm-desktop-wrapper .betacrm-quick-search'))
+                .map(inp => ({ q: inp.value.toLowerCase().trim(), col: window.betaCRMColumns.find(c => c.key === inp.getAttribute('data-col')) }))
+                .filter(qs => qs.q && qs.col);
+
+            // Excel multi-select filters -> resolve column object sekali je di luar loop jugak
+            let activeMultiFilters = Object.keys(window.betaCRMFilters || {})
+                .map(colKey => ({ selectedArr: window.betaCRMFilters[colKey], col: window.betaCRMColumns.find(c => c.key === colKey) }))
+                .filter(f => f.selectedArr && f.selectedArr.length > 0 && f.col);
+
             let result = window.betaCRMSummary.filter(s => {
                 let l = s.lead;
                 if(globalSearch) {
@@ -5834,24 +6206,14 @@
                     if(!matchGlobal) return false;
                 }
                 // Excel multi-select filters per column
-                for(let colKey in window.betaCRMFilters) {
-                    let selectedArr = window.betaCRMFilters[colKey];
-                    if(!selectedArr || selectedArr.length === 0) continue;
-                    let col = window.betaCRMColumns.find(c => c.key === colKey);
-                    if(!col) continue;
-                    let val = String(col.get(s) || "").trim() || "-";
-                    if(!selectedArr.includes(val)) return false;
+                for(let f of activeMultiFilters) {
+                    let val = String(f.col.get(s) || "").trim() || "-";
+                    if(!f.selectedArr.includes(val)) return false;
                 }
                 // Per-column quick text search (dari header input, kalau ada)
-                let searchBoxes = document.querySelectorAll('#betacrm-desktop-wrapper .betacrm-quick-search');
-                for(let inp of searchBoxes) {
-                    let q = inp.value.toLowerCase().trim();
-                    if(!q) continue;
-                    let colKey = inp.getAttribute('data-col');
-                    let col = window.betaCRMColumns.find(c => c.key === colKey);
-                    if(!col) continue;
-                    let val = String(col.get(s) || "").toLowerCase();
-                    if(!val.includes(q)) return false;
+                for(let qs of quickSearches) {
+                    let val = String(qs.col.get(s) || "").toLowerCase();
+                    if(!val.includes(qs.q)) return false;
                 }
                 return true;
             });
@@ -5912,7 +6274,7 @@
                     let checked = window.betaCRMSelected.has(l.docId) ? 'checked' : '';
                     let cellsHtml = window.betaCRMColumns.map(col => {
                         if(col.isStatusPill) {
-                            let isDefault = col.key === 'Invite Status' ? !l["Invite Status"] : (col.key === 'Attend Status' ? !l["Attend Status"] : false);
+                            let isDefault = col.key === 'Invite Status' ? (!s.hasPSCode && !l["Invite Status"]) : (col.key === 'Attend Status' ? (!s.attendIsAuto && !l["Attend Status"]) : false);
                             return `<td>${window._betaStatusPillHtml(col.get(s), col.isStatusPill, isDefault)}</td>`;
                         }
                         if(col.isTagsCol) {
@@ -6134,15 +6496,29 @@
             window.showToast ? window.showToast(`🛠️ ${filtered.length} lead (ikut filter semasa) sedia untuk Bulk Edit`, 'success', 2000) : null;
         };
 
-        window.renderCRMBetaMobileList = function() {
+        // 🚀 CRITICAL PERF FIX: dulu fungsi ni render SEMUA lead yang match filter, tanpa had --
+        // kalau 1000+ lead, semua card (avatar+pills+tags) di-inject sekaligus dalam SATU innerHTML.
+        // Ni punca utama "stuck/crash" bila bukak CRM Beta guna phone -- phone punya CPU/memori
+        // jauh lebih lemah dari desktop utk handle DOM sebanyak tu serentak.
+        // Fix: pagination "Load More" -- render sikit dulu (20), tambah bila user scroll/tekan butang.
+        window.betaCRMMobilePageSize = 20;
+        window.betaCRMMobileLoadedCount = window.betaCRMMobilePageSize;
+
+        window.renderCRMBetaMobileList = function(loadMore) {
             let list = document.getElementById('betacrm-mobile-list');
             if(!list) return;
+            if(loadMore) {
+                window.betaCRMMobileLoadedCount += window.betaCRMMobilePageSize;
+            } else {
+                window.betaCRMMobileLoadedCount = window.betaCRMMobilePageSize; // reset bila filter/search/sort berubah
+            }
             let filtered = window._betaMobileFiltered();
             if(filtered.length === 0) {
                 list.innerHTML = `<div class="text-center text-gray-500 text-sm p-8">Tiada lead dijumpai.</div>`;
                 return;
             }
-            list.innerHTML = filtered.map(s => {
+            let pageItems = filtered.slice(0, window.betaCRMMobileLoadedCount);
+            let rowsHtml = pageItems.map(s => {
                 let realIdx = window.betaCRMSummary.indexOf(s);
                 let l = s.lead;
                 let initial = (l["NAME"]||"?").trim().charAt(0).toUpperCase();
@@ -6168,8 +6544,8 @@
                     <div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer">
                     <div class="flex flex-wrap items-center gap-1.5 mt-2">
                         ${window._betaStatusPillHtml(l["STATUS"], 'status')}
-                        ${window._betaStatusPillHtml(s.effectiveInviteStatus, 'inviteStatus', !l["Invite Status"])}
-                        ${window._betaStatusPillHtml(s.effectiveAttendStatus, 'attendStatus', !l["Attend Status"])}
+                        ${window._betaStatusPillHtml(s.effectiveInviteStatus, 'inviteStatus', !s.hasPSCode && !l["Invite Status"])}
+                        ${window._betaStatusPillHtml(s.effectiveAttendStatus, 'attendStatus', !s.attendIsAuto && !l["Attend Status"])}
                         ${tagsHtml}
                     </div>
                     <div class="flex items-center justify-between mt-2 text-[10px] text-gray-500">
@@ -6179,6 +6555,12 @@
                     </div>
                 </div>`;
             }).join('');
+
+            let hasMore = filtered.length > pageItems.length;
+            let footerHtml = hasMore
+                ? `<button onclick="window.renderCRMBetaMobileList(true)" class="w-full py-3 text-center text-[#00c6ff] font-bold text-sm hover:bg-[#1a1a1a] border-t border-[#262626]">⬇️ Muatkan lagi (${pageItems.length}/${filtered.length})</button>`
+                : `<div class="text-center text-gray-600 text-[10px] p-3">— ${filtered.length} lead dipaparkan —</div>`;
+            list.innerHTML = rowsHtml + footerHtml;
         };
 
         // ============================================================
@@ -6246,6 +6628,18 @@
             window.fillSelectFromConfig('betacrm-status', window.statusConfig.status);
             window.fillSelectFromConfig('betacrm-invite-status', window.statusConfig.inviteStatus);
             window.fillSelectFromConfig('betacrm-attend-status', window.statusConfig.attendStatus);
+            // 🌟 Custom dropdown (dark theme, elak native popup putih+biru) -- idempotent, selamat panggil berulang
+            window._customDropdownInit('betacrm-status');
+            window._customDropdownInit('betacrm-invite-status');
+            window._customDropdownInit('betacrm-attend-status');
+            // 🤖 Attend Status auto ikut Attendance -> kunci dropdown (tak boleh pilih manual)
+            let attSel = document.getElementById('betacrm-attend-status');
+            if(attSel) {
+                attSel.dataset.locked = '1';
+                let attTrigger = attSel.parentNode && attSel.parentNode.querySelector('button');
+                if(attTrigger) { attTrigger.style.pointerEvents = 'none'; attTrigger.style.cursor = 'default'; attTrigger.tabIndex = -1; }
+                if(attSel._syncCustomDropdown) attSel._syncCustomDropdown();
+            }
             // Bulk-edit bar dropdowns (biar ada opsyen "- Tukar X -" kekal sebagai default kosong)
             let fillBulk = (id, opts, placeholder) => {
                 let el = document.getElementById(id);
@@ -6602,14 +6996,14 @@
             if(label) { label.innerText = percent + '%'; label.style.color = percent === 100 ? '#00e676' : (percent >= 50 ? '#f59e0b' : '#ef4444'); }
         };
 
-        // ---------- DEFAULT LOGIC: Invite Status ikut Status (dipanggil bila Status ditukar dalam modal) ----------
+        // ---------- AUTO LOGIC: Invite Status jadi "Invite" bila Status = Invite (dipanggil bila Status ditukar dalam modal) ----------
+        // Status lain (bukan Invite) -> Invite Status KEKAL macam sekarang, TAK ditukar balik.
         window._betaApplyStatusDefaults = function() {
-            if(window._betaInviteManuallyChanged) return; // staf dah override manual, jangan timpa
             let statusVal = document.getElementById('betacrm-status')?.value || '';
-            let defaultInvite = (statusVal.trim().toLowerCase() === 'invite') ? 'Invite' : 'In Progress';
+            if(statusVal.trim().toLowerCase() !== 'invite') return; // kekalkan Invite Status semasa
             let inviteSel = document.getElementById('betacrm-invite-status');
-            if(inviteSel && [...inviteSel.options].some(o => o.value === defaultInvite)) {
-                inviteSel.value = defaultInvite;
+            if(inviteSel && [...inviteSel.options].some(o => o.value === 'Invite')) {
+                inviteSel.value = 'Invite';
                 window.paintStatusSelectLive('betacrm-invite-status');
                 window.calcBetaInviteProgress();
             }
@@ -6712,6 +7106,43 @@
 
 
         // 🌟 HELPER: Parse ISO Timestamp Masuk → { date, time }
+        // 🌟 FIX: parser fleksibel untuk field "Timestamp" yang datanya BERCAMPUR format:
+        //   1. ISO: "2026-06-24 12:50:52"
+        //   2. Slash (konvensyen Malaysia, HARI dulu): "9/3/2026 13:16" = 9 Mac 2026
+        // native new Date("9/3/2026") akan silap anggap ni format US (bulan/hari) = 3 Sept -- ELAK guna terus.
+        // Pulangkan epoch (ms) untuk banding numeric yang tepat, tak kira format asal.
+        window._parseFlexibleTimestamp = function(str) {
+            if(!str || str === "-") return 0;
+            str = String(str).trim();
+
+            // Format ISO: YYYY-MM-DD[ HH:MM[:SS]]
+            let iso = str.match(/^(\d{4})-(\d{1,2})-(\d{1,2})(?:[ T](\d{1,2}):(\d{2})(?::(\d{2}))?)?/);
+            if(iso) {
+                let [, y, mo, d, h, mi, s] = iso;
+                let t = new Date(+y, +mo - 1, +d, +(h||0), +(mi||0), +(s||0)).getTime();
+                return isNaN(t) ? 0 : t;
+            }
+
+            // Format slash: D/M/YYYY[ H:MM[:SS]] -- HARI/BULAN ikut konvensyen Malaysia
+            let slash = str.match(/^(\d{1,2})\/(\d{1,2})\/(\d{2,4})(?:[ ,]+(\d{1,2}):(\d{2})(?::(\d{2}))?\s*(AM|PM)?)?/i);
+            if(slash) {
+                let [, d, mo, y, h, mi, s, ampm] = slash;
+                let year = y.length === 2 ? 2000 + parseInt(y) : parseInt(y);
+                let hour = h ? parseInt(h) : 0;
+                if(ampm) {
+                    let up = ampm.toUpperCase();
+                    if(up === 'PM' && hour < 12) hour += 12;
+                    if(up === 'AM' && hour === 12) hour = 0;
+                }
+                let t = new Date(year, parseInt(mo) - 1, parseInt(d), hour, mi ? parseInt(mi) : 0, s ? parseInt(s) : 0).getTime();
+                return isNaN(t) ? 0 : t;
+            }
+
+            // Fallback -- cuba generic parse, kalau gagal anggap 0 (paling lama/kosong)
+            let generic = new Date(str);
+            return isNaN(generic.getTime()) ? 0 : generic.getTime();
+        };
+
         window.parseTimestampMasuk = function(ts) {
             if(!ts) return { date: "-", time: "-" };
             try {
@@ -6984,10 +7415,24 @@
                       if (numA < numB) return sortAsc ? -1 : 1; if (numA > numB) return sortAsc ? 1 : -1; return 0;
                   }
 
+                  // 🌟 FIX: Susun "Timestamp" (data bercampur format ISO & slash D/M/YYYY) guna parser fleksibel
+                  if (realSortKey === 'Timestamp') {
+                      let epochA = window._parseFlexibleTimestamp(vA);
+                      let epochB = window._parseFlexibleTimestamp(vB);
+                      if (epochA < epochB) return sortAsc ? -1 : 1; if (epochA > epochB) return sortAsc ? 1 : -1; return 0;
+                  }
+
                   // Susun Duit / Nombor
                   if (!(matchedSortCol && (matchedSortCol.isImportDate || matchedSortCol.isImportTime))) {
-                      let numValA = parseFloat(vA.replace(/,/g, '')); let numValB = parseFloat(vB.replace(/,/g, ''));
-                      if (!isNaN(numValA) && !isNaN(numValB)) {
+                      let cleanA = vA.replace(/,/g, ''); let cleanB = vB.replace(/,/g, '');
+                      // 🌟 FIX: pastikan SELURUH string tu memang nombor tulen, elak string macam
+                      // "2026-06-24 12:50:52" (Timestamp) tersilap dianggap nombor "2026" je
+                      // (parseFloat baca leading digit sahaja & berhenti kat '-' pertama) --
+                      // yang buat semua rekod tahun sama "seri" dan tak ter-sort betul ikut tarikh.
+                      let isPureNumA = /^-?\d+(\.\d+)?$/.test(cleanA);
+                      let isPureNumB = /^-?\d+(\.\d+)?$/.test(cleanB);
+                      if (isPureNumA && isPureNumB) {
+                          let numValA = parseFloat(cleanA); let numValB = parseFloat(cleanB);
                           if (numValA < numValB) return sortAsc ? -1 : 1; if (numValA > numValB) return sortAsc ? 1 : -1; return 0;
                       }
                   }
@@ -8553,6 +8998,16 @@ ${l["HISTORY FU"] || "-"}`;
                 seenLeadDoc[r.docId] = true;
                 return true;
             });
+            // 🌟 FIX PENDUA: state dalam memori boleh separa (ikut tarikh/staf) -> lead lama tak ternampak -> lead pendua dicipta.
+            // Tarik PENUH crm_leads dari Firestore supaya padanan phone/email sentiasa lengkap.
+            try {
+                const fullLeadSnap = await getDocs(collection(db, "crm_leads"));
+                fullLeadSnap.forEach(d => {
+                    if(seenLeadDoc[d.id]) return;
+                    seenLeadDoc[d.id] = true;
+                    allExistingLeads.push({ docId: d.id, ...d.data() });
+                });
+            } catch(e) { console.error("Gagal tarik penuh crm_leads untuk semak pendua:", e); }
             let existingByEmail = {}; // email (lowercase) -> lead object (rujukan terus, boleh mutate)
             allExistingLeads.forEach(r => {
                 let em = String(r["EMAIL"] || "").trim().toLowerCase();
@@ -10263,12 +10718,16 @@ ${l["HISTORY FU"] || "-"}`;
             { key: 'Summary Text (Auto)', label: 'Summary Text' }
         ];
 
+        // 🚀 PERF FIX: debounce khas untuk search box PS Master (sort/pagination kekal instant, cuma taip yang delay)
+        window._debouncedRenderPSTable = window._debounce ? window._debounce(() => window.renderPSTable(), 250) : (() => window.renderPSTable());
+        window._debouncedRenderAdminPSTable = window._debounce ? window._debounce(() => window.renderAdminPSTable(), 250) : (() => window.renderAdminPSTable());
+
         window.generatePSHeader = function(isAdmin) {
           let fSort = isAdmin ? 'sortAdminPS' : 'sortTeamPS';
           let currSortCol = isAdmin ? adminPsSortCol : teamPsSortCol;
           let currSortAsc = isAdmin ? adminPsSortAsc : teamPsSortAsc;
           let currentFilters = isAdmin ? adminPsFilters : teamPsFilters;
-          let renderFunc = isAdmin ? 'window.renderAdminPSTable()' : 'window.renderPSTable()';
+          let renderFunc = isAdmin ? 'window._debouncedRenderAdminPSTable()' : 'window._debouncedRenderPSTable()';
           let quickSearchValues = {};
           let searchWrapper = isAdmin ? '#ps-desktop-wrapper-true' : '#ps-desktop-wrapper-false';
           document.querySelectorAll(searchWrapper + ' .ps-quick-search').forEach(input => {
