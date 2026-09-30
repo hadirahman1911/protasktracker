@@ -1449,6 +1449,7 @@
                                 <span class="absolute -right-1 -top-1 text-[9px] bg-[#00c6ff] text-black rounded-full w-4 h-4 flex items-center justify-center pointer-events-none" title="Boleh edit">✏️</span>
                             </div>
                             <span id="betacrm-leadid-badge" class="text-[10px] font-bold bg-[#333] text-gray-300 px-2 py-0.5 rounded-full">-</span>
+                            <button type="button" id="betacrm-focus-btn" onclick="window.betaToggleFocus(document.getElementById('betacrm-docid').value, true)" class="bg-[#333] hover:bg-[#eab308] hover:text-black text-gray-300 text-[10px] font-bold px-2 py-1 rounded-full transition">🎯 Set Focus</button>
                         </div>
                         <div class="flex items-center gap-2 mt-2 text-sm text-gray-400 flex-wrap">
                             <div class="relative inline-flex items-center">
@@ -5614,7 +5615,7 @@
             return {
                 lead: leadRow,
                 tagsAll, tagsFromPS,
-                displayName, importTs,
+                displayName, importTs, importMs,
                 psRows, enrollRows,
                 totalAttended,
                 lastClassRow,
@@ -6025,8 +6026,8 @@
             { key: '__totalattended', label: 'Total Attended', get: s => String(s.totalAttended) },
             { key: '__lastinvoice', label: 'Last Invoice', get: s => (s.lastInvoiceRow && `RM${s.lastInvoiceRow["Invoice Amount"]||"0"} · ${s.lastInvoiceRow["Invoice Date"]||"-"}`) || "" }
         ];
-        window.betaCRMSortCol = 'Lead ID';
-        window.betaCRMSortAsc = false;
+        window.betaCRMSortCol = 'crm_imported_date';
+        window.betaCRMSortAsc = false; // false = terkini dulu (descending)
         window.betaCRMFilters = {}; // 🌟 multi-select excel-style, keyed by col.key -> [selected values]
         window.betaCRMSelected = new Set();
 
@@ -6261,10 +6262,34 @@
                     if(window.betaMobileTagsFilterInclude.length && !window.betaMobileTagsFilterInclude.some(t => tags.includes(t))) return false;
                     if(window.betaMobileTagsFilterExclude.length && window.betaMobileTagsFilterExclude.some(t => tags.includes(t))) return false;
                 }
+                // 🌟 Pill filter (All/TOFU/Nurturing/Preloved/HuntCS/Absent/Half/AttendTakEnroll/KWC/Focus) — dikongsi dgn Mobile View
+                let fPill = window.betaMobileFilterState;
+                if(fPill && fPill !== 'All') {
+                    let statusPill = String(l["STATUS"]||"").toLowerCase().trim();
+                    let lastAttPill = s.lastClassRow ? String(s.lastClassRow["Attendance"]||"").toLowerCase().trim() : "";
+                    if(fPill === 'TOFU' && !["-","in progress","new",""].includes(statusPill)) return false;
+                    if(fPill === 'Nurturing' && statusPill !== 'nurturing') return false;
+                    if(fPill === 'Preloved' && statusPill !== 'preloved leads by bl hadi') return false;
+                    if(fPill === 'HuntCS' && statusPill !== 'hunt cs') return false;
+                    if(fPill === 'Absent' && lastAttPill !== 'absent') return false;
+                    if(fPill === 'Half' && lastAttPill !== 'half') return false;
+                    if(fPill === 'AttendTakEnroll' && !(lastAttPill === 'attended' && s.enrollRows.length === 0)) return false;
+                    if(fPill === 'KWC') {
+                        let kwc30 = (() => { let d = new Date(); d.setDate(d.getDate()-30); return d.toISOString().split('T')[0]; })();
+                        let dateNormPill = s.lastClassRow ? normalizeDateStr(s.lastClassRow["Date"]) : "";
+                        if(!(lastAttPill === 'attended' && dateNormPill && dateNormPill <= kwc30)) return false;
+                    }
+                    if(fPill === 'Focus' && String(l["Focus"]||"").toLowerCase() !== 'yes') return false;
+                }
                 return true;
             });
             // Sort
             result.sort((a, b) => {
+                // 🌟 Kolum Imported Date / Imported Time / gabungan: sort ikut date+time SEKALI (importMs), bukan text date sahaja
+                if(window.betaCRMSortCol === 'crm_imported_datetime' || window.betaCRMSortCol === 'crm_imported_date' || window.betaCRMSortCol === 'crm_imported_time') {
+                    let cmp = (a.importMs||0) - (b.importMs||0);
+                    return window.betaCRMSortAsc ? cmp : -cmp;
+                }
                 let col = window.betaCRMColumns.find(c => c.key === window.betaCRMSortCol);
                 let va = col ? col.get(a) : a.lead["Lead ID"];
                 let vb = col ? col.get(b) : b.lead["Lead ID"];
@@ -6301,6 +6326,42 @@
             }
         };
 
+        // 🎯 FOCUS — tanda lead penting (toggle Yes/kosong), autosave & filter khas "Focus"
+        window.betaToggleFocus = async function(docId, fromModal) {
+            if(!docId) return;
+            let s = window.betaCRMSummary.find(x => x.lead.docId === docId);
+            if(!s) return;
+            let cur = String(s.lead["Focus"]||"").toLowerCase() === 'yes';
+            let next = cur ? "" : "Yes";
+            s.lead["Focus"] = next;
+            [crmState.adminData, crmState.data].forEach(arr => {
+                let row = (arr||[]).find(r => r.docId === docId);
+                if(row) row["Focus"] = next;
+            });
+            try {
+                await updateDoc(doc(db, "crm_leads", docId), { "Focus": next });
+                window.showToast ? window.showToast(next ? '🎯 Lead ditanda Focus!' : '↩️ Focus dibuang', 'success', 1500) : null;
+            } catch(e) {
+                s.lead["Focus"] = cur ? "Yes" : ""; // revert kalau gagal
+                console.error("Gagal simpan Focus:", e);
+                window.showToast ? window.showToast('❌ Gagal simpan Focus', 'error', 2000) : alert('Gagal simpan Focus: ' + e.message);
+                return;
+            }
+            window.renderCRMBetaTable();
+            if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
+            if(fromModal) window._betaUpdateFocusBtn(docId);
+        };
+        window._betaUpdateFocusBtn = function(docId) {
+            let btn = document.getElementById('betacrm-focus-btn');
+            if(!btn) return;
+            let s = window.betaCRMSummary.find(x => x.lead.docId === docId);
+            let isFocus = s && String(s.lead["Focus"]||"").toLowerCase() === 'yes';
+            btn.className = isFocus
+                ? "bg-[#eab308] text-black text-[10px] font-bold px-2 py-1 rounded-full transition"
+                : "bg-[#333] hover:bg-[#eab308] hover:text-black text-gray-300 text-[10px] font-bold px-2 py-1 rounded-full transition";
+            btn.innerText = isFocus ? "🎯 Focus" : "🎯 Set Focus";
+        };
+
         // 🌟 "Tapis Aktif" — summary filter aktif (ikut gaya PS Master), + Clear Semua
         window._betaClearAllFilters = function() {
             window.betaCRMFilters = {};
@@ -6308,14 +6369,13 @@
             window.betaMobileStaffFilter = [];
             window.betaMobileTagsFilterInclude = [];
             window.betaMobileTagsFilterExclude = [];
-            window.betaMobileFilterState = 'All';
+            window.betaMobileAgeFilter = '';
             window.betaDateRangeFilter = { start: '', end: '' };
             window.betaMonthFilter = '';
             let sb = document.getElementById('betacrm-search'); if(sb) sb.value = '';
             document.querySelectorAll('.betacrm-quick-search').forEach(i => i.value = '');
             window.betaCRMPage = 1;
-            window.renderCRMBetaTable();
-            if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
+            window.setBetaMobileFilter('All'); // reset pill state + styling (mobile & desktop) + render kedua-dua
         };
         window._betaRenderActiveFiltersBar = function(containerId, countResult) {
             let box = document.getElementById(containerId);
@@ -6335,6 +6395,7 @@
             if(window.betaMobileFilterState && window.betaMobileFilterState !== 'All') chips.push(`<span class="text-[#00e676] font-bold">Chip:</span> <span class="text-gray-300 break-words">${window.betaMobileFilterState}</span>`);
             if(window.betaDateRangeFilter && (window.betaDateRangeFilter.start || window.betaDateRangeFilter.end)) chips.push(`<span class="text-[#00e676] font-bold">📆 Date:</span> <span class="text-gray-300 break-words">${window.betaDateRangeFilter.start||'…'} → ${window.betaDateRangeFilter.end||'…'}</span>`);
             if(window.betaMonthFilter) chips.push(`<span class="text-[#00e676] font-bold">🗓️ Month:</span> <span class="text-gray-300 break-words">${window.betaMonthFilter}</span>`);
+            if(window.betaMobileAgeFilter !== '' && window.betaMobileAgeFilter !== undefined) chips.push(`<span class="text-[#00e676] font-bold">🎂 Age:</span> <span class="text-gray-300 break-words">≥ ${window.betaMobileAgeFilter} (PS Details)</span>`);
 
             if(chips.length === 0) { box.innerHTML = ''; return; }
             box.innerHTML = `<div class="mt-2 mb-3 p-2.5 bg-[#222] border border-[#444] rounded-lg text-[10px] shadow-sm leading-relaxed">
@@ -6422,13 +6483,14 @@
         // 🌟 MOBILE VIEW (Beta) — gabungan SEMUA filter dari CRM Master + PS Master mobile
         // (TO FU, Nurturing, Preloved, Hunt CS, Absent, Half, Attend Tak Enroll, KWC, Date Range, Month, Class, Staff, Tags)
         // ============================================================
-        window.betaCRMMobileSortField = 'LEAD_ID'; // 'LEAD_ID' | 'CLASS_DATE' | 'FU_DATE'
-        window.betaCRMMobileSortAsc = false;
+        window.betaCRMMobileSortField = 'IMPORT_DATETIME'; // 'LEAD_ID' | 'CLASS_DATE' | 'FU_DATE' | 'IMPORT_DATETIME'
+        window.betaCRMMobileSortAsc = false; // false = terkini dulu (descending)
         window.betaMobileFilterState = 'All'; // single-select: All/TOFU/Nurturing/Preloved/HuntCS/Absent/Half/AttendTakEnroll/KWC
         window.betaMobileClassFilter = [];   // 🌟 array (multi-select, dulu string single-select)
         window.betaMobileStaffFilter = [];   // 🌟 array (multi-select, dulu string single-select)
         window.betaMobileTagsFilterInclude = []; // 🌟 Tags: Include/Exclude (dulu cuma include OR-match)
         window.betaMobileTagsFilterExclude = [];
+        window.betaMobileAgeFilter = ''; // 🌟 Age >= N, ambil dari PS Details (PS Master). '' = tiada filter
         window.betaDateRangeFilter = { start: '', end: '' };
         window.betaMonthFilter = '';
 
@@ -6441,6 +6503,8 @@
             window.renderCRMBetaMobileList();
         };
 
+        // 🌟 Dikongsi Mobile View & Desktop View (button sama tag "All/TOFU/.../Focus", 2 set DOM id: betam-filter-* & betad-filter-*)
+        window._BETA_PILL_FILTERS = ['All','TOFU','Nurturing','Preloved','HuntCS','Absent','Half','AttendTakEnroll','KWC','Focus'];
         window.setBetaMobileFilter = function(type) {
             window.betaMobileFilterState = type;
             // 🌟 FIX: filter Absent/Half/Attend Tak Enroll/KWC bergantung pada link CRM<->PS Master (lastClassRow).
@@ -6450,14 +6514,17 @@
                 let _freshMaps = window._buildPSEnrollLookupMaps();
                 window.betaCRMSummary = window._betaLeadsSource().map(leadRow => window._buildBetaSummaryForLead(leadRow, _freshMaps));
             }
-            ['All','TOFU','Nurturing','Preloved','HuntCS','Absent','Half','AttendTakEnroll','KWC'].forEach(f => {
-                let btn = document.getElementById(`betam-filter-${f}`);
-                if(!btn) return;
-                btn.className = (f === type)
-                    ? "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition"
-                    : "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition";
+            window._BETA_PILL_FILTERS.forEach(f => {
+                ['betam-filter-', 'betad-filter-'].forEach(prefix => {
+                    let btn = document.getElementById(`${prefix}${f}`);
+                    if(!btn) return;
+                    btn.className = (f === type)
+                        ? "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition"
+                        : "whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition";
+                });
             });
             window.renderCRMBetaMobileList();
+            window.renderCRMBetaTable(); // 🌟 sama filter, terus terpakai di Desktop View jugak
         };
 
         // ---------- Dropdown filter: Class / Staff (checkbox multi-select + search + Select All + Apply/Clear) ----------
@@ -6653,12 +6720,25 @@
             window.renderCRMBetaMobileList();
         };
 
+        // 🌟 Filter Age (ambil dari PS Details / PS Master, bukan CRM) - user taip nombor, filter >= nombor tu
+        window.applyBetaMobileAge = function() {
+            let v = (document.getElementById('betam-age-input')?.value || '').trim();
+            window.betaMobileAgeFilter = v === '' ? '' : Number(v);
+            window.renderCRMBetaMobileList();
+        };
+        window.clearBetaMobileAge = function() {
+            window.betaMobileAgeFilter = '';
+            let el = document.getElementById('betam-age-input'); if(el) el.value = '';
+            window.renderCRMBetaMobileList();
+        };
         window.clearAllBetaMobileFilters = function() {
             window.betaMobileFilterState = 'All';
             window.betaMobileClassFilter = [];
             window.betaMobileStaffFilter = [];
             window.betaMobileTagsFilterInclude = [];
             window.betaMobileTagsFilterExclude = [];
+            window.betaMobileAgeFilter = '';
+            let ageEl = document.getElementById('betam-age-input'); if(ageEl) ageEl.value = '';
             window.betaDateRangeFilter = { start: '', end: '' };
             window.betaMonthFilter = '';
             let sb = document.getElementById('betacrm-search'); if(sb) sb.value = '';
@@ -6688,9 +6768,14 @@
                     let dateNorm = s.lastClassRow ? normalizeDateStr(s.lastClassRow["Date"]) : "";
                     if(!(lastAtt === 'attended' && dateNorm && dateNorm <= kwc30)) return false;
                 }
+                if(f === 'Focus' && String(l["Focus"]||"").toLowerCase() !== 'yes') return false;
 
                 if(window.betaMobileClassFilter.length > 0 && !window.betaMobileClassFilter.includes(l["Class"])) return false;
                 if(window.betaMobileStaffFilter.length > 0 && !window.betaMobileStaffFilter.includes(l["Staff Name"])) return false;
+                if(window.betaMobileAgeFilter !== '' && !isNaN(window.betaMobileAgeFilter)) {
+                    let ageNum = s.lastClassRow ? parseInt(String(s.lastClassRow["Age"]||"").replace(/[^0-9]/g,''), 10) : NaN;
+                    if(isNaN(ageNum) || ageNum < window.betaMobileAgeFilter) return false;
+                }
                 if(window.betaMobileTagsFilterInclude.length > 0 || window.betaMobileTagsFilterExclude.length > 0) {
                     let tags = s.tagsAll || (typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : []);
                     if(window.betaMobileTagsFilterInclude.length > 0 && !window.betaMobileTagsFilterInclude.some(t => tags.includes(t))) return false;
@@ -6710,6 +6795,11 @@
             });
 
             result.sort((a, b) => {
+                // 🌟 Import Date & Time (terkini): sort ikut angka ms supaya time turut dikira, bukan text date sahaja
+                if(window.betaCRMMobileSortField === 'IMPORT_DATETIME') {
+                    let cmp = (a.importMs||0) - (b.importMs||0);
+                    return window.betaCRMMobileSortAsc ? cmp : -cmp;
+                }
                 let av, bv;
                 if(window.betaCRMMobileSortField === 'CLASS_DATE') { av = (a.lastClassRow && normalizeDateStr(a.lastClassRow["Date"])) || ""; bv = (b.lastClassRow && normalizeDateStr(b.lastClassRow["Date"])) || ""; }
                 else if(window.betaCRMMobileSortField === 'FU_DATE') { av = normalizeDateStr(a.lead["FOLLOW UP (DATE)"]) || ""; bv = normalizeDateStr(b.lead["FOLLOW UP (DATE)"]) || ""; }
@@ -6873,7 +6963,17 @@
                 let lastInvoiceTxt = s.lastInvoiceRow ? `RM${s.lastInvoiceRow["Invoice Amount"]||"0"}` : "-";
                 let remark1Txt = (s.lastClassRow && String(s.lastClassRow["Remark 1"]||"").trim()) || "";
                 let eforemarkTxt = (s.lastClassRow && String(s.lastClassRow["EFO Remark"]||"").trim()) || "";
+                // 🌟 Butiran PS Details (PS Master): Age, Occupation, Source, State
+                let psDetailBits = [];
+                if(s.lastClassRow) {
+                    if(s.lastClassRow["Age"]) psDetailBits.push(`🎂 ${s.lastClassRow["Age"]}`);
+                    if(s.lastClassRow["Occupation"]) psDetailBits.push(`💼 ${s.lastClassRow["Occupation"]}`);
+                    if(s.lastClassRow["Source"]) psDetailBits.push(`📣 ${s.lastClassRow["Source"]}`);
+                    if(s.lastClassRow["State"]) psDetailBits.push(`📍 ${s.lastClassRow["State"]}`);
+                }
+                let psDetailTxt = psDetailBits.join('  ·  ');
                 let checked = window.betaCRMSelected.has(l.docId) ? 'checked' : '';
+                let isFocus = String(l["Focus"]||"").toLowerCase() === 'yes';
                 let tags = s.tagsAll || (typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : []);
                 let psOnlyM = s.tagsFromPS || [];
                 let tagsHtml = tags.slice(0,3).map(t => psOnlyM.includes(t) ? `<span class="bg-[#3b82f6]/20 text-[#93c5fd] text-[9px] font-bold px-1.5 py-0.5 rounded-full">🎓 ${t}${window._betaPSXBtn(t, l.docId)}</span>` : `<span class="bg-[#f59e0b]/20 text-[#f59e0b] text-[9px] font-bold px-1.5 py-0.5 rounded-full">${t}</span>`).join('') + (tags.length > 3 ? `<button onclick="event.stopPropagation();window.openBetaAllTags('${l.docId}')" class="text-[9px] bg-[#333] hover:bg-[#f59e0b] hover:text-black text-gray-300 font-bold px-1.5 py-0.5 rounded-full border border-[#555]">+${tags.length-3} · Semua</button>` : '');
@@ -6888,7 +6988,7 @@
                         <div class="w-9 h-9 rounded-full bg-[#00c6ff] text-black font-bold flex items-center justify-center shrink-0 text-sm">${initial}</div>
                         <div class="flex-1 min-w-0">
                             <div class="flex items-center justify-between gap-2">
-                                <span class="font-bold text-sm truncate">${s.displayName||l["NAME"]||"-"}</span>
+                                <span class="font-bold text-sm truncate">${isFocus ? '🎯 ' : ''}${s.displayName||l["NAME"]||"-"}</span>
                                 <span class="text-[9px] bg-[#333] text-gray-300 px-1.5 py-0.5 rounded-full shrink-0">${l["Lead ID"]||"-"}</span>
                             </div>
                             <div class="text-[10px] text-gray-500 flex items-center gap-1.5 flex-wrap mt-0.5">
@@ -6910,6 +7010,7 @@
                         <span class="text-[8px] text-gray-500 font-bold uppercase">🏷️ Tags:</span>
                         ${tagsHtml || `<span class="text-gray-600 text-[9px]">-</span>`}
                         <button onclick="window.openBetaCardTagEditor('${l.docId}')" class="text-[9px] bg-[#333] hover:bg-[#f59e0b] hover:text-black text-[#f59e0b] font-bold px-1.5 py-0.5 rounded-full border border-[#f59e0b] transition">✏️ Set Tags</button>
+                        <button onclick="window.betaToggleFocus('${l.docId}')" class="text-[9px] font-bold px-1.5 py-0.5 rounded-full border transition ${isFocus ? 'bg-[#eab308] text-black border-[#eab308]' : 'bg-[#333] text-gray-400 border-[#555] hover:border-[#eab308] hover:text-[#eab308]'}">🎯 ${isFocus ? 'Focus' : 'Set Focus'}</button>
                     </div>
                     <div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer">
                     <div class="flex items-center justify-between mt-2 text-[10px] text-gray-500">
@@ -6917,7 +7018,8 @@
                         <span>🧾 ${lastInvoiceTxt}</span>
                     </div>
                     </div>
-                    ${(remark1Txt || eforemarkTxt) ? `<div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer mt-1.5 space-y-1">
+                    ${(remark1Txt || eforemarkTxt || psDetailTxt) ? `<div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer mt-1.5 space-y-1">
+                        ${psDetailTxt ? `<div class="text-[10px] text-gray-400 bg-[#1a1a1a] border border-[#262626] rounded px-2 py-1">${psDetailTxt}</div>` : ''}
                         ${remark1Txt ? `<div class="text-[10px] text-gray-400 bg-[#1a1a1a] border border-[#262626] rounded px-2 py-1"><span class="text-gray-500 font-bold">📝 Remark 1:</span> ${remark1Txt}</div>` : ''}
                         ${eforemarkTxt ? `<div class="text-[10px] text-gray-400 bg-[#1a1a1a] border border-[#262626] rounded px-2 py-1"><span class="text-gray-500 font-bold">🎓 EFO:</span> ${eforemarkTxt}</div>` : ''}
                     </div>` : ''}
@@ -7525,6 +7627,7 @@
             setVal('betacrm-name', l["NAME"] || (window.betaCRMSummary[idx] && window.betaCRMSummary[idx].displayName) || "");
             setVal('betacrm-contact', l["CONTACT"]);
             document.getElementById('betacrm-leadid-badge').innerText = l["Lead ID"] || "-";
+            window._betaUpdateFocusBtn(l.docId);
             window._betaSyncAvatarInitial();
 
             // Status Manager selects (isi dulu options, baru set value)
@@ -16544,6 +16647,19 @@ ${l["HISTORY FU"] || "-"}`;
 
                     <!-- DESKTOP VIEW -->
                     <div id="betacrm-desktop-wrapper">
+                        <!-- 🌟 Pill filter (sama logic & state dgn Mobile View - window.betaMobileFilterState) -->
+                        <div class="flex gap-2 overflow-x-auto pb-2 mb-2" style="scrollbar-width:none;">
+                            <button id="betad-filter-All" onclick="window.setBetaMobileFilter('All')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#bb86fc] text-black shadow-md transition">All</button>
+                            <button id="betad-filter-TOFU" onclick="window.setBetaMobileFilter('TOFU')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">TO FU</button>
+                            <button id="betad-filter-Nurturing" onclick="window.setBetaMobileFilter('Nurturing')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Nurturing</button>
+                            <button id="betad-filter-Preloved" onclick="window.setBetaMobileFilter('Preloved')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Preloved</button>
+                            <button id="betad-filter-HuntCS" onclick="window.setBetaMobileFilter('HuntCS')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Hunt CS</button>
+                            <button id="betad-filter-Absent" onclick="window.setBetaMobileFilter('Absent')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Absent</button>
+                            <button id="betad-filter-Half" onclick="window.setBetaMobileFilter('Half')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Half</button>
+                            <button id="betad-filter-AttendTakEnroll" onclick="window.setBetaMobileFilter('AttendTakEnroll')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Attend Tak Enroll</button>
+                            <button id="betad-filter-KWC" onclick="window.setBetaMobileFilter('KWC')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">KWC</button>
+                            <button id="betad-filter-Focus" onclick="window.setBetaMobileFilter('Focus')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">🎯 Focus</button>
+                        </div>
                         <div id="betacrm-desktop-activefilters"></div>
                         <div class="crm-table-wrapper">
                             <table class="crm-table">
@@ -16563,7 +16679,8 @@ ${l["HISTORY FU"] || "-"}`;
                         <div class="p-3 bg-[#1e1e1e] border-b border-[#333] sticky top-0 z-10">
                             <!-- Baris 1: Sort -->
                             <div class="flex gap-2 overflow-x-auto pb-1.5" style="scrollbar-width:none;">
-                                <button id="betam-sort-LEAD_ID" onclick="window.toggleBetaCRMMobileSort('LEAD_ID')" class="betam-sort-btn active-beta-chip whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">↕️ Lead ID</button>
+                                <button id="betam-sort-IMPORT_DATETIME" onclick="window.toggleBetaCRMMobileSort('IMPORT_DATETIME')" class="betam-sort-btn active-beta-chip whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📥 Imported ▼</button>
+                                <button id="betam-sort-LEAD_ID" onclick="window.toggleBetaCRMMobileSort('LEAD_ID')" class="betam-sort-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">↕️ Lead ID</button>
                                 <button id="betam-sort-CLASS_DATE" onclick="window.toggleBetaCRMMobileSort('CLASS_DATE')" class="betam-sort-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📅 Class Date</button>
                                 <button id="betam-sort-FU_DATE" onclick="window.toggleBetaCRMMobileSort('FU_DATE')" class="betam-sort-btn whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">📅 FU Date</button>
                             </div>
@@ -16574,6 +16691,7 @@ ${l["HISTORY FU"] || "-"}`;
                                 <button id="betam-filter-Nurturing" onclick="window.setBetaMobileFilter('Nurturing')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Nurturing</button>
                                 <button id="betam-filter-Preloved" onclick="window.setBetaMobileFilter('Preloved')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Preloved</button>
                                 <button id="betam-filter-HuntCS" onclick="window.setBetaMobileFilter('HuntCS')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">Hunt CS</button>
+                                <button id="betam-filter-Focus" onclick="window.setBetaMobileFilter('Focus')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#222] text-gray-400 border border-[#444] transition">🎯 Focus</button>
                             </div>
                             <!-- Baris 3: PS-based chips (PS Master) -->
                             <div class="flex gap-2 overflow-x-auto pb-1.5 mt-1.5" style="scrollbar-width:none;">
@@ -16588,6 +16706,10 @@ ${l["HISTORY FU"] || "-"}`;
                                 <button onclick="window.toggleBetaMobilePanel('month')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">🗓️ Month ▼</button>
                                 <button onclick="window.toggleBetaMobileDropdown('class')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">Class ▼</button>
                                 <button onclick="window.toggleBetaMobileDropdown('staff')" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-gray-300 border border-[#555]">Staff ▼</button>
+                                <span class="whitespace-nowrap flex items-center gap-1 px-2 py-1 rounded-full bg-[#333] border border-[#555]">
+                                    <span class="text-[10px] text-gray-400 font-bold">🎂 Age ≥</span>
+                                    <input type="number" id="betam-age-input" min="0" placeholder="-" oninput="window.applyBetaMobileAge()" class="w-10 bg-transparent text-white text-xs font-bold outline-none border-b border-dashed border-[#666]">
+                                </span>
                                 <button onclick="window.openBetaTagsFilterModal()" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold bg-[#333] text-[#f59e0b] border border-[#f59e0b]">🏷️ Tags ▼</button>
                                 <button onclick="window.clearAllBetaMobileFilters()" class="whitespace-nowrap px-3 py-1.5 rounded-full text-xs font-bold text-red-400 border border-red-400/40">✕ Clear Semua</button>
 
@@ -16645,4 +16767,4 @@ ${l["HISTORY FU"] || "-"}`;
                 </div>
             </div>
 
-</html>
+</html>a
