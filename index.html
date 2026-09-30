@@ -5483,6 +5483,7 @@
         // 🧪 CRM (BETA) — Phase 3: gabungan CRM + PS Master + PS Enroll
         // ====================================================================
         window.betaCRMSummary = []; // array hasil aggregation, 1 entry per crm_leads
+        window._betaCRMDataReady = false; // 🌟 jadi true lepas load PERTAMA siap - guna utk bezakan "tengah loading" vs "memang takda lead"
         window.betaCRMPage = 1;
         window.betaCRMRowsPerPage = 30;
 
@@ -5913,10 +5914,29 @@
             }
         };
 
+        // 🌟 Progress "X/Y (Z%)" semasa loading - dikongsi admin & staff, desktop & mobile
+        window._betaUpdateLoadProgress = function(text, pct) {
+            let d = document.getElementById('betacrm-loading-progress'); if(d) d.innerText = text;
+            let m = document.getElementById('betam-loading-progress'); if(m) m.innerText = text;
+            let bar = document.getElementById('betam-loading-bar'); if(bar && typeof pct === 'number') bar.style.width = pct + '%';
+        };
+        window._betaWithProgress = function(jobsArr, prefix) {
+            let total = jobsArr.length, done = 0;
+            if(total === 0) return jobsArr;
+            window._betaUpdateLoadProgress(`${prefix} 0/${total} (0%)`, 0);
+            return jobsArr.map(p => p.then(v => {
+                done++;
+                let pct = Math.round(done/total*100);
+                window._betaUpdateLoadProgress(`${prefix} ${done}/${total} (${pct}%)`, pct);
+                return v;
+            }, e => { done++; throw e; }));
+        };
+
         window.loadCRMBetaData = async function(forceRefresh) {
             let isAdmin = window.betaCRMIsAdmin !== false; // default true (admin) bila tak ditetapkan
+            if(forceRefresh === true) window._betaCRMDataReady = false;
             let tbody = document.getElementById('betacrm-table-body');
-            if(tbody) tbody.innerHTML = `<tr><td colspan="12" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data CRM...</td></tr>`;
+            if(tbody) tbody.innerHTML = `<tr><td colspan="12" class="text-center p-10 text-[#00c6ff]">⏳ Sedang menarik data CRM...<div id="betacrm-loading-progress" class="text-xs text-gray-400 mt-1"></div></td></tr>`;
 
             let isForce = (forceRefresh === true);
             let token = window._betaLoadToken = (window._betaLoadToken || 0) + 1;
@@ -5932,12 +5952,15 @@
                 if(isForce || !(psState.data && psState.data.length))  jobs.push(window.loadPSData(isForce));
                 if(isForce || !(enrollState.data && enrollState.data.length)) jobs.push(window.loadEnrollData(isForce));
             }
+            jobs = window._betaWithProgress(jobs, isAdmin ? '⏳ Memuat data lead...' : '⏳ Memuat CRM/PS/Enroll...');
             try { await Promise.all(jobs); } catch(e) { console.error("Gagal load data CRM Beta:", e); }
+            window._betaUpdateLoadProgress('', undefined);
 
             if(!window.statusConfig || !window.statusConfig.status) await window.loadStatusConfig();
             if(!window._globalTagsMaster || window._globalTagsMaster.length === 0) await window.loadGlobalTagsMaster();
             window.renderAllBetaStatusSelects();
 
+            window._betaCRMDataReady = true; // 🌟 lead dah siap dimuat - lepas ni "0 rekod" bermaksud MEMANG takda, bukan loading
             window._betaRebuildAndRender(); // paparan pertama terus keluar (guna data PS/Enroll yang dah ada dalam memori)
             window.betaCRMPage = 1;
 
@@ -5947,12 +5970,14 @@
                 let st = document.getElementById('betacrm-bg-status');
                 let cached = window._psFullCache.data && window._enrollFullCache.data && (Date.now() - window._psFullCache.ts) < window._FULL_SYNC_CACHE_TTL;
                 if(!cached) {
-                    if(st) st.innerText = '⏳ Sync data PS/Enroll di belakang tabir...';
                     let bg = [];
                     if(isForce || !(psState.adminData && psState.adminData.length)) bg.push(window.loadAdminPSData(isForce));
                     if(isForce || !(enrollState.adminData && enrollState.adminData.length)) bg.push(window.loadAdminEnrollData(isForce));
                     bg.push(window._getAllPSFull());
                     bg.push(window._getAllEnrollFull());
+                    let bgTotal = bg.length, bgDone = 0;
+                    bg = bg.map(p => p.then(v => { bgDone++; if(st) st.innerText = `⏳ Sync PS/Enroll di belakang tabir... ${bgDone}/${bgTotal} (${Math.round(bgDone/bgTotal*100)}%)`; return v; }, e => { bgDone++; throw e; }));
+                    if(st) st.innerText = `⏳ Sync PS/Enroll di belakang tabir... 0/${bgTotal} (0%)`;
                     try { await Promise.all(bg); } catch(e) { console.error("Gagal sync PS/Enroll (background):", e); }
                     if(st) st.innerText = '';
                     if(token === window._betaLoadToken && window.betaCRMIsAdmin !== false) window._betaRebuildAndRender();
@@ -6940,6 +6965,40 @@
         window.betaCRMMobilePageSize = 20;
         window.betaCRMMobileLoadedCount = window.betaCRMMobilePageSize;
 
+        // 🌟 Skeleton "loading" (bukan text kosong) - dipaparkan selagi window._betaCRMDataReady == false,
+        // supaya user tak nampak "Tiada lead dijumpai" palsu semasa data baru tengah dimuat.
+        window._betaMobileSkeletonHtml = function() {
+            let card = `<div class="border-b border-[#262626] p-3">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-9 h-9 rounded-full beta-skel shrink-0"></div>
+                    <div class="flex-1 min-w-0 space-y-1.5">
+                        <div class="h-3 w-2/5 rounded beta-skel"></div>
+                        <div class="h-2.5 w-3/5 rounded beta-skel"></div>
+                    </div>
+                </div>
+                <div class="flex gap-1.5 mt-3">
+                    <div class="h-4 w-14 rounded-full beta-skel"></div>
+                    <div class="h-4 w-14 rounded-full beta-skel"></div>
+                    <div class="h-4 w-16 rounded-full beta-skel"></div>
+                </div>
+                <div class="h-2.5 w-4/5 rounded beta-skel mt-3"></div>
+            </div>`;
+            return `<style>
+                .beta-skel { background: linear-gradient(90deg, #262626 25%, #333 37%, #262626 63%); background-size: 400% 100%; animation: beta-skel-shine 1.4s ease infinite; }
+                @keyframes beta-skel-shine { 0% { background-position: 100% 50%; } 100% { background-position: 0 50%; } }
+            </style>
+            <div class="text-center text-[11px] text-gray-500 pt-3 pb-1 flex items-center justify-center gap-2">
+                <span class="inline-block w-3.5 h-3.5 border-2 border-[#00c6ff] border-t-transparent rounded-full" style="animation:spin 0.8s linear infinite;"></span>
+                <span>Sedang muat senarai lead...</span>
+                <span id="betam-loading-progress" class="text-gray-400"></span>
+            </div>
+            <div class="w-2/3 max-w-[220px] h-1 bg-[#262626] rounded-full mx-auto mb-3 overflow-hidden">
+                <div id="betam-loading-bar" class="h-full bg-[#00c6ff] transition-all duration-300" style="width:0%;"></div>
+            </div>
+            <style>@keyframes spin { to { transform: rotate(360deg); } }</style>
+            ${card}${card}${card}`;
+        };
+
         window.renderCRMBetaMobileList = function(loadMore) {
             let list = document.getElementById('betacrm-mobile-list');
             if(!list) return;
@@ -6949,6 +7008,10 @@
                 window.betaCRMMobileLoadedCount = window.betaCRMMobilePageSize; // reset bila filter/search/sort berubah
             }
             let filtered = window._betaMobileFiltered();
+            if(filtered.length === 0 && !window._betaCRMDataReady) {
+                list.innerHTML = window._betaMobileSkeletonHtml();
+                return; // 🌟 tengah loading - JANGAN papar "Tiada lead dijumpai" & jangan kemaskini bar filter (belum tentu tepat lagi)
+            }
             window._betaRenderActiveFiltersBar('betacrm-mobile-activefilters', filtered.length);
             if(filtered.length === 0) {
                 list.innerHTML = `<div class="text-center text-gray-500 text-sm p-8">Tiada lead dijumpai.</div>`;
