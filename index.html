@@ -942,9 +942,11 @@
 
                 <div class="bg-[#1e1e1e] p-6 rounded-xl border border-[#333]">
                     <h3 class="text-[#00e676] font-bold mb-2 m-0">2. Urus Staf (Tambah / Buang)</h3>
+                    <p class="text-gray-500 text-[11px] mt-0 mb-2">💬 "Nama WhatsApp/Sender" = alias untuk kenal pasti mesej staf dalam Rekod Perbualan (boleh lebih dari satu, pisah guna koma).</p>
                     <div class="flex flex-col md:flex-row gap-2 mt-3">
                         <input type="text" id="inp-new-staff" placeholder="Nama Sistem (Cth: Shim)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
                         <input type="text" id="inp-new-staff-full" placeholder="Nama Penuh Excel (Cth: Shim Shima)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
+                        <input type="text" id="inp-new-staff-chat" placeholder="Nama WhatsApp/Sender (pisah koma)" class="flex-1 bg-[#333] text-white p-2 rounded border border-[#555] outline-none">
                         <button onclick="window.tambahStaf()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold py-2 px-6 rounded">Tambah</button>
                     </div>
                     <div id="list-urus-staf" class="mt-4 max-h-40 overflow-y-auto bg-[#111] border border-[#333] rounded p-2 space-y-1">
@@ -1440,8 +1442,30 @@
             <!-- HEADER -->
             <div class="relative p-5 border-b border-[#2a2a2a] shrink-0" style="background:linear-gradient(90deg,#1a1a1a,#161616);">
                 <button onclick="window.closeCRMBetaModal()" class="beta-hdr-close absolute top-4 right-4 text-gray-500 hover:text-white text-xl leading-none">✕</button>
-                <div class="flex items-start gap-4">
+                <div class="flex items-start gap-4 flex-wrap">
                     <div id="betacrm-avatar" class="w-14 h-14 rounded-full bg-[#00c6ff] text-black font-bold text-2xl flex items-center justify-center shrink-0">?</div>
+                    <!-- 🌟 QUICK STATS dipindah ke sini (ruang kosong atas, dekat butang close) - IDs kekal sama -->
+                    <div class="grid grid-cols-2 gap-1.5 shrink-0 w-full sm:w-56 order-last sm:order-none sm:ml-auto mr-0 sm:mr-8">
+                        <div class="bg-[#1a1a1a] rounded-lg px-2.5 py-1.5 border border-[#262626]">
+                            <div class="text-[8px] text-gray-500 uppercase font-bold">Class Attended</div>
+                            <div id="betacrm-stat-attended" class="text-sm font-bold text-[#00e676] leading-tight">0×</div>
+                            <div id="betacrm-stat-lastclass" class="text-[8px] text-gray-600 truncate">-</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] rounded-lg px-2.5 py-1.5 border border-[#262626]">
+                            <div class="text-[8px] text-gray-500 uppercase font-bold">Total Invoice</div>
+                            <div id="betacrm-stat-invoice" class="text-sm font-bold text-[#ffca28] leading-tight">RM0</div>
+                            <div id="betacrm-stat-invoicecount" class="text-[8px] text-gray-600">0 invois</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] rounded-lg px-2.5 py-1.5 border border-[#262626]">
+                            <div class="text-[8px] text-gray-500 uppercase font-bold">Lead Masuk</div>
+                            <div id="betacrm-stat-inbound" class="text-xs font-bold text-white leading-tight">-</div>
+                            <div id="betacrm-stat-source" class="text-[8px] text-gray-600 truncate">-</div>
+                        </div>
+                        <div class="bg-[#1a1a1a] rounded-lg px-2.5 py-1.5 border border-[#262626]">
+                            <div class="text-[8px] text-gray-500 uppercase font-bold">FU Akan Datang</div>
+                            <div id="betacrm-stat-nextfu" class="text-xs font-bold text-[#ff9800] leading-tight">-</div>
+                        </div>
+                    </div>
                     <div class="flex-1 min-w-0">
                         <div class="flex items-center gap-2 flex-wrap">
                             <div class="relative inline-flex items-center">
@@ -1470,6 +1494,7 @@
                             <span class="text-[10px] text-gray-600">Reassign to new staff</span>
                         </div>
                         <div class="flex flex-wrap items-center gap-1.5 mt-3">
+                            <div id="betacrm-referral-badge" class="mb-1.5"></div>
                             <div id="betacrm-tags-container" class="flex flex-wrap gap-1.5"></div>
                             <div id="betacrm-tags-ps-container" class="flex flex-wrap gap-1.5"></div>
                             <div class="relative">
@@ -1509,29 +1534,6 @@
                 </div>
             </div>
 
-            <!-- QUICK STATS -->
-            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 p-4 border-b border-[#2a2a2a] shrink-0" style="background:#131313;">
-                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
-                    <div class="text-[9px] text-gray-500 uppercase font-bold">Class Attended</div>
-                    <div id="betacrm-stat-attended" class="text-lg font-bold text-[#00e676]">0×</div>
-                    <div id="betacrm-stat-lastclass" class="text-[9px] text-gray-600">-</div>
-                </div>
-                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
-                    <div class="text-[9px] text-gray-500 uppercase font-bold">Total Invoice</div>
-                    <div id="betacrm-stat-invoice" class="text-lg font-bold text-[#ffca28]">RM0</div>
-                    <div id="betacrm-stat-invoicecount" class="text-[9px] text-gray-600">0 invois</div>
-                </div>
-                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
-                    <div class="text-[9px] text-gray-500 uppercase font-bold">Lead Masuk</div>
-                    <div id="betacrm-stat-inbound" class="text-sm font-bold text-white">-</div>
-                    <div id="betacrm-stat-source" class="text-[9px] text-gray-600">-</div>
-                </div>
-                <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
-                    <div class="text-[9px] text-gray-500 uppercase font-bold">FU Akan Datang</div>
-                    <div id="betacrm-stat-nextfu" class="text-sm font-bold text-[#ff9800]">-</div>
-                </div>
-            </div>
-
             <!-- 🌟 Remark 1 & EFO Remarks (PS Master terkini) - terus nampak, tak payah tab ke PS Details -->
             <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 px-4 pb-4" style="background:#131313;">
                 <div class="bg-[#1a1a1a] rounded-lg p-3 border border-[#262626]">
@@ -1558,8 +1560,12 @@
 
                 <!-- ===== TIMELINE & FU ===== -->
                 <div id="betacrm-tab-timeline">
-                    <div class="bg-[#1a1a1a] border border-[#00c6ff]/30 rounded-xl p-3.5 mb-4">
-                        <div class="text-[#00c6ff] text-xs font-bold mb-3">➕ Log Follow Up Baru</div>
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-[#00c6ff] text-xs font-bold">📋 To Do List (TO FU)</div>
+                        <button type="button" onclick="window.betaTodoAddExtra()" class="bg-[#333] hover:bg-[#444] text-[#00e676] text-[10px] font-bold px-3 py-1.5 rounded-lg border border-[#00e676]/50">➕ Tambah To Do</button>
+                    </div>
+                    <div class="bg-[#1a1a1a] border border-[#00c6ff]/30 rounded-xl p-3.5 mb-3">
+                        <div class="text-[#00c6ff] text-xs font-bold mb-3">⭐ Next FU (Utama)</div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             <div class="beta-fld">
                                 <label>TO FU (Action)</label>
@@ -1575,6 +1581,16 @@
                             </div>
                         </div>
                         <div class="beta-fld mt-3">
+                            <label>⏱️ Stopwatch Call</label>
+                            <div class="flex items-center gap-1.5 flex-wrap">
+                                <span id="betacrm-timer-display" class="font-mono font-bold text-base text-[#00c6ff] bg-[#111] border border-[#333] rounded-lg px-3 py-1.5 min-w-[64px] text-center">00:00</span>
+                                <button type="button" onclick="window.betaTimerStart()" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">▶ Start</button>
+                                <button type="button" onclick="window.betaTimerStop()" class="bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">⏸ Stop</button>
+                                <button type="button" onclick="window.betaTimerReset()" class="bg-[#444] hover:bg-[#555] text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">↺ Reset</button>
+                                <button type="button" onclick="window.betaTimerInsertToOutcome()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black text-[11px] font-bold px-2.5 py-1.5 rounded-lg">📥 Masuk Outcome</button>
+                            </div>
+                        </div>
+                        <div class="beta-fld mt-3">
                             <label>Outcome (Remarks untuk TO FU ni)</label>
                             <textarea id="betacrm-outcome" rows="2" oninput="window.updatePreviewFUBeta()" placeholder="Cth: Dah call, prospek minta call balik petang..."></textarea>
                         </div>
@@ -1586,6 +1602,8 @@
                             <button onclick="window.appendPreviewToHistory('betacrm'); window.renderBetaTimelineList();" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold px-5 py-2 rounded-lg text-xs transition">💾 Simpan ke Timeline</button>
                         </div>
                     </div>
+                    <!-- 🌟 To-Do tambahan (item #2, #3, ...) - setiap satu ada Outcome + Stopwatch + Simpan ke Timeline sendiri -->
+                    <div id="betacrm-todo-extra" class="space-y-3 mb-4"></div>
 
                     <div class="flex items-center justify-between mb-2">
                         <div class="text-xs font-bold text-gray-400">🕓 Riwayat (Timeline)</div>
@@ -1636,6 +1654,7 @@
 
             <!-- FOOTER -->
             <div class="beta-modal-footer p-4 border-t border-[#2a2a2a] flex justify-end gap-2 shrink-0" style="background:#131313;">
+                <button type="button" onclick="window.betaCopyFUText()" class="bg-[#333] hover:bg-[#444] text-gray-200 font-bold px-5 py-2.5 rounded-lg text-sm transition border border-[#555]">📋 Copy FU Text</button>
                 <button id="btn-save-crm-beta" onclick="window.saveCRMBetaData()" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold px-6 py-2.5 rounded-lg text-sm transition">💾 SAVE LEAD</button>
             </div>
             </div>
@@ -5012,6 +5031,7 @@
                     id: doc.id, 
                     name: doc.data().name, 
                     fullName: doc.data().fullName || "",
+                    chatAliases: Array.isArray(doc.data().chatAliases) ? doc.data().chatAliases : [], // 🌟 alias WA/sender utk Rekod Perbualan
                     isHidden: doc.data().isHidden || false // 🌟 Tarik memori isHidden
                 }));
                 senaraiStafAdmin.sort((a, b) => a.name.localeCompare(b.name));
@@ -5027,6 +5047,7 @@
                         <div class="flex flex-col ml-2">
                             <span class="staff-name-text text-white text-sm font-bold">${s.name}</span>
                             <span class="staff-full-text text-gray-500 text-[10px] mb-1">Excel: ${s.fullName || "-"}</span>
+                            <span class="text-gray-500 text-[10px] mb-1">💬 WA: ${(s.chatAliases && s.chatAliases.length) ? s.chatAliases.join(', ') : '-'}</span>
                             
                             <!-- 🌟 CHECKBOX HIDE BARU -->
                             <label class="flex items-center gap-1 cursor-pointer">
@@ -5035,7 +5056,7 @@
                             </label>
                         </div>
                         <div class="flex gap-1 h-fit">
-                            <button onclick="window.siapEditStaf('${s.id}', '${s.name}', '${s.fullName || ""}')" class="text-[#00c6ff] hover:text-white text-sm font-bold px-3 py-1 bg-[#1a1a1a] rounded border border-[#00c6ff]">Edit</button>
+                            <button onclick="window.siapEditStaf('${s.id}', '${s.name}', '${s.fullName || ""}', '${(s.chatAliases||[]).join(', ')}')" class="text-[#00c6ff] hover:text-white text-sm font-bold px-3 py-1 bg-[#1a1a1a] rounded border border-[#00c6ff]">Edit</button>
                             <button onclick="window.buangStaf('${s.id}', '${s.name}')" class="text-red-500 hover:text-red-400 text-sm font-bold px-3 py-1 bg-[#1a1a1a] rounded border border-red-900">Padam</button>
                         </div>
                     </div>`;
@@ -5081,8 +5102,10 @@
         window.tambahStaf = async function() {
             let inp = document.getElementById('inp-new-staff');
             let inpFull = document.getElementById('inp-new-staff-full');
+            let inpChat = document.getElementById('inp-new-staff-chat');
             let nama = inp.value.trim();
             let namaFull = inpFull.value.trim();
+            let chatAliases = (inpChat?.value || '').split(',').map(a => a.trim()).filter(Boolean); // 🌟 alias WA/sender
 
             if(!nama) { alert("Nama Sistem wajib isi boss!"); return; }
             
@@ -5090,9 +5113,10 @@
             try {
                 await addDoc(collection(db, "staff_list"), { 
                     name: nama, 
-                    fullName: namaFull 
+                    fullName: namaFull,
+                    chatAliases: chatAliases
                 });
-                inp.value = ""; inpFull.value = "";
+                inp.value = ""; inpFull.value = ""; if(inpChat) inpChat.value = "";
                 window.renderUrusStaf();
                 alert(`✅ Staf ${nama} berjaya ditambah dengan mapping Excel: ${namaFull || "Tiada"}`);
             } catch(e) { alert("Gagal: " + e.message); }
@@ -5465,6 +5489,9 @@
                     window.showToast ? window.showToast('🔄 Auto-sync jumpa: ' + msgParts.join(' & '), 'success', 2500) : null;
                 }
                 window.renderCRMBetaTable();
+                // 🌟 FIX: dulu mobile list tak refresh lepas auto-sync jumpa padanan PS - card mobile kekal lapuk
+                // (referral/tag/attend status baru nampak lepas buka modal) sampai tukar view/filter semula.
+                if(document.getElementById('betacrm-mobile-wrapper')?.style.display !== 'none') window.renderCRMBetaMobileList();
                 } else {
                     // Tiada match langsung - papar mesej jelas dalam tab (bukan senyap)
                     console.log(`[Auto-Sync PS] Lead ${l["NAME"]||l.docId} (${contact}): tiada match PS Master/PS Enroll selepas scan penuh.`);
@@ -5616,6 +5643,7 @@
             return {
                 lead: leadRow,
                 tagsAll, tagsFromPS,
+                referral: window._betaGetReferral(lastClassRow),
                 displayName, importTs, importMs,
                 psRows, enrollRows,
                 totalAttended,
@@ -6033,6 +6061,7 @@
             { key: 'FOLLOW UP (DATE)', label: 'FU Date', get: s => s.lead["FOLLOW UP (DATE)"]||"" },
             { key: 'FOLLOW UP (TIME)', label: 'FU Time', get: s => s.lead["FOLLOW UP (TIME)"]||"" },
             { key: 'Tags', label: 'Tags', color:'#f59e0b', get: s => (s.tagsAll || (typeof window.getRecordTags === 'function' ? window.getRecordTags(s.lead) : [])).join(', '), isTagsCol:true },
+            { key: 'Referral', label: 'Referral', color:'#d946ef', get: s => s.referral || '', isReferralCol:true },
             { key: 'SOURCE', label: 'Source', get: s => s.lead["SOURCE"]||"" },
             { key: 'EMAIL', label: 'Email', get: s => s.lead["EMAIL"]||"" },
             { key: 'STATE', label: 'State', get: s => s.lead["STATE"]||"" },
@@ -6457,6 +6486,10 @@
                         if(col.isStatusPill) {
                             let isDefault = col.key === 'Invite Status' ? (!s.hasPSCode && !l["Invite Status"]) : (col.key === 'Attend Status' ? (!s.attendIsAuto && !l["Attend Status"]) : false);
                             return `<td>${window._betaStatusPillHtml(col.get(s), col.isStatusPill, isDefault)}</td>`;
+                        }
+                        if(col.isReferralCol) {
+                            let rv = col.get(s);
+                            return `<td>${rv ? window._betaReferralBadgeHtml(rv) : '<span class="text-gray-600">-</span>'}</td>`;
                         }
                         if(col.isTagsCol) {
                             let tags = s.tagsAll || (typeof window.getRecordTags === 'function' ? window.getRecordTags(l) : []);
@@ -7063,6 +7096,7 @@
                         </div>
                     </div>
                     <div onclick="window.openCRMBetaModal(${realIdx})" class="cursor-pointer">
+                    ${s.referral ? `<div class="mt-2">${window._betaReferralBadgeHtml(s.referral)}</div>` : ''}
                     <div class="flex flex-wrap items-center gap-1.5 mt-2">
                         <span class="flex items-center gap-1"><span class="text-[8px] text-gray-500 font-bold uppercase">Status:</span> ${window._betaStatusPillHtml(l["STATUS"], 'status')}</span>
                         <span class="flex items-center gap-1"><span class="text-[8px] text-gray-500 font-bold uppercase">Invite:</span> ${window._betaStatusPillHtml(s.effectiveInviteStatus, 'inviteStatus', !s.hasPSCode && !l["Invite Status"])}</span>
@@ -7098,6 +7132,31 @@
                 ? `<button onclick="window.renderCRMBetaMobileList(true)" class="w-full py-3 text-center text-[#00c6ff] font-bold text-sm hover:bg-[#1a1a1a] border-t border-[#262626]">⬇️ Muatkan lagi (${pageItems.length}/${filtered.length})</button>`
                 : `<div class="text-center text-gray-600 text-[10px] p-3">— ${filtered.length} lead dipaparkan —</div>`;
             list.innerHTML = rowsHtml + footerHtml;
+        };
+
+        // 📣 Referral (dari PS Master/PS Details) - fallback ejaan sebab Excel kadang "Refferal"/"referral"/"refferal"
+        window._betaGetReferral = function(psRow) {
+            if(!psRow) return '';
+            return String(psRow["Referral"] || psRow["Refferal"] || psRow["referral"] || psRow["refferal"] || '').trim();
+        };
+        // Warna round-box konsisten ikut nama (hash ringkas -> pilih dari palet tetap, sama nama = sama warna sentiasa)
+        window._betaReferralPalette = [
+            { bg:'#3b2a6b', text:'#c4b5fd', bd:'#7c3aed' }, { bg:'#1e3a5f', text:'#93c5fd', bd:'#3b82f6' },
+            { bg:'#154734', text:'#6ee7b7', bd:'#10b981' }, { bg:'#5c3a10', text:'#fcd34d', bd:'#f59e0b' },
+            { bg:'#5c1a2e', text:'#fca5a5', bd:'#ef4444' }, { bg:'#0f4c4c', text:'#5eead4', bd:'#14b8a6' },
+            { bg:'#4a1d5c', text:'#f0abfc', bd:'#d946ef' }, { bg:'#1a3a5c', text:'#7dd3fc', bd:'#0ea5e9' },
+            { bg:'#5c3a1a', text:'#fdba74', bd:'#f97316' }, { bg:'#2d5c1a', text:'#bef264', bd:'#84cc16' }
+        ];
+        window._betaReferralColor = function(name) {
+            let h = 0;
+            for(let i=0; i<name.length; i++) h = (h * 31 + name.charCodeAt(i)) >>> 0;
+            return window._betaReferralPalette[h % window._betaReferralPalette.length];
+        };
+        window._betaReferralBadgeHtml = function(name, big) {
+            if(!name) return '';
+            let c = window._betaReferralColor(name);
+            let sz = big ? 'font-size:11px;padding:3px 10px;' : 'font-size:9px;padding:1px 8px;';
+            return `<span title="Referral" style="display:inline-flex;align-items:center;gap:3px;background:${c.bg};color:${c.text};border:1px solid ${c.bd};border-radius:999px;font-weight:bold;white-space:nowrap;${sz}">📣 ${name}</span>`;
         };
 
         // 🎓 Tag dari PS Master / PS Enroll (read-only) untuk modal CRM Beta
@@ -7503,6 +7562,7 @@
 
         // ---------- PS DETAILS (Raw data PENUH PS Master, ikut field yang diminta) ----------
         window._betaPSDetailFields = [
+            { key: '__referral', label: 'Referral' },
             { key: 'Timestamp', label: 'Timestamp' },
             { key: 'Potential Student Code', label: 'PS Code' },
             { key: '__imported_date', label: 'Imported Date' },
@@ -7546,6 +7606,7 @@
                     if(f.key === '__imported_date') val = imp.date;
                     else if(f.key === '__imported_time') val = imp.time;
                     else if(f.key === '__phone') val = window._extractPhoneFromRecord ? window._extractPhoneFromRecord(r) : (r["Phone Number"] || r["Phone"] || r["Contact"] || '');
+                    else if(f.key === '__referral') val = window._betaGetReferral(r);
                     else val = window.formatDisplayValue ? window.formatDisplayValue(r[f.key]) : (r[f.key] || '-');
                     if(!val || String(val).trim() === '') val = '-';
                     return `<div class="min-w-0">
@@ -7579,6 +7640,260 @@
             }).join('');
         };
 
+        // ⏱️ Stopwatch Call (CRM Beta - tab Timeline & FU, atas kotak Outcome). Format mm:ss sahaja.
+        window._betaTimerState = { running: false, elapsedMs: 0, startedAt: 0, intervalId: null };
+        window._betaTimerFormat = function(ms) {
+            let totalSec = Math.floor(Math.max(0, ms) / 1000);
+            let mm = String(Math.floor(totalSec / 60)).padStart(2, '0');
+            let ss = String(totalSec % 60).padStart(2, '0');
+            return `${mm}:${ss}`;
+        };
+        window._betaTimerCurrentMs = function() {
+            let st = window._betaTimerState;
+            return st.running ? (st.elapsedMs + (Date.now() - st.startedAt)) : st.elapsedMs;
+        };
+        window._betaTimerTick = function() {
+            let el = document.getElementById('betacrm-timer-display');
+            if(el) el.innerText = window._betaTimerFormat(window._betaTimerCurrentMs());
+        };
+        window.betaTimerStart = function() {
+            let st = window._betaTimerState;
+            if(st.running) return;
+            st.running = true;
+            st.startedAt = Date.now();
+            st.intervalId = setInterval(window._betaTimerTick, 250);
+            window._betaTimerTick();
+        };
+        window.betaTimerStop = function() {
+            let st = window._betaTimerState;
+            if(!st.running) return;
+            st.elapsedMs += Date.now() - st.startedAt;
+            st.running = false;
+            if(st.intervalId) clearInterval(st.intervalId);
+            st.intervalId = null;
+            window._betaTimerTick();
+        };
+        window.betaTimerReset = function() {
+            let st = window._betaTimerState;
+            if(st.intervalId) clearInterval(st.intervalId);
+            window._betaTimerState = { running: false, elapsedMs: 0, startedAt: 0, intervalId: null };
+            window._betaTimerTick();
+        };
+        window.betaTimerInsertToOutcome = function() {
+            let txt = window._betaTimerFormat(window._betaTimerCurrentMs());
+            let el = document.getElementById('betacrm-outcome');
+            if(!el) return;
+            el.value = el.value.trim() ? (el.value.trim() + ' ' + txt) : txt;
+            el.dispatchEvent(new Event('input')); // 🌟 trigger updatePreviewFUBeta() supaya preview terus update
+            el.focus();
+        };
+
+        // ==========================================
+        // 📋 TO-DO LIST (TO FU) — item #2, #3, dst. "⭐ Next FU (Utama)" di atas (betacrm-tofu/fu-date/fu-time/
+        // betacrm-outcome) KEKAL macam asal (TAK disentuh) supaya Save Lead & fungsi sedia ada tak rosak.
+        // Item tambahan ni hanya untuk LOG BANYAK action/outcome terus ke Timeline dalam satu sesi, setiap satu
+        // ada stopwatch & butang "Simpan ke Timeline" sendiri. Tak ubah "TO FU"/"FOLLOW UP (DATE/TIME)" lead.
+        // ==========================================
+        window._betaTodoExtraIds = [];      // senarai id item tambahan yang sedang wujud dalam modal ni
+        window._betaTodoTimers = {};        // { [id]: { running, elapsedMs, startedAt, intervalId } } - 1 stopwatch berasingan setiap item
+        window._betaTodoNextId = 1;
+
+        window.betaTodoAddExtra = function() {
+            let id = window._betaTodoNextId++;
+            window._betaTodoExtraIds.push(id);
+            window._betaTodoTimers[id] = { running: false, elapsedMs: 0, startedAt: 0, intervalId: null };
+            let today = new Date().toISOString().split('T')[0];
+            let html = `
+                <div id="betacrm-todo-item-${id}" class="bg-[#1a1a1a] border border-[#333] rounded-xl p-3.5">
+                    <div class="flex items-center justify-between mb-2">
+                        <div class="text-gray-400 text-xs font-bold">📝 To Do Tambahan</div>
+                        <button type="button" onclick="window.betaTodoRemoveExtra(${id})" class="text-red-400 hover:text-red-300 text-[11px] font-bold">🗑️ Buang</button>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="beta-fld">
+                            <label>TO FU (Action)</label>
+                            <input type="text" id="betacrm-todo-action-${id}" autocomplete="off" placeholder="Cth: Call balik petang ni...">
+                        </div>
+                        <div class="beta-fld">
+                            <label>FU Date / Time</label>
+                            <div class="flex gap-1.5">
+                                <input type="date" id="betacrm-todo-date-${id}" class="flex-1" value="${today}">
+                                <input type="time" id="betacrm-todo-time-${id}" class="flex-1">
+                                <button type="button" onclick="window.betaTodoNow(${id})" class="bg-[#333] hover:bg-[#444] text-gray-200 text-[10px] font-bold px-2.5 rounded-lg shrink-0">🕐 Now</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="beta-fld mt-3">
+                        <label>⏱️ Stopwatch Call</label>
+                        <div class="flex items-center gap-1.5 flex-wrap">
+                            <span id="betacrm-todo-timer-${id}" class="font-mono font-bold text-base text-[#00c6ff] bg-[#111] border border-[#333] rounded-lg px-3 py-1.5 min-w-[64px] text-center">00:00</span>
+                            <button type="button" onclick="window.betaTodoTimerStart(${id})" class="bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">▶ Start</button>
+                            <button type="button" onclick="window.betaTodoTimerStop(${id})" class="bg-amber-600 hover:bg-amber-500 text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">⏸ Stop</button>
+                            <button type="button" onclick="window.betaTodoTimerReset(${id})" class="bg-[#444] hover:bg-[#555] text-white text-[11px] font-bold px-2.5 py-1.5 rounded-lg">↺ Reset</button>
+                            <button type="button" onclick="window.betaTodoTimerInsertToOutcome(${id})" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black text-[11px] font-bold px-2.5 py-1.5 rounded-lg">📥 Masuk Outcome</button>
+                        </div>
+                    </div>
+                    <div class="beta-fld mt-3">
+                        <label>Outcome (Remarks untuk TO FU ni)</label>
+                        <textarea id="betacrm-todo-outcome-${id}" rows="2" placeholder="Cth: Dah call, prospek minta call balik petang..."></textarea>
+                    </div>
+                    <div class="flex justify-end mt-3">
+                        <button type="button" onclick="window.betaTodoSaveExtra(${id})" class="bg-[#0072ff] hover:bg-[#00c6ff] text-white hover:text-black font-bold px-5 py-2 rounded-lg text-xs transition">💾 Simpan ke Timeline</button>
+                    </div>
+                </div>`;
+            let box = document.getElementById('betacrm-todo-extra');
+            if(box) box.insertAdjacentHTML('beforeend', html);
+        };
+
+        window.betaTodoRemoveExtra = function(id) {
+            let st = window._betaTodoTimers[id];
+            if(st && st.intervalId) clearInterval(st.intervalId);
+            delete window._betaTodoTimers[id];
+            window._betaTodoExtraIds = window._betaTodoExtraIds.filter(x => x !== id);
+            document.getElementById(`betacrm-todo-item-${id}`)?.remove();
+        };
+
+        // Buang SEMUA item tambahan - dipanggil bila modal CRM Beta dibuka utk lead lain (elak carry-over)
+        window.betaTodoClearAllExtra = function() {
+            (window._betaTodoExtraIds || []).forEach(id => {
+                let st = window._betaTodoTimers[id];
+                if(st && st.intervalId) clearInterval(st.intervalId);
+            });
+            window._betaTodoExtraIds = [];
+            window._betaTodoTimers = {};
+            let box = document.getElementById('betacrm-todo-extra');
+            if(box) box.innerHTML = '';
+        };
+
+        window.betaTodoNow = function(id) {
+            let now = new Date();
+            let dEl = document.getElementById(`betacrm-todo-date-${id}`);
+            let tEl = document.getElementById(`betacrm-todo-time-${id}`);
+            if(dEl) dEl.value = now.toISOString().split('T')[0];
+            if(tEl) tEl.value = `${String(now.getHours()).padStart(2,'0')}:${String(now.getMinutes()).padStart(2,'0')}`;
+        };
+
+        // --- Stopwatch per item (logik sama macam item utama, tapi keyed ikut id) ---
+        window.betaTodoTimerStart = function(id) {
+            let st = window._betaTodoTimers[id]; if(!st || st.running) return;
+            st.running = true; st.startedAt = Date.now();
+            st.intervalId = setInterval(() => window._betaTodoTimerTick(id), 250);
+            window._betaTodoTimerTick(id);
+        };
+        window.betaTodoTimerStop = function(id) {
+            let st = window._betaTodoTimers[id]; if(!st || !st.running) return;
+            st.elapsedMs += Date.now() - st.startedAt;
+            st.running = false;
+            if(st.intervalId) clearInterval(st.intervalId);
+            st.intervalId = null;
+            window._betaTodoTimerTick(id);
+        };
+        window.betaTodoTimerReset = function(id) {
+            let st = window._betaTodoTimers[id]; if(!st) return;
+            if(st.intervalId) clearInterval(st.intervalId);
+            window._betaTodoTimers[id] = { running: false, elapsedMs: 0, startedAt: 0, intervalId: null };
+            window._betaTodoTimerTick(id);
+        };
+        window._betaTodoTimerTick = function(id) {
+            let st = window._betaTodoTimers[id]; if(!st) return;
+            let ms = st.running ? (st.elapsedMs + (Date.now() - st.startedAt)) : st.elapsedMs;
+            let el = document.getElementById(`betacrm-todo-timer-${id}`);
+            if(el) el.innerText = window._betaTimerFormat(ms);
+        };
+        window.betaTodoTimerInsertToOutcome = function(id) {
+            let st = window._betaTodoTimers[id]; if(!st) return;
+            let ms = st.running ? (st.elapsedMs + (Date.now() - st.startedAt)) : st.elapsedMs;
+            let txt = window._betaTimerFormat(ms);
+            let el = document.getElementById(`betacrm-todo-outcome-${id}`);
+            if(!el) return;
+            el.value = el.value.trim() ? (el.value.trim() + ' ' + txt) : txt;
+            el.focus();
+        };
+
+        // Simpan SATU item to-do ke Timeline (History FU) - format sama macam item utama, Outcome sahaja dikosongkan lepas simpan
+        window.betaTodoSaveExtra = function(id) {
+            let actionEl = document.getElementById(`betacrm-todo-action-${id}`);
+            let dEl = document.getElementById(`betacrm-todo-date-${id}`);
+            let tEl = document.getElementById(`betacrm-todo-time-${id}`);
+            let outcomeEl = document.getElementById(`betacrm-todo-outcome-${id}`);
+            let historyEl = document.getElementById('betacrm-history');
+            if(!historyEl) return;
+
+            let action = actionEl ? actionEl.value.trim() : '';
+            let d = (dEl && dEl.value) ? dEl.value : new Date().toISOString().split('T')[0];
+            let t = (tEl && tEl.value) ? tEl.value : '00:00';
+            let outcome = outcomeEl ? outcomeEl.value.trim() : '';
+
+            if(!action && !outcome) { alert('Isi Action atau Outcome dulu sebelum simpan boss.'); return; }
+
+            let txt = `[${d} ${t}] Action: ${action || '-'}`;
+            if(outcome) txt += ` | Outcome: ${outcome}`;
+
+            let currentHistory = historyEl.value.trim();
+            if(currentHistory.includes(txt)) return; // dah ada, elak duplicate (senyap, sama macam item utama)
+            historyEl.value = currentHistory ? (txt + "\n" + currentHistory) : txt;
+
+            if(outcomeEl) outcomeEl.value = ''; // kosongkan Outcome sahaja lepas simpan (Action/Date/Time kekal)
+            window.renderBetaTimelineList();
+            window.showToast ? window.showToast('✅ To-Do disimpan ke Timeline', 'success', 1500) : null;
+        };
+
+        // 📋 Copy FU Text - salin SEMUA kandungan History FU (termasuk semua to-do yang dah disimpan) ke clipboard
+        window.betaCopyFUText = async function() {
+            let el = document.getElementById('betacrm-history');
+            let txt = el ? el.value.trim() : '';
+            if(!txt) { alert('Tiada teks FU untuk disalin lagi.'); return; }
+            try {
+                if(navigator.clipboard && navigator.clipboard.writeText) {
+                    await navigator.clipboard.writeText(txt);
+                } else {
+                    el.select(); document.execCommand('copy');
+                }
+                window.showToast ? window.showToast('✅ FU Text disalin!', 'success', 1500) : alert('✅ FU Text disalin ke clipboard!');
+            } catch(e) {
+                console.error('Gagal copy FU text:', e);
+                el.select(); document.execCommand('copy');
+                alert('✅ FU Text disalin ke clipboard!');
+            }
+        };
+
+        // 🌟 Lead Masuk (Inbound) - ambil tarikh & masa PALING AWAL dari Rekod Perbualan JSON
+        // (bukan Timestamp Masuk/imported date). Format rekod: [{"sender":..,"date":"dd/mm/yyyy","time":"HH:MM","message":..}]
+        window._betaGetInboundFromChat = function(rawChat) {
+            if(!rawChat || !String(rawChat).trim()) return null;
+            try {
+                let chats = JSON.parse(rawChat);
+                if(!Array.isArray(chats)) chats = [chats];
+                let earliestDisplay = null, earliestTs = Infinity;
+                chats.forEach(c => {
+                    let dStr = String(c.date || '').trim(), tStr = String(c.time || '00:00').trim();
+                    let dm = dStr.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/);
+                    if(!dm) return;
+                    let tm = tStr.match(/^(\d{1,2}):(\d{2})/);
+                    let hh = tm ? tm[1] : '00', mn = tm ? tm[2] : '00';
+                    let ts = new Date(`${dm[3]}-${dm[2].padStart(2,'0')}-${dm[1].padStart(2,'0')}T${hh.padStart(2,'0')}:${mn}:00`).getTime();
+                    if(!isNaN(ts) && ts < earliestTs) { earliestTs = ts; earliestDisplay = `${dStr} ${tStr}`; }
+                });
+                return earliestDisplay;
+            } catch(e) { return null; }
+        };
+
+        // 🌟 Kenal pasti sender dalam Rekod Perbualan ialah STAF atau PROSPEK.
+        // Dikongsi oleh SEMUA paparan chat (CRM Beta, CRM Master staf/admin, PS Enroll) supaya konsisten.
+        // Susunan check: 1) pattern sistem/bot sedia ada  2) alias WA yang admin set (System Setup -> Urus Staf)  3) nama pertama staf pemilik lead (fallback lama)
+        window._isChatSenderStaff = function(sender, leadData) {
+            let senderLow = String(sender || "").toLowerCase().trim();
+            if(!senderLow) return false;
+            if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow.includes("yana as") || senderLow === "me") return true;
+            if (typeof senaraiStafAdmin !== 'undefined' && senaraiStafAdmin && senaraiStafAdmin.length) {
+                let hit = senaraiStafAdmin.some(s => Array.isArray(s.chatAliases) && s.chatAliases.some(a => a && senderLow.includes(String(a).toLowerCase().trim())));
+                if (hit) return true;
+            }
+            let staffNameStr = ((leadData && leadData["Staff Name"]) || "").toLowerCase().split(" ")[0];
+            if (staffNameStr && senderLow.includes(staffNameStr)) return true;
+            return false;
+        };
+
         // ---------- CHAT (ALL CHAT JSON) — SAMA PERSIS macam CRM Master punya "Rekod Perbualan" ----------
         window.renderBetaChatList = function(rawChat, leadData) {
             let box = document.getElementById('betacrm-chat-list');
@@ -7602,17 +7917,7 @@
                     let text = c.text || c.message || c.msg || JSON.stringify(c);
                     let sender = c.sender || c.name || "Unknown";
                     let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
-                    let senderLow = sender.toLowerCase();
-                    let isMe = false;
-
-                    // 🌟 SAMA logik dengan CRM Master: nama Kunkwan/Class/Mandarin/staff = Hijau (isMe)
-                    if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow.includes("yana as") || senderLow === "me") {
-                        isMe = true;
-                    } else if (staffNameStr && senderLow.includes(staffNameStr)) {
-                        isMe = true;
-                    } else {
-                        isMe = false; // takde ciri staff = automatik prospek (Oren)
-                    }
+                    let isMe = window._isChatSenderStaff(sender, data); // 🌟 pusat: pattern sistem + alias WA (System Setup) + nama staf pemilik lead
 
                     let alignClass = isMe ? 'chat-right' : 'chat-left';
                     return `
@@ -7712,8 +8017,12 @@
             let staffSel = document.getElementById('betacrm-edit-staff');
             if(staffSel) {
                 let html = `<option value="">- Kekalkan Staf (${currentStaff}) -</option>`;
-                if(typeof adminState !== 'undefined' && adminState.users && adminState.users.length > 0) {
-                    adminState.users.forEach(u => { html += `<option value="${u}">${u}</option>`; });
+                // 🌟 FIX: guna senaraiStafAdmin (refresh automatik bila CRM Beta dibuka, sama sumber dgn Bulk Edit)
+                // dulu guna adminState.users yang cuma refresh bila tab Performance/Edit Targets dibuka - staf baru lambat/tak keluar.
+                if(typeof senaraiStafAdmin !== 'undefined' && senaraiStafAdmin && senaraiStafAdmin.length > 0) {
+                    senaraiStafAdmin.forEach(u => { html += `<option value="${u.name}">${u.name}</option>`; });
+                } else if(typeof adminState !== 'undefined' && adminState.users && adminState.users.length > 0) {
+                    adminState.users.forEach(u => { html += `<option value="${u}">${u}</option>`; }); // fallback kalau senaraiStafAdmin belum sempat load
                 }
                 staffSel.innerHTML = html;
             }
@@ -7722,6 +8031,7 @@
             let tags = window.getRecordTags(l);
             window._renderCRMSectionTags('betacrm-tags-container', 'betacrm-tags-value', tags);
             window._renderBetaPSTagsReadonly('betacrm-tags-ps-container', (summary && summary.tagsFromPS) || [], l.docId);
+            document.getElementById('betacrm-referral-badge').innerHTML = (summary && summary.referral) ? window._betaReferralBadgeHtml(summary.referral, true) : '';
             document.getElementById('betacrm-tag-input').value = "";
             window._renderBetaTagPicker();
             // 🌟 Simpan snapshot tags SEMASA buka, untuk banding masa Save (kesan perubahan -> log History FU)
@@ -7737,7 +8047,9 @@
             document.getElementById('betacrm-stat-remark1').innerText = (summary.lastClassRow && String(summary.lastClassRow["Remark 1"]||"").trim()) || "-";
             document.getElementById('betacrm-stat-eforemark').innerText = (summary.lastClassRow && String(summary.lastClassRow["EFO Remark"]||"").trim()) || "-";
             let inboundParsed = window.parseTimestampMasuk ? window.parseTimestampMasuk(l["Timestamp Masuk"]) : { date: l["LEADS INBOUND"] || "-" };
-            document.getElementById('betacrm-stat-inbound').innerText = l["LEADS INBOUND"] || inboundParsed.date || "-";
+            // 🌟 FIX: Lead Masuk ikut tarikh+masa PERTAMA dalam Rekod Perbualan (bukan imported date) - fallback ke cara lama kalau takde rekod chat
+            let inboundFromChat = window._betaGetInboundFromChat(l["ALL CHAT (JSON)"] || "");
+            document.getElementById('betacrm-stat-inbound').innerText = inboundFromChat || l["LEADS INBOUND"] || inboundParsed.date || "-";
             document.getElementById('betacrm-stat-source').innerText = 'Source: ' + (l["SOURCE"] || "-");
             let nextFuD = l["FOLLOW UP (DATE)"] || "";
             let nextFuT = l["FOLLOW UP (TIME)"] || "";
@@ -7749,6 +8061,8 @@
             document.getElementById('betacrm-fu-date').value = window.toInputDate ? window.toInputDate(nextFuD) : nextFuD;
             document.getElementById('betacrm-fu-time').value = nextFuT;
             setVal('betacrm-outcome', "");
+            window.betaTimerReset(); // 🌟 stopwatch reset setiap kali modal dibuka (lead baru = mula dari 00:00)
+            window.betaTodoClearAllExtra(); // 🌟 buang semua To-Do tambahan dari lead sebelumnya
             setVal('betacrm-history', l["HISTORY FU"] || "");
             document.getElementById('betacrm-raw-history-box').classList.add('hidden');
             window.updatePreviewFUBeta();
@@ -8788,19 +9102,7 @@
                     let text = c.text || c.message || c.msg || JSON.stringify(c);
                     let sender = c.sender || c.name || "Unknown";
                     let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
-                    let senderLow = sender.toLowerCase();
-                    let isMe = false;
-                      
-                      // 🌟 MAGIK BARU: Kalau ada nama Kunkwan atau Staf, jadikan dia Hijau (isMe = true)
-                      if (senderLow.includes("class") || senderLow.includes("mandarin") || senderLow.includes("kunkwan") || senderLow.includes("Yana AS") || senderLow === "me") {
-                          isMe = true;
-                      } else if (staffNameStr && senderLow.includes(staffNameStr)) {
-                          isMe = true;
-                      } else {
-                          // Kalau takde ciri-ciri kat atas, automatik dia adalah prospek (Oren)
-                          isMe = false;
-                      }
-                      
+                    let isMe = window._isChatSenderStaff(sender, data); // 🌟 pusat: pattern sistem + alias WA (System Setup) + nama staf pemilik lead
                       let alignClass = isMe ? 'chat-right' : 'chat-left';
                     chatDiv.innerHTML += `
                         <div class="chat-bubble ${alignClass}">
@@ -9164,19 +9466,7 @@ ${l["HISTORY FU"] || "-"}`;
                       let text = c.text || c.message || c.msg || JSON.stringify(c);
                       let sender = c.sender || c.name || "Unknown";
                       let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
-                      let senderLow = sender.toLowerCase();
-                      let isMe = false;
-                      
-                      // 🌟 MAGIK BARU: Kalau ada nama Kunkwan atau Staf, jadikan dia Hijau (isMe = true)
-                      if (senderLow.includes("mandarin") || senderLow.includes("class") || senderLow.includes("kunkwan") || senderLow === "me") {
-                          isMe = true;
-                      } else if (staffNameStr && senderLow.includes(staffNameStr)) {
-                          isMe = true;
-                      } else {
-                          // Kalau takde ciri-ciri kat atas, automatik dia adalah prospek (Oren)
-                          isMe = false;
-                      }
-                      
+                      let isMe = window._isChatSenderStaff(sender, data); // 🌟 pusat: pattern sistem + alias WA (System Setup) + nama staf pemilik lead
                       let alignClass = isMe ? 'chat-right' : 'chat-left';
                       chatDiv.innerHTML += `
                           <div class="chat-bubble ${alignClass}">
@@ -9510,17 +9800,7 @@ ${l["HISTORY FU"] || "-"}`;
                           let text = c.text || c.message || c.msg || JSON.stringify(c);
                           let sender = c.sender || c.name || "Unknown";
                           let dateStr = `${c.date || ""} ${c.time || ""}`.trim();
-                          let senderLow = sender.toLowerCase();
-                          let isMe = false;
-                          
-                          if (senderLow.includes("mandarin") || senderLow.includes("class") || senderLow.includes("kunkwan") || senderLow === "me") {
-                              isMe = true;
-                          } else if (staffNameStr && senderLow.includes(staffNameStr)) {
-                              isMe = true;
-                          } else {
-                              isMe = false;
-                          }
-                          
+                          let isMe = window._isChatSenderStaff(sender, data); // 🌟 pusat: pattern sistem + alias WA (System Setup) + nama staf pemilik lead
                           let alignClass = isMe ? 'chat-right' : 'chat-left';
                           chatDiv.innerHTML += `
                               <div class="chat-bubble ${alignClass}">
@@ -14910,12 +15190,13 @@ ${l["HISTORY FU"] || "-"}`;
         };
         
         // 🌟 FUNGSI 1: TUKAR TULISAN JADI KOTAK INPUT (UI)
-        window.siapEditStaf = function(id, name, fullName) {
+        window.siapEditStaf = function(id, name, fullName, chatAliasesStr) {
             let row = document.getElementById(`row-staff-${id}`);
             row.innerHTML = `
                 <div class="flex flex-col md:flex-row gap-2 flex-1 ml-2">
                     <input type="text" id="edit-name-${id}" value="${name}" class="bg-[#111] text-white text-sm p-1 rounded border border-[#00c6ff] outline-none w-full md:w-24">
                     <input type="text" id="edit-full-${id}" value="${fullName}" class="bg-[#111] text-white text-[10px] p-1 rounded border border-[#555] outline-none flex-1" placeholder="Nama Penuh Excel">
+                    <input type="text" id="edit-chat-${id}" value="${chatAliasesStr || ''}" class="bg-[#111] text-white text-[10px] p-1 rounded border border-[#555] outline-none flex-1" placeholder="Nama WhatsApp/Sender (pisah koma)">
                 </div>
                 <div class="flex gap-1">
                     <button onclick="window.saveEditStaf('${id}')" class="bg-[#00e676] text-black text-xs font-bold px-3 py-1 rounded border-none shadow-sm">SAVE</button>
@@ -14928,6 +15209,7 @@ ${l["HISTORY FU"] || "-"}`;
         window.saveEditStaf = async function(id) {
             let newName = document.getElementById(`edit-name-${id}`).value.trim();
             let newFull = document.getElementById(`edit-full-${id}`).value.trim();
+            let newChatAliases = (document.getElementById(`edit-chat-${id}`)?.value || '').split(',').map(a => a.trim()).filter(Boolean); // 🌟 alias WA/sender
 
             if(!newName) { alert("Nama Sistem tak boleh kosong!"); return; }
 
@@ -14935,7 +15217,8 @@ ${l["HISTORY FU"] || "-"}`;
                 // Tembak Firebase guna updateDoc (Jimat Read!)
                 await updateDoc(doc(db, "staff_list", id), { 
                     name: newName, 
-                    fullName: newFull 
+                    fullName: newFull,
+                    chatAliases: newChatAliases
                 });
                 
                 alert(`✅ Berjaya kemaskini data ${newName}!`);
