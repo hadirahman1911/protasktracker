@@ -1483,6 +1483,7 @@
                             <button onclick="window._betaOpenWA()" class="bg-[#25d366] text-black text-[10px] font-bold px-2 py-1 rounded-full">💬 WA</button>
                             <button onclick="window._betaToggleMobileChat(true)" class="md:hidden bg-[#0072ff] text-white text-[10px] font-bold px-2 py-1 rounded-full">💬 Rekod Chat</button>
                             <button onclick="window.betaCRMCopyInviteDetails()" class="bg-[#333] hover:bg-[#444] text-gray-200 text-[10px] font-bold px-2 py-1 rounded-full">📋 Copy Invite Details</button>
+                            <button onclick="window.betaCopyPSDetails()" class="bg-[#333] hover:bg-[#444] text-gray-200 text-[10px] font-bold px-2 py-1 rounded-full">📋 Copy PS Details</button>
                         </div>
                         <div class="flex items-center gap-2 mt-2.5 flex-wrap">
                             <span class="text-xs text-gray-500">Current:</span>
@@ -7686,6 +7687,7 @@
             el.value = el.value.trim() ? (el.value.trim() + ' ' + txt) : txt;
             el.dispatchEvent(new Event('input')); // 🌟 trigger updatePreviewFUBeta() supaya preview terus update
             el.focus();
+            window.betaTimerReset(); // 🌟 lepas masuk Outcome, stopwatch terus reset ke 00:00
         };
 
         // ==========================================
@@ -7808,6 +7810,7 @@
             if(!el) return;
             el.value = el.value.trim() ? (el.value.trim() + ' ' + txt) : txt;
             el.focus();
+            window.betaTodoTimerReset(id); // 🌟 lepas masuk Outcome, stopwatch item ni terus reset ke 00:00
         };
 
         // Simpan SATU item to-do ke Timeline (History FU) - format sama macam item utama, Outcome sahaja dikosongkan lepas simpan
@@ -7839,22 +7842,43 @@
         };
 
         // 📋 Copy FU Text - salin SEMUA kandungan History FU (termasuk semua to-do yang dah disimpan) ke clipboard
-        window.betaCopyFUText = async function() {
-            let el = document.getElementById('betacrm-history');
-            let txt = el ? el.value.trim() : '';
-            if(!txt) { alert('Tiada teks FU untuk disalin lagi.'); return; }
-            try {
-                if(navigator.clipboard && navigator.clipboard.writeText) {
-                    await navigator.clipboard.writeText(txt);
-                } else {
-                    el.select(); document.execCommand('copy');
-                }
-                window.showToast ? window.showToast('✅ FU Text disalin!', 'success', 1500) : alert('✅ FU Text disalin ke clipboard!');
-            } catch(e) {
-                console.error('Gagal copy FU text:', e);
-                el.select(); document.execCommand('copy');
-                alert('✅ FU Text disalin ke clipboard!');
-            }
+        window.betaCopyFUText = function() {
+            let g = id => (document.getElementById(id)?.value || '').trim();
+            let docId = g('betacrm-docid');
+            let entry = (window.betaCRMSummary || []).find(s => s.lead && s.lead.docId === docId);
+            let l = entry ? entry.lead : {};
+            let fuDateInput = g('betacrm-fu-date'); // yyyy-mm-dd dari input date
+            let fuDate = fuDateInput ? (window.toSheetDate ? window.toSheetDate(fuDateInput) : fuDateInput) : '';
+            window._betaCopyToClipboard(window._betaBuildFUText({
+                name: g('betacrm-name') || l["NAME"], contact: g('betacrm-contact') || l["CONTACT"], staff: l["Staff Name"],
+                action: g('betacrm-tofu'), date: fuDate, time: g('betacrm-fu-time'), history: g('betacrm-history')
+            }), '✅ FU Text disalin!');
+        };
+
+        // 📋 Copy PS Details (tab PS Details) - format WhatsApp: *Label* : nilai, medan kosong dilangkau
+        window.betaCopyPSDetails = function() {
+            let docId = document.getElementById('betacrm-docid')?.value;
+            let s = (window.betaCRMSummary || []).find(x => x.lead && x.lead.docId === docId);
+            if(!s || !s.psRows || !s.psRows.length) { alert('Tiada rekod PS Master untuk disalin.'); return; }
+            let blocks = s.psRows.map((r, i) => {
+                let imp = window.parseTimestampMasuk ? window.parseTimestampMasuk(r["Timestamp Masuk"]) : { date: '', time: '' };
+                let lines = window._betaPSDetailFields.map(f => {
+                    let val;
+                    if(f.key === '__imported_date') val = imp.date;
+                    else if(f.key === '__imported_time') val = imp.time;
+                    else if(f.key === '__phone') val = window._betaPlusPhone(window._extractPhoneFromRecord ? window._extractPhoneFromRecord(r) : (r["Phone Number"] || r["Phone"] || r["Contact"] || ''));
+                    else if(f.key === '__referral') val = window._betaGetReferral(r);
+                    else val = window.formatDisplayValue ? window.formatDisplayValue(r[f.key]) : (r[f.key] || '');
+                    val = String(val == null ? '' : val).trim();
+                    if(!val || val === '-') return null;
+                    return `*${f.label}* : ${val}`;
+                }).filter(Boolean);
+                let sName = r["Student Name"] || r["Name"] || (s.lead["NAME"] || '-');
+                let head = `*PS${s.psRows.length > 1 ? ` ${i+1}/${s.psRows.length}` : ''} — ${sName}*`;
+                return head + "\n" + lines.join("\n");
+            });
+            let txt = `📚 *PS DETAILS*\n👤 ${s.lead["NAME"] || '-'}\n📞 ${window._betaPlusPhone(s.lead["CONTACT"])}\n\n` + blocks.join("\n\n━━━━━━━━━━\n\n");
+            window._betaCopyToClipboard(txt, '✅ PS Details disalin!');
         };
 
         // 🌟 Lead Masuk (Inbound) - ambil tarikh & masa PALING AWAL dari Rekod Perbualan JSON
@@ -9171,40 +9195,45 @@
         // ==========================================
         // 🌟 COPY FU TEXT — CRM Beta (Desktop View)
         // ==========================================
-        window.copyBetaFUText = function(docId) {
-            let entry = (window.betaCRMSummary || []).find(s => s.lead && s.lead.docId === docId);
-            let l = entry ? entry.lead : (window.crmState_adminData_lookup ? null : null);
-            if(!l) {
-                // fallback cari terus dalam crmState kalau summary belum sync
-                l = (crmState.adminData || []).find(r => r.docId === docId) || (crmState.data || []).find(r => r.docId === docId);
-            }
-            if(!l) { window.showToast ? window.showToast('⚠️ Data lead tidak dijumpai', 'error', 1500) : alert('Data tidak dijumpai'); return; }
-
-            let fuDate = l["FOLLOW UP (DATE)"] || "";
-            let dayName = window._fuDayName(fuDate);
-            let tarikhLine = fuDate ? (dayName ? `${fuDate} (${dayName})` : fuDate) : "-";
-
-            let text = `Name : ${l["NAME"] || "-"}
-Contact : ${l["CONTACT"] || "-"}
-Staff Name : ${l["Staff Name"] || "-"}
+        // "+" depan nombor phone supaya WhatsApp auto-link (team tekan terus ke chat). Username (@ali123) dibiar.
+        window._betaPlusPhone = function(contact) {
+            let raw = String(contact || "").trim();
+            if(!raw || raw === "-") return "-";
+            if(!/^[\d\s\-\+\(\)]+/.test(raw)) return raw;
+            let n = window.normalizePhone60 ? window.normalizePhone60(raw) : raw.replace(/[^0-9]/g, '');
+            return n ? ('+' + n) : raw;
+        };
+        window._betaCopyToClipboard = function(text, okMsg) {
+            let doToast = () => { window.showToast ? window.showToast(okMsg || '✅ Disalin ke clipboard', 'success', 1500) : null; };
+            if(navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(text).then(doToast).catch(() => { window._fallbackCopyText(text); doToast(); });
+            } else { window._fallbackCopyText(text); doToast(); }
+        };
+        // Satu format sahaja untuk Copy FU Text (desktop kolum Contact + butang dalam modal)
+        window._betaBuildFUText = function(d) {
+            let dayName = window._fuDayName(d.date);
+            let tarikhLine = d.date ? (dayName ? `${d.date} (${dayName})` : d.date) : "-";
+            return `Name : ${d.name || "-"}
+Contact : ${window._betaPlusPhone(d.contact)}
+Staff Name : ${d.staff || "-"}
 
 Action (TO FU):
-${l["TO FU"] || "-"}
+${d.action || "-"}
 Tarikh : ${tarikhLine}
-Masa : ${l["FOLLOW UP (TIME)"] || "-"}
+Masa : ${d.time || "-"}
 
 History FU :
-${l["HISTORY FU"] || "-"}`;
-
-            let doToast = () => { window.showToast ? window.showToast('✅ Disalin ke clipboard', 'success', 1500) : null; };
-
-            if(navigator.clipboard && navigator.clipboard.writeText) {
-                navigator.clipboard.writeText(text).then(doToast).catch(() => {
-                    window._fallbackCopyText(text); doToast();
-                });
-            } else {
-                window._fallbackCopyText(text); doToast();
-            }
+${d.history || "-"}`;
+        };
+        window.copyBetaFUText = function(docId) {
+            let entry = (window.betaCRMSummary || []).find(s => s.lead && s.lead.docId === docId);
+            let l = entry ? entry.lead : null;
+            if(!l) l = (crmState.adminData || []).find(r => r.docId === docId) || (crmState.data || []).find(r => r.docId === docId);
+            if(!l) { window.showToast ? window.showToast('⚠️ Data lead tidak dijumpai', 'error', 1500) : alert('Data tidak dijumpai'); return; }
+            window._betaCopyToClipboard(window._betaBuildFUText({
+                name: l["NAME"], contact: l["CONTACT"], staff: l["Staff Name"],
+                action: l["TO FU"], date: l["FOLLOW UP (DATE)"], time: l["FOLLOW UP (TIME)"], history: l["HISTORY FU"]
+            }), '✅ Disalin ke clipboard');
         };
 
         window._fallbackCopyText = function(text) {
